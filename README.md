@@ -1,16 +1,9 @@
 # bean_diary
+# - 원두 다이어리
+##   카페 생두, 원두 재고 및 판매 내역 관리
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## skill
+- dart
+- flutter
+  - sqflite
+  - shared_preferences
