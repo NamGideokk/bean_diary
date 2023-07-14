@@ -11,10 +11,10 @@ class EmptyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         child: Text(
           content,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.grey,
           ),
         ),

@@ -18,16 +18,92 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
   bool _showErrorText = false;
   List _greenBeans = [];
 
+  late Future _getGreenBeansToDBFuture;
+
   @override
   void initState() {
     super.initState();
-    print("🙌 REGIST GREEN BEAN INIT");
+    _getGreenBeansToDBFuture = getGreenBeansToDB();
     GreenBeansSqfLite().openDB();
-    getGreenBeansToDB();
   }
 
   Future getGreenBeansToDB() async {
     _greenBeans = await GreenBeansSqfLite().getGreenBeans();
+    if (_greenBeans.length > 1) sortingName();
+    return _greenBeans;
+  }
+
+  sortingName() {
+    var copyGreenBeans = [..._greenBeans];
+    copyGreenBeans.sort((a, b) {
+      return a["name"]!.compareTo(b["name"]!);
+    });
+    _greenBeans = copyGreenBeans;
+    setState(() {});
+  }
+
+  void onTapInsertGreenBean() async {
+    if (_greenBeanNameTECtrl.text.trim() == "") {
+      _showErrorText = true;
+      setState(() {});
+      _greenBeanNameFN.requestFocus();
+    } else {
+      Map<String, String> value = {"name": _greenBeanNameTECtrl.text.trim()};
+      int result = await GreenBeansSqfLite().insertGreenBean(value);
+      _showErrorText = false;
+      setState(() {});
+      if (!mounted) return;
+      final snackBar = CustomDialog().showCustomSnackBar(
+        context,
+        result == 0
+            ? "생두 등록에 실패했습니다.\n잠시 후 다시 시도해 주세요."
+            : result == 1
+                ? "[${_greenBeanNameTECtrl.text.trim()}]\n생두가 등록되었습니다."
+                : "이미 등록된 생두명입니다.\n생두는 중복으로 등록할 수 없습니다.",
+        bgColor: result == 1 ? Colors.green : Colors.red,
+      );
+      if (result == 0) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      } else if (result == 1) {
+        _greenBeanNameTECtrl.clear();
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        await getGreenBeansToDB();
+        setState(() {});
+        return;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        _greenBeanNameFN.requestFocus();
+        return;
+      }
+    }
+  }
+
+  void onTapDeleteGreenBean(int index) async {
+    bool confirm = await CustomDialog().showAlertDialog(
+      context,
+      "생두 삭제",
+      "[${_greenBeans[index]["name"]}]\n생두를 삭제하시겠습니까?",
+      acceptTitle: "삭제",
+    );
+    if (confirm) {
+      bool result = await GreenBeansSqfLite().deleteGreenBean(_greenBeans[index]["name"]);
+
+      if (!mounted) return;
+      final snackBar = CustomDialog().showCustomSnackBar(
+        context,
+        result ? "[${_greenBeans[index]["name"]}]\n생두가 삭제되었습니다." : "생두 삭제 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
+        bgColor: result ? Colors.green : Colors.red,
+      );
+      if (result) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        await getGreenBeansToDB();
+        setState(() {});
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+    return;
   }
 
   @override
@@ -37,11 +113,11 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("생두 등록 / 관리"),
+          title: const Text("생두 등록 / 관리"),
           centerTitle: true,
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(10),
+        body: Container(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,38 +129,22 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
               TextField(
                 controller: _greenBeanNameTECtrl,
                 focusNode: _greenBeanNameFN,
+                textInputAction: TextInputAction.go,
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
                   hintText: "예) 케냐 AA",
                   errorText: _showErrorText ? " 생두명을 입력해 주세요." : null,
+                  hintStyle: const TextStyle(
+                    color: Colors.grey,
+                  ),
                 ),
+                onSubmitted: (value) => onTapInsertGreenBean(),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    print("생두 등록");
-                    if (_greenBeanNameTECtrl.text.trim() == "") {
-                      _showErrorText = true;
-                      setState(() {});
-                      _greenBeanNameFN.requestFocus();
-                    } else {
-                      Map<String, String> value = {"name": _greenBeanNameTECtrl.text.trim()};
-                      bool result = await GreenBeansSqfLite().insertGreenBean(value);
-                      print("☕️ 생두 데이터 삽입 결과 ::: $result");
-                      _showErrorText = false;
-                      _greenBeanNameTECtrl.clear();
-                      final snackBar = CustomDialog().showCustomSnackBar(
-                        context,
-                        "${_greenBeanNameTECtrl.text.trim()}\n생두가 등록되었습니다.",
-                        bgColor: Colors.lightGreen[700]!,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      GreenBeansSqfLite().getGreenBeans();
-                      setState(() {});
-                    }
-                  },
+                  onPressed: onTapInsertGreenBean,
                   child: Text(
                     "생두 등록",
                     style: TextStyle(
@@ -94,61 +154,66 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
                 ),
               ),
               const SizedBox(height: 20),
-              const HeaderTitle(title: "생두 목록", subTitle: "green bean list"),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: ListView.builder(
-                  itemCount: _greenBeans.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    print("");
-                    if (_greenBeans.isEmpty) {
-                      return const Center(
-                        child: EmptyWidget(content: "등록된 생두가 없습니다."),
-                      );
-                    }
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          _greenBeans[index]["name"],
-                          style: TextStyle(
-                            fontSize: height / 54,
-                          ),
-                        ),
-                        TextButton.icon(
-                          onPressed: () {
-                            print("원두 삭제");
-                          },
-                          icon: Icon(
-                            CupertinoIcons.delete_simple,
-                            size: height / 60,
-                          ),
-                          label: Text(
-                            "삭제",
-                            style: TextStyle(
-                              fontSize: height / 70,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.ideographic,
+                children: [
+                  const HeaderTitle(title: "생두 목록", subTitle: "green bean list"),
+                  if (_greenBeans.isNotEmpty)
+                    Text(
+                      "${_greenBeans.length}건",
+                      style: TextStyle(
+                        fontSize: height / 60,
+                        color: Colors.black,
+                      ),
+                    ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  bool result = await GreenBeansSqfLite().deleteGreenBean("케냐 AA");
-
-                  final snackBar = CustomDialog().showCustomSnackBar(
-                    context,
-                    result ? "[생두]가 삭제되었습니다." : "오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
-                    bgColor: result ? Colors.green : Colors.red,
-                  );
-                  // 모달바텀시트에 가려져 보이지 않음 수정 필요
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                },
-                child: Text("삭제"),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: FutureBuilder(
+                    future: _getGreenBeansToDBFuture,
+                    builder: (context, snapshot) => snapshot.hasData && snapshot.data.length > 0
+                        ? ListView.separated(
+                            itemCount: _greenBeans.length,
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.only(bottom: 10),
+                            physics: const BouncingScrollPhysics(),
+                            separatorBuilder: (context, index) => const Divider(height: 8),
+                            itemBuilder: (context, index) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _greenBeans[index]["name"],
+                                      style: TextStyle(
+                                        fontSize: height / 52,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () => onTapDeleteGreenBean(index),
+                                    icon: Icon(
+                                      CupertinoIcons.delete_simple,
+                                      size: height / 70,
+                                    ),
+                                    label: Text(
+                                      "삭제",
+                                      style: TextStyle(
+                                        fontSize: height / 60,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          )
+                        : const EmptyWidget(content: "등록된 생두가 없습니다."),
+                  ),
+                ),
               ),
             ],
           ),

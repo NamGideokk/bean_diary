@@ -18,12 +18,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           backgroundColor: Color(0xff2f2722),
           foregroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            fontSize: height / 40,
+          ),
         ),
         inputDecorationTheme: InputDecorationTheme(
           isDense: true,
+          hintStyle: TextStyle(
+            color: Colors.grey,
+          ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.brown[200]!,
@@ -97,10 +103,9 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.brown[100],
         ),
         dividerTheme: const DividerThemeData(
-          color: Colors.black26,
-          indent: 10,
-          endIndent: 10,
+          color: Colors.brown,
           space: 0.0,
+          thickness: 0.3,
         ),
         dropdownMenuTheme: DropdownMenuThemeData(
           inputDecorationTheme: InputDecorationTheme(
@@ -110,7 +115,7 @@ class MyApp extends StatelessWidget {
           menuStyle: MenuStyle(),
         ),
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange).copyWith(background: Color(0xffFFFDF8)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown).copyWith(background: Color(0xffFFFDF8)),
       ),
       // localizationsDelegates: <LocalizationsDelegate<Object>>[
       //   DefaultMaterialLocalizations.delegate,
@@ -121,6 +126,7 @@ class MyApp extends StatelessWidget {
       //   Locale("ko", "KR"),
       //   Locale("en", "EN"),
       // ],
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
     );
   }
