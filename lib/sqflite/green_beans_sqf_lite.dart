@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class GreenBeanSqfLite {
+class GreenBeansSqfLite {
   final int version = 1;
   static const String tableName = "green_beans";
   Database? db;
@@ -37,6 +37,23 @@ class GreenBeanSqfLite {
       await db.insert(tableName, value);
       return true;
     } else {
+      return false;
+    }
+  }
+
+  Future deleteGreenBean(String value) async {
+    print("생두 삭제");
+    final db = await openDB();
+    if (db != null) {
+      print("db null 아님");
+      var result = await db.delete(
+        tableName,
+        where: 'name = ?',
+        whereArgs: [value],
+      );
+      return result == 1 ? true : false;
+    } else {
+      print("db null");
       return false;
     }
   }

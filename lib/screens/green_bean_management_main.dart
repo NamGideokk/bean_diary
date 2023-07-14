@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bean_diary/sqflite/green_bean_sqf_lite.dart';
+import 'package:bean_diary/sqflite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/regist_green_bean.dart';
@@ -52,8 +52,7 @@ class _GreenBeanManagementMainState extends State<GreenBeanManagementMain> {
   }
 
   Future getGreenBeansToDB() async {
-    print("생 두 목 록 DB에서 가 져 오 기~~~~~~~~~~~~~~₩");
-    _greenBeans = await GreenBeanSqfLite().getGreenBeans();
+    _greenBeans = await GreenBeansSqfLite().getGreenBeans();
   }
 
   void setDateToToday() {
@@ -160,15 +159,21 @@ class _GreenBeanManagementMainState extends State<GreenBeanManagementMain> {
                       const HeaderTitle(title: "생두 정보", subTitle: "green bean information"),
                       ElevatedButton(
                         onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            useSafeArea: true,
-                            showDragHandle: true,
-                            backgroundColor: Colors.brown[50],
-                            builder: (context) => const RegistGreenBean(),
+                          // showModalBottomSheet(
+                          //   context: context,
+                          //   useSafeArea: true,
+                          //   showDragHandle: true,
+                          //   backgroundColor: Colors.brown[50],
+                          //   builder: (context) => const RegistGreenBean(),
+                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegistGreenBean(),
+                            ),
                           );
                         },
-                        child: Text("생두 등록"),
+                        child: Text("생두 등록 / 관리"),
                       ),
                     ],
                   ),
