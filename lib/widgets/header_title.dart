@@ -12,7 +12,7 @@ class HeaderTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 7),
       child: RichText(
         text: TextSpan(
           text: title,

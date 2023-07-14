@@ -22,7 +22,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("판매 관리"),
+          title: const Text("판매 관리"),
           centerTitle: true,
         ),
         body: Container(
@@ -31,7 +31,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const HeaderTitle(title: "판매 일자", subTitle: "sale day"),
-              CustomDatePicker(),
+              const CustomDatePicker(),
               const SizedBox(height: 20),
               const HeaderTitle(title: "판매처", subTitle: "company name"),
               TextField(
@@ -45,23 +45,35 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
               Row(
                 children: [
                   Expanded(
-                    flex: 3,
-                    child: DropdownButton(
-                      hint: Text("원두 선택"),
-                      isExpanded: true,
-                      items: [
-                        DropdownMenuItem(
-                          child: Text("케냐 AA"),
+                    flex: 4,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.brown[100]!,
+                          width: 0.8,
                         ),
-                      ],
-                      onChanged: (value) {
-                        print(value);
-                      },
+                        color: Colors.brown[50],
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton(
+                        hint: Text("원두 선택"),
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                        items: [
+                          DropdownMenuItem(
+                            child: Text("케냐 AA"),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          print(value);
+                        },
+                      ),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Flexible(
-                    flex: 1,
+                    flex: 2,
                     child: TextField(
                       textAlign: TextAlign.center,
                       decoration: InputDecoration(

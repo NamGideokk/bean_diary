@@ -44,7 +44,6 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             controller: _dateTECtrl,
             readOnly: true,
             textAlign: TextAlign.center,
-            textAlignVertical: TextAlignVertical.center,
             style: TextStyle(
               fontSize: height / 52,
             ),
@@ -54,19 +53,17 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                 size: height / 40,
                 color: Colors.brown,
               ),
-              contentPadding: EdgeInsets.zero,
             ),
           ),
         ),
         const SizedBox(width: 10),
         ElevatedButton(
           onPressed: setDateToToday,
-          child: Text("오늘"),
+          child: const Text("오늘"),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 5),
         ElevatedButton(
           onPressed: () {
-            print("날짜 선택");
             showModalBottomSheet(
               context: context,
               showDragHandle: true,
@@ -89,7 +86,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
               },
             );
           },
-          child: Text("날짜 선택"),
+          child: const Text("날짜 선택"),
         ),
       ],
     );

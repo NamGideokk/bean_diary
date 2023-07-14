@@ -3,6 +3,7 @@ import 'package:bean_diary/screens/roasting_management_main.dart';
 import 'package:bean_diary/screens/sale_history_main.dart';
 import 'package:bean_diary/screens/sale_management_main.dart';
 import 'package:bean_diary/screens/stock_status_main.dart';
+import 'package:bean_diary/utility/colors_list.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -27,34 +28,41 @@ class MyApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           isDense: true,
+          contentPadding: const EdgeInsets.all(10),
+          errorStyle: TextStyle(
+            fontSize: height / 60,
+          ),
           hintStyle: TextStyle(
             color: Colors.grey,
+            fontSize: height / 52,
           ),
-          enabledBorder: OutlineInputBorder(
+          suffixStyle: TextStyle(
+            fontSize: height / 60,
+          ),
+          enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
               color: Colors.brown[200]!,
-              width: 2,
+              width: 1,
             ),
           ),
-          focusedBorder: const OutlineInputBorder(
+          focusedBorder: const UnderlineInputBorder(
             borderSide: BorderSide(
               color: Colors.brown,
               width: 2,
             ),
           ),
-          errorBorder: OutlineInputBorder(
+          errorBorder: UnderlineInputBorder(
             borderSide: BorderSide(
               color: Colors.red[900]!,
               width: 1,
             ),
           ),
-          focusedErrorBorder: OutlineInputBorder(
+          focusedErrorBorder: UnderlineInputBorder(
             borderSide: BorderSide(
               color: Colors.red[700]!,
               width: 2,
             ),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -63,9 +71,9 @@ class MyApp extends StatelessWidget {
             foregroundColor: Colors.white,
             visualDensity: VisualDensity.comfortable,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            textStyle: const TextStyle(
-              fontSize: 15,
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+            textStyle: TextStyle(
+              fontSize: height / 56,
             ),
           ),
         ),
@@ -77,9 +85,6 @@ class MyApp extends StatelessWidget {
             side: const BorderSide(
               color: Colors.brown,
               width: 3,
-            ),
-            textStyle: const TextStyle(
-              fontSize: 15,
             ),
           ),
         ),
@@ -107,15 +112,19 @@ class MyApp extends StatelessWidget {
           space: 0.0,
           thickness: 0.3,
         ),
-        dropdownMenuTheme: DropdownMenuThemeData(
+        dropdownMenuTheme: const DropdownMenuThemeData(
           inputDecorationTheme: InputDecorationTheme(
             enabledBorder: OutlineInputBorder(),
             disabledBorder: OutlineInputBorder(),
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           ),
-          menuStyle: MenuStyle(),
+        ),
+        radioTheme: const RadioThemeData(
+          visualDensity: VisualDensity.compact,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown).copyWith(background: Color(0xffFFFDF8)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown).copyWith(background: ColorsList().bgColor),
       ),
       // localizationsDelegates: <LocalizationsDelegate<Object>>[
       //   DefaultMaterialLocalizations.delegate,

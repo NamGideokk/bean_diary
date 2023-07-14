@@ -11,7 +11,9 @@ class GreenBeansSqfLite {
       if (db == null) {
         db = await openDatabase(
           join(await getDatabasesPath(), "green_beans.db"),
-          onCreate: (db, version) => db.execute('CREATE TABLE green_beans(id INTEGER PRIMARY KEY, name TEXT NOT NULL)'),
+          onCreate: (db, version) => db.execute(
+            'CREATE TABLE green_beans(id INTEGER PRIMARY KEY, name TEXT NOT NULL)',
+          ),
           version: version,
         );
         // print("green_beans DB 생성 >>> $db");
@@ -31,6 +33,7 @@ class GreenBeansSqfLite {
       final db = await openDB();
       if (db != null) {
         final List result = await db.query(tableName);
+        print(result);
         return result;
       } else {
         return [];

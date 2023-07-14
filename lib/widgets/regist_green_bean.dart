@@ -122,15 +122,15 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const HeaderTitle(
-                title: "생두명",
-                subTitle: "green bean name",
-              ),
+              const HeaderTitle(title: "생두명", subTitle: "green bean name"),
               TextField(
                 controller: _greenBeanNameTECtrl,
                 focusNode: _greenBeanNameFN,
                 textInputAction: TextInputAction.go,
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: height / 52,
+                ),
                 decoration: InputDecoration(
                   hintText: "예) 케냐 AA",
                   errorText: _showErrorText ? " 생두명을 입력해 주세요." : null,
@@ -145,12 +145,7 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: onTapInsertGreenBean,
-                  child: Text(
-                    "생두 등록",
-                    style: TextStyle(
-                      fontSize: height / 50,
-                    ),
-                  ),
+                  child: Text("생두 등록"),
                 ),
               ),
               const SizedBox(height: 20),
