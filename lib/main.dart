@@ -72,6 +72,8 @@ class MyApp extends StatelessWidget {
             visualDensity: VisualDensity.comfortable,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+            elevation: 3,
+            shadowColor: Colors.brown[900],
             textStyle: TextStyle(
               fontSize: height / 56,
             ),
@@ -82,6 +84,9 @@ class MyApp extends StatelessWidget {
             foregroundColor: Colors.brown,
             visualDensity: VisualDensity.comfortable,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            elevation: 3,
+            shadowColor: Colors.brown[900],
+            backgroundColor: ColorsList().bgColor,
             side: const BorderSide(
               color: Colors.brown,
               width: 3,

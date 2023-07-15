@@ -33,7 +33,6 @@ class GreenBeansSqfLite {
       final db = await openDB();
       if (db != null) {
         final List result = await db.query(tableName);
-        print(result);
         return result;
       } else {
         return [];

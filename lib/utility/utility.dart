@@ -8,4 +8,13 @@ class Utility {
 
     return result ? {"bool": true, "replaceValue": value} : {"bool": false, "replaceValue": value};
   }
+
+  /// 한글 오름차순 정렬하여 리턴
+  List sortingName(List beanList) {
+    var copyBeanList = [...beanList];
+    copyBeanList.sort((a, b) {
+      return a["name"]!.compareTo(b["name"]!);
+    });
+    return copyBeanList;
+  }
 }

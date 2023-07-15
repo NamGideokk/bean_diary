@@ -5,8 +5,10 @@ import 'package:bean_diary/sqflite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
+import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/regist_green_bean.dart';
+import 'package:bean_diary/widgets/weight_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -191,64 +193,53 @@ class _GreenBeanManagementMainState extends State<GreenBeanManagementMain> {
                           children: [
                             Expanded(
                               flex: 4,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.brown[100]!,
-                                    width: 0.8,
-                                  ),
-                                  color: Colors.brown[50],
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: DropdownButton(
-                                  isExpanded: true,
-                                  focusNode: _nameFN,
-                                  disabledHint: Text(
-                                    "생두를 등록해 주세요",
-                                    style: TextStyle(
-                                      fontSize: height / 52,
-                                    ),
-                                  ),
-                                  // isDense: true,
-                                  underline: const SizedBox(),
-                                  value: _selectValue,
-                                  menuMaxHeight: height / 3,
-                                  dropdownColor: Colors.brown[50],
-                                  borderRadius: BorderRadius.circular(5),
-                                  style: TextStyle(
-                                    fontSize: height / 52,
-                                    color: Colors.black,
-                                  ),
-                                  iconEnabledColor: Colors.brown,
-                                  hint: const Text("생두 선택"),
-                                  // items: _mssCtrl.dynamicSiDoList.map<DropdownMenuItem<String>>((String value) {
-                                  //   return DropdownMenuItem<String>(
-                                  //     value: value,
-                                  //     child: Text(
-                                  //       _mssCtrl.extractName(value),
-                                  //       style: TextStyle(
-                                  //         fontSize: height / 56,
-                                  //       ),
-                                  //     ),
-                                  //   );
-                                  // }).toList(),
-                                  items: _greenBeans.length > 0
-                                      ? _greenBeans.map<DropdownMenuItem<dynamic>>((e) {
-                                          return DropdownMenuItem<dynamic>(
-                                            value: e["name"],
-                                            child: Text(e["name"]),
-                                          );
-                                        }).toList()
-                                      : [],
-                                  onChanged: (value) {
-                                    print(value);
-                                    _selectValue = value.toString();
-                                    _name = value.toString();
-                                    setState(() {});
-                                  },
-                                ),
-                              ),
+                              // child: Container(
+                              //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                              //   decoration: BoxDecoration(
+                              //     border: Border.all(
+                              //       color: Colors.brown[100]!,
+                              //       width: 0.8,
+                              //     ),
+                              //     color: Colors.brown[50],
+                              //     borderRadius: BorderRadius.circular(5),
+                              //   ),
+                              //   child: DropdownButton(
+                              //     isExpanded: true,
+                              //     focusNode: _nameFN,
+                              //     disabledHint: Text(
+                              //       "생두를 등록해 주세요",
+                              //       style: TextStyle(
+                              //         fontSize: height / 52,
+                              //       ),
+                              //     ),
+                              //     underline: const SizedBox(),
+                              //     value: _selectValue,
+                              //     menuMaxHeight: height / 3,
+                              //     dropdownColor: Colors.brown[50],
+                              //     borderRadius: BorderRadius.circular(5),
+                              //     style: TextStyle(
+                              //       fontSize: height / 52,
+                              //       color: Colors.black,
+                              //     ),
+                              //     iconEnabledColor: Colors.brown,
+                              //     hint: const Text("생두 선택"),
+                              //     items: _greenBeans.length > 0
+                              //         ? _greenBeans.map<DropdownMenuItem<dynamic>>((e) {
+                              //             return DropdownMenuItem<dynamic>(
+                              //               value: e["name"],
+                              //               child: Text(e["name"]),
+                              //             );
+                              //           }).toList()
+                              //         : [],
+                              //     onChanged: (value) {
+                              //       print(value);
+                              //       _selectValue = value.toString();
+                              //       _name = value.toString();
+                              //       setState(() {});
+                              //     },
+                              //   ),
+                              // ),
+                              child: const BeanSelectDropdownButton(listType: 0),
                             ),
                             const SizedBox(width: 10),
                             Flexible(
@@ -273,26 +264,7 @@ class _GreenBeanManagementMainState extends State<GreenBeanManagementMain> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        Center(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                size: height / 30,
-                                color: Colors.red,
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                "중량은 반드시 소수점을 포함해\n첫째 자리까지 입력해 주세요.\n예) 100kg > 100.0, 100.7kg > 100.7\n* 10g 이하 단위는 지원하지 않습니다.",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: height / 58,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        const WeightAlert(),
                       ],
                     ),
                     const SizedBox(height: 100),

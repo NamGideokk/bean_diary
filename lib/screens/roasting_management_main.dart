@@ -1,6 +1,7 @@
 import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/weight_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -50,6 +51,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                     child: DropdownButton(
                       isExpanded: true,
                       hint: const Text("생두 선택"),
+                      underline: const SizedBox(),
                       items: const [
                         DropdownMenuItem(
                           value: "1",
@@ -106,13 +108,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                       label: const Text("생두 추가"),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
-                          width: 2,
+                          width: 1.5,
                           color: Colors.brown[300]!,
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
+                  const WeightAlert(),
                   const HeaderTitle(title: "로스팅 타입", subTitle: "roasting type"),
                   Row(
                     children: [

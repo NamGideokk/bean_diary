@@ -1,5 +1,6 @@
 import 'package:bean_diary/sqflite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
+import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,17 +30,12 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
 
   Future getGreenBeansToDB() async {
     _greenBeans = await GreenBeansSqfLite().getGreenBeans();
-    if (_greenBeans.length > 1) sortingName();
+    if (_greenBeans.length > 1) {
+      List result = Utility().sortingName(_greenBeans);
+      _greenBeans = result;
+      setState(() {});
+    }
     return _greenBeans;
-  }
-
-  sortingName() {
-    var copyGreenBeans = [..._greenBeans];
-    copyGreenBeans.sort((a, b) {
-      return a["name"]!.compareTo(b["name"]!);
-    });
-    _greenBeans = copyGreenBeans;
-    setState(() {});
   }
 
   void onTapInsertGreenBean() async {
