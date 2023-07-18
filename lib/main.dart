@@ -166,13 +166,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text("원두 다이어리"),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: Image.asset("assets/images/logo.png"),
+        ),
+        leadingWidth: 44,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
+      body: Container(
+        padding: const EdgeInsets.all(15.0),
+        color: Colors.brown[700],
         child: Center(
           child: Column(
             children: <Widget>[
@@ -182,20 +187,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 1.4,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
                 ),
                 itemBuilder: (context, index) => _MenuButton(
-                    menus: _menus,
-                    index: index,
-                    onPreessed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => _menus[index]["screen"],
-                        ),
-                      );
-                    }),
+                  menus: _menus,
+                  index: index,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => _menus[index]["screen"],
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -208,12 +214,12 @@ class _MyHomePageState extends State<MyHomePage> {
 class _MenuButton extends StatelessWidget {
   final List menus;
   final int index;
-  final Function() onPreessed;
+  final Function() onPressed;
   const _MenuButton({
     Key? key,
     required this.menus,
     required this.index,
-    required this.onPreessed,
+    required this.onPressed,
   }) : super(key: key);
 
   @override
@@ -226,10 +232,12 @@ class _MenuButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
         ),
         padding: const EdgeInsets.all(15),
-        elevation: 3,
-        shadowColor: Colors.brown[800],
+        elevation: 5,
+        shadowColor: Colors.brown[900],
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.brown,
       ),
-      onPressed: onPreessed,
+      onPressed: onPressed,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,8 +245,9 @@ class _MenuButton extends StatelessWidget {
           Text(
             menus[index]["title"],
             style: TextStyle(
-              color: Colors.white,
+              color: Colors.brown[900],
               fontSize: height / 40,
+              fontWeight: FontWeight.w500,
             ),
           ),
           Align(
