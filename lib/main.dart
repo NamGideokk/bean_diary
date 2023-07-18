@@ -66,7 +66,6 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            // backgroundColor: Color(0xffdaa86a),
             backgroundColor: Colors.brown,
             foregroundColor: Colors.white,
             visualDensity: VisualDensity.comfortable,
@@ -81,17 +80,20 @@ class MyApp extends StatelessWidget {
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-            foregroundColor: Colors.brown,
-            visualDensity: VisualDensity.comfortable,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            elevation: 3,
-            shadowColor: Colors.brown[900],
-            backgroundColor: ColorsList().bgColor,
-            side: const BorderSide(
-              color: Colors.brown,
-              width: 3,
-            ),
-          ),
+              foregroundColor: Colors.brown,
+              visualDensity: VisualDensity.comfortable,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+              elevation: 3,
+              shadowColor: Colors.brown[900],
+              backgroundColor: ColorsList().bgColor,
+              side: const BorderSide(
+                color: Colors.brown,
+                width: 3,
+              ),
+              textStyle: TextStyle(
+                fontSize: height / 56,
+              )),
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
@@ -154,73 +156,99 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<Map<String, dynamic>> _menus = [
+    {"title": "재고 현황", "img": "assets/images/stock.png", "screen": const StockStatusMain()},
+    {"title": "생두 입고 관리", "img": "assets/images/warehouse.png", "screen": const GreenBeanManagementMain()},
+    {"title": "로스팅 관리", "img": "assets/images/roaster.png", "screen": const RoastingManagementMain()},
+    {"title": "판매 관리", "img": "assets/images/coffee_bag.png", "screen": const SaleManagementMain()},
+    {"title": "판매 내역", "img": "assets/images/sales_management.png", "screen": const SaleHistoryMain()},
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text("원두 다이어리"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const StockStatusMain(),
-                  ),
-                );
-              },
-              child: Text("재고 현황"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const GreenBeanManagementMain(),
-                  ),
-                );
-              },
-              child: Text("생두 입고 관리"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const RoastingManagementMain(),
-                  ),
-                );
-              },
-              child: Text("로스팅 관리"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SaleManagementMain(),
-                  ),
-                );
-              },
-              child: Text("판매 관리"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SaleHistoryMain(),
-                  ),
-                );
-              },
-              child: Text("판매 내역"),
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              GridView.builder(
+                shrinkWrap: true,
+                itemCount: _menus.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.4,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                ),
+                itemBuilder: (context, index) => _MenuButton(
+                    menus: _menus,
+                    index: index,
+                    onPreessed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => _menus[index]["screen"],
+                        ),
+                      );
+                    }),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _MenuButton extends StatelessWidget {
+  final List menus;
+  final int index;
+  final Function() onPreessed;
+  const _MenuButton({
+    Key? key,
+    required this.menus,
+    required this.index,
+    required this.onPreessed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    return ElevatedButton(
+      clipBehavior: Clip.hardEdge,
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        padding: const EdgeInsets.all(15),
+        elevation: 3,
+        shadowColor: Colors.brown[800],
+      ),
+      onPressed: onPreessed,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            menus[index]["title"],
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: height / 40,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Image.asset(
+              menus[index]["img"],
+              width: height / 14,
+            ),
+          ),
+        ],
       ),
     );
   }
