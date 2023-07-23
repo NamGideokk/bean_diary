@@ -1,4 +1,4 @@
-import 'package:bean_diary/screens/green_bean_management_main.dart';
+import 'package:bean_diary/screens/green_bean_warehousing_main.dart';
 import 'package:bean_diary/screens/roasting_management_main.dart';
 import 'package:bean_diary/screens/sale_history_main.dart';
 import 'package:bean_diary/screens/sale_management_main.dart';
@@ -158,7 +158,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final List<Map<String, dynamic>> _menus = [
     {"title": "재고 현황", "img": "assets/images/stock.png", "screen": const StockStatusMain()},
-    {"title": "생두 입고 관리", "img": "assets/images/warehouse.png", "screen": const GreenBeanManagementMain()},
+    {"title": "생두 입고 관리", "img": "assets/images/warehouse.png", "screen": const GreenBeanWarehousingMain()},
     {"title": "로스팅 관리", "img": "assets/images/roaster.png", "screen": const RoastingManagementMain()},
     {"title": "판매 관리", "img": "assets/images/coffee_bag.png", "screen": const SaleManagementMain()},
     {"title": "판매 내역", "img": "assets/images/sales_management.png", "screen": const SaleHistoryMain()},
@@ -178,33 +178,31 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         padding: const EdgeInsets.all(15.0),
         color: Colors.brown[700],
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              GridView.builder(
-                shrinkWrap: true,
-                itemCount: _menus.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.4,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                itemBuilder: (context, index) => _MenuButton(
-                  menus: _menus,
-                  index: index,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => _menus[index]["screen"],
-                      ),
-                    );
-                  },
-                ),
+        child: Column(
+          children: <Widget>[
+            GridView.builder(
+              shrinkWrap: true,
+              itemCount: _menus.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.4,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
               ),
-            ],
-          ),
+              itemBuilder: (context, index) => _MenuButton(
+                menus: _menus,
+                index: index,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => _menus[index]["screen"],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

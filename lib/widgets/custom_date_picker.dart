@@ -1,47 +1,21 @@
+import 'package:bean_diary/controller/custom_date_picker_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class CustomDatePicker extends StatefulWidget {
+class CustomDatePicker extends StatelessWidget {
   const CustomDatePicker({Key? key}) : super(key: key);
 
   @override
-  State<CustomDatePicker> createState() => _CustomDatePickerState();
-}
-
-class _CustomDatePickerState extends State<CustomDatePicker> {
-  final _dateTECtrl = TextEditingController();
-
-  final _now = DateTime.now();
-  String _year = "";
-  String _month = "";
-  String _day = "";
-  String _date = "";
-
-  @override
-  void initState() {
-    super.initState();
-    _year = _now.year.toString();
-    _month = _now.month.toString();
-    _day = _now.day.toString();
-    _date = "$_year-$_month-$_day";
-    _dateTECtrl.text = "$_year년 $_month월 $_day일";
-  }
-
-  void setDateToToday() {
-    _dateTECtrl.text = "${_now.year}년 ${_now.month}월 ${_now.day}일";
-    _date = "${_now.year}-${_now.month}-${_now.day}";
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final CustomDatePickerController customDatePickerCtrl = Get.find<CustomDatePickerController>();
     final height = MediaQuery.of(context).size.height;
 
     return Row(
       children: [
         Flexible(
           child: TextField(
-            controller: _dateTECtrl,
+            controller: customDatePickerCtrl.textEditingCtrl,
             readOnly: true,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -58,7 +32,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         ),
         const SizedBox(width: 10),
         ElevatedButton(
-          onPressed: setDateToToday,
+          onPressed: customDatePickerCtrl.setDateToToday,
           child: const Text("오늘"),
         ),
         const SizedBox(width: 5),
@@ -74,12 +48,11 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                     initialDateTime: DateTime.now(),
                     mode: CupertinoDatePickerMode.date,
                     onDateTimeChanged: (value) {
-                      _year = value.year.toString();
-                      _month = value.month.toString();
-                      _day = value.day.toString();
-                      _dateTECtrl.text = "$_year년 $_month월 $_day일";
-                      _date = "$_year-$_month-$_day";
-                      setState(() {});
+                      customDatePickerCtrl.setYear(value.year.toString());
+                      customDatePickerCtrl.setMonth(value.month.toString());
+                      customDatePickerCtrl.setDay(value.day.toString());
+                      customDatePickerCtrl.textEditingCtrl.text = "${value.year}년 ${value.month}월 ${value.day}일";
+                      customDatePickerCtrl.setDate;
                     },
                   ),
                 );

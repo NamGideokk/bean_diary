@@ -1,13 +1,14 @@
-import 'package:bean_diary/sqflite/green_beans_sqf_lite.dart';
-import 'package:bean_diary/utility/utility.dart';
+import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BeanSelectDropdownButton extends StatefulWidget {
   final int listType;
 
   /// int listType :
-  /// * 0 = 생두(green bean)
-  /// * 1 = 원두(coffee bean)
+  /// * 0 = 생두 (green bean)
+  /// * 1 = 원두 (coffee bean)
+  /// * 2 = 생두 재고 (green bean stock)
   const BeanSelectDropdownButton({
     Key? key,
     required this.listType,
@@ -18,41 +19,18 @@ class BeanSelectDropdownButton extends StatefulWidget {
 }
 
 class _BeanSelectDropdownButtonState extends State<BeanSelectDropdownButton> {
+  final _warehousingGreenBeanCtrl = Get.find<WarehousingGreenBeanController>();
   final _beanSelectFN = FocusNode();
-  String? _selectedValue;
-  String _name = ""; // 필요한지 확인
-  List _beanList = [];
-
-  getBeanList() async {
-    switch (widget.listType) {
-      case 0: // 생두
-        {
-          await GreenBeansSqfLite().openDB();
-          List beanList = await GreenBeansSqfLite().getGreenBeans();
-          if (beanList.isNotEmpty) beanList = Utility().sortingName(beanList);
-          _beanList = beanList;
-          setState(() {});
-          return;
-        }
-      case 1: // 원두
-        {
-          // 원두 목록 가져오기
-          // await GreenBeansSqfLite().openDB();
-          // List beanList = await GreenBeansSqfLite().getGreenBeans();
-          // if (beanList.isNotEmpty) beanList = Utility().sortingName(beanList);
-          // _beanList = beanList;
-          // setState(() {});
-          // return;
-        }
-      default:
-        return _beanList;
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    getBeanList();
+    _warehousingGreenBeanCtrl.setListType(widget.listType);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -68,40 +46,37 @@ class _BeanSelectDropdownButtonState extends State<BeanSelectDropdownButton> {
         color: Colors.brown[50],
         borderRadius: BorderRadius.circular(5),
       ),
-      child: DropdownButton(
-        isExpanded: true,
-        focusNode: _beanSelectFN,
-        disabledHint: Text(
-          widget.listType == 0 ? "생두를 등록해 주세요" : "로스팅된 원두가 없습니다",
+      child: Obx(
+        () => DropdownButton(
+          isExpanded: true,
+          focusNode: _beanSelectFN,
+          disabledHint: Text(
+            widget.listType == 0 || widget.listType == 2 ? "생두를 등록해 주세요" : "로스팅된 원두가 없습니다",
+            style: TextStyle(
+              fontSize: height / 52,
+            ),
+          ),
+          underline: const SizedBox(),
+          value: _warehousingGreenBeanCtrl.selectedBean,
+          menuMaxHeight: height / 3,
+          dropdownColor: Colors.brown[50],
+          borderRadius: BorderRadius.circular(5),
           style: TextStyle(
             fontSize: height / 52,
+            color: Colors.black,
           ),
+          iconEnabledColor: Colors.brown,
+          hint: Text(widget.listType == 0 || widget.listType == 2 ? "생두 선택" : "원두 선택"),
+          items: _warehousingGreenBeanCtrl.beanList?.map<DropdownMenuItem<String>>((e) {
+            return DropdownMenuItem<String>(
+              value: e,
+              child: Text(e),
+            );
+          }).toList(),
+          onChanged: (value) {
+            _warehousingGreenBeanCtrl.setSelectBean(value.toString());
+          },
         ),
-        underline: const SizedBox(),
-        value: _selectedValue,
-        menuMaxHeight: height / 3,
-        dropdownColor: Colors.brown[50],
-        borderRadius: BorderRadius.circular(5),
-        style: TextStyle(
-          fontSize: height / 52,
-          color: Colors.black,
-        ),
-        iconEnabledColor: Colors.brown,
-        hint: Text(widget.listType == 0 ? "생두 선택" : "원두 선택"),
-        items: _beanList.length > 0
-            ? _beanList.map<DropdownMenuItem<dynamic>>((e) {
-                return DropdownMenuItem<dynamic>(
-                  value: e?["name"],
-                  child: Text(e?["name"]),
-                );
-              }).toList()
-            : [],
-        onChanged: (value) {
-          print(value);
-          _selectedValue = value.toString();
-          _name = value.toString();
-          setState(() {});
-        },
       ),
     );
   }

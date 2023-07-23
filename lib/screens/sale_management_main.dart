@@ -1,6 +1,8 @@
+import 'package:bean_diary/controller/custom_date_picker_controller.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SaleManagementMain extends StatefulWidget {
   const SaleManagementMain({Key? key}) : super(key: key);
@@ -10,10 +12,17 @@ class SaleManagementMain extends StatefulWidget {
 }
 
 class _SaleManagementMainState extends State<SaleManagementMain> {
+  final CustomDatePickerController _customDatePickerCtrl = Get.put(CustomDatePickerController());
   @override
   void initState() {
     super.initState();
     print("🙌 SALE MANAGEMENT MAIN INIT");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Get.delete<CustomDatePickerController>();
   }
 
   @override

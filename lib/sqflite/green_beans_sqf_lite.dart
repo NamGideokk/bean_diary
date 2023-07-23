@@ -16,8 +16,8 @@ class GreenBeansSqfLite {
           ),
           version: version,
         );
-        // print("green_beans DB 생성 >>> $db");
-        // print("===========================\n\n\ngreen_beans DB PATH >>> ${getDatabasesPath()}");
+        print("green_beans DB 생성 >>> $db");
+        print("===========================\n\n\ngreen_beans DB PATH >>> ${getDatabasesPath()}");
       } else {
         return null;
       }

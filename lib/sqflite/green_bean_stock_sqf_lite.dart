@@ -48,8 +48,28 @@ class GreenBeanStockSqfLite {
     try {
       final db = await openDB();
       if (db != null) {
-        await db.insert(tableName, value);
-        return true;
+        List? check = await db.rawQuery(
+          "SELECT * FROM $tableName WHERE name = ?",
+          [value["name"]],
+        );
+        if (check.isNotEmpty) {
+          List? findWeight = await db.rawQuery(
+            "SELECT weight FROM $tableName WHERE name = ?",
+            [value["name"]],
+          );
+          int beforeWeight = findWeight[0]["weight"];
+          await db.rawUpdate(
+            "UPDATE $tableName SET `weight` = ? WHERE name = ?",
+            [
+              beforeWeight + int.parse(value["weight"]!),
+              value["name"],
+            ],
+          );
+          return true;
+        } else {
+          await db.insert(tableName, value);
+          return true;
+        }
       } else {
         return false;
       }

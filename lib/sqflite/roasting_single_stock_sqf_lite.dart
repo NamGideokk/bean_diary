@@ -1,9 +1,10 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class CoffeeBeansSqfLite {
+// RoastingSingleStockSqfList
+class RoastingSingleStockSqfList {
   final int version = 1;
-  static const String tableName = "coffee_beans";
+  static const String tableName = "roasting_single_stock_sqf_lite";
   Database? db;
 
   Future<Database?> openDB() async {
@@ -12,7 +13,7 @@ class CoffeeBeansSqfLite {
         db = await openDatabase(
           join(await getDatabasesPath(), "$tableName.db"),
           onCreate: (db, version) => db.execute(
-            'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, name TEXT NOT NULL, weight INTEGER, date TEXT NOT NULL, type TEXT NOT NULL)',
+            'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, type TEXT NOT NULL, name TEXT NOT NULL, roasting_weight INTEGER, date TEXT NOT NULL)',
           ),
           version: version,
         );
@@ -25,6 +26,21 @@ class CoffeeBeansSqfLite {
     } catch (e) {
       print("😑 OPEN $tableName DB ERROR: $e");
       return null;
+    }
+  }
+
+  Future insertRoastingSingleStock(Map<String, String> value) async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        await db.insert(tableName, value);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("😑 INSERT $tableName ERROR: $e");
+      return false;
     }
   }
 }
