@@ -50,7 +50,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                 ),
               ),
               const SizedBox(height: 20),
-              const HeaderTitle(title: "판매 원두", subTitle: "sale coffee bean"),
+              const HeaderTitle(title: "판매 원두 정보", subTitle: "roasting bean sale information"),
               Row(
                 children: [
                   Expanded(

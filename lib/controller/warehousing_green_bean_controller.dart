@@ -58,6 +58,7 @@ class WarehousingGreenBeanController extends GetxController {
 
   getBeanList() async {
     print("😍 종합 원두 목록 가져오기 타입 : $listType");
+    _beanList.clear();
     switch (listType) {
       // 생두
       case 0:
@@ -102,6 +103,25 @@ class WarehousingGreenBeanController extends GetxController {
     }
   }
 
+  void deleteBeanList(int index) {
+    List copyList = <String?>[..._beanList];
+    copyList.removeAt(index);
+    _beanList(copyList);
+  }
+
+  void updateBeanListWeight(String name, String useWeight) {
+    final divideName = name.split(" / ");
+    int weight = int.parse(divideName[1].replaceAll(RegExp("[.kg]"), ""));
+    int iUseWeight = int.parse(useWeight);
+    int clacWeight = weight - iUseWeight;
+    List copyList = <String?>[..._beanList];
+    int findElementIndex = copyList.indexOf(name);
+    String replaceString = "${divideName[0]} / ${Utility().parseToDoubleWeight(clacWeight)}kg";
+    copyList[findElementIndex] = replaceString;
+    _beanList(copyList);
+    _selectedBean(replaceString);
+  }
+
   void setCompany(String value) {
     _company(value);
   }
@@ -111,6 +131,13 @@ class WarehousingGreenBeanController extends GetxController {
   }
 
   void addBlendBeanList(String value) {
+    bool dupCheck = false;
+    if (_blendBeanList.isNotEmpty) {
+      dupCheck = _blendBeanList.any((e) {
+        return (e == value);
+      });
+    }
+    if (dupCheck) return;
     print("블렌드 목록에 생두 추가하기");
     final addElement = Rxn<String>();
     addElement(value);

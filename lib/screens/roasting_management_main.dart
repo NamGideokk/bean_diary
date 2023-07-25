@@ -1,5 +1,6 @@
 import 'package:bean_diary/controller/custom_date_picker_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/sqflite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqflite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
@@ -28,12 +29,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
   @override
   void initState() {
     super.initState();
-    getRoastingBeanStock();
-  }
-
-  void getRoastingBeanStock() async {
-    await RoastingBeanStockSqfLite().openDB();
-    await RoastingBeanStockSqfLite().getRoastingBeanStock();
   }
 
   @override
@@ -59,227 +54,209 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
               SingleChildScrollView(
                 padding: const EdgeInsets.all(10),
                 physics: const ClampingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const HeaderTitle(title: "로스팅 일자", subTitle: "roasting day"),
-                    const CustomDatePicker(),
-                    const SizedBox(height: 20),
-                    const HeaderTitle(title: "로스팅 타입", subTitle: "roasting type"),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: RadioListTile(
-                            value: 1,
-                            groupValue: _warehousingGreenBeanCtrl.roastingType,
-                            selected: _warehousingGreenBeanCtrl.roastingType == 1 ? true : false,
-                            visualDensity: VisualDensity.compact,
-                            onChanged: (value) {
-                              _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
-                            },
-                            title: Text("싱글오리진"),
-                          ),
-                        ),
-                        Expanded(
-                          child: RadioListTile(
-                            value: 2,
-                            groupValue: _warehousingGreenBeanCtrl.roastingType,
-                            selected: _warehousingGreenBeanCtrl.roastingType == 2 ? true : false,
-                            visualDensity: VisualDensity.compact,
-                            onChanged: (value) {
-                              _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
-                            },
-                            title: const Text("블렌드"),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const HeaderTitle(title: "투입 생두 정보", subTitle: "input green bean information"),
-                    const BeanSelectDropdownButton(listType: 2),
-                    const SizedBox(height: 10),
-                    if (_warehousingGreenBeanCtrl.roastingType == 2)
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _warehousingGreenBeanCtrl.blendBeanList.length,
-                        itemBuilder: (context, index) => Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                          margin: const EdgeInsets.only(bottom: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.brown[50],
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                flex: 5,
-                                child: Text(
-                                  _warehousingGreenBeanCtrl.blendBeanList[index].toString(),
-                                  style: TextStyle(
-                                    fontSize: height / 54,
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                flex: 3,
-                                child: Row(
-                                  children: [
-                                    Flexible(
-                                      flex: 2,
-                                      child: TextField(
-                                        controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
-                                        focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
-                                        textAlign: TextAlign.center,
-                                        decoration: const InputDecoration(
-                                          hintText: "투입 중량",
-                                          suffixText: "kg",
-                                        ),
-                                        style: TextStyle(
-                                          fontSize: height / 52,
-                                        ),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        print("삭제");
-                                        _warehousingGreenBeanCtrl.deleteBlendBeanList(index);
-                                      },
-                                      icon: Icon(
-                                        Icons.clear,
-                                        size: height / 50,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 10),
-                    _warehousingGreenBeanCtrl.roastingType == 1
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "투입",
-                                style: TextStyle(
-                                  fontSize: height / 54,
-                                  color: Colors.brown,
-                                ),
-                              ),
-                              Flexible(
-                                child: TextField(
-                                  controller: _warehousingGreenBeanCtrl.weightTECtrl,
-                                  focusNode: _weightFN,
-                                  textAlign: TextAlign.center,
-                                  decoration: const InputDecoration(
-                                    hintText: "투입 중량",
-                                    suffixText: "kg",
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: height / 52,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 15),
-                              Text(
-                                "배출",
-                                style: TextStyle(
-                                  fontSize: height / 54,
-                                  color: Colors.brown,
-                                ),
-                              ),
-                              Flexible(
-                                child: TextField(
-                                  controller: _warehousingGreenBeanCtrl.roastingWeightTECtrl,
-                                  focusNode: _roastingWeightFN,
-                                  textAlign: TextAlign.center,
-                                  decoration: const InputDecoration(
-                                    hintText: "로스팅 후 중량",
-                                    suffixText: "kg",
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: height / 52,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Row(
-                            children: [
-                              Text(
-                                "배출",
-                                style: TextStyle(
-                                  fontSize: height / 54,
-                                  color: Colors.brown,
-                                ),
-                              ),
-                              Expanded(
-                                child: TextField(
-                                  controller: _warehousingGreenBeanCtrl.roastingWeightTECtrl,
-                                  focusNode: _roastingWeightFN,
-                                  textAlign: TextAlign.center,
-                                  decoration: const InputDecoration(
-                                    hintText: "로스팅 후 중량",
-                                    suffixText: "kg",
-                                  ),
-                                  style: TextStyle(
-                                    fontSize: height / 52,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                    const SizedBox(height: 20),
-                    // 생두 추가 버튼
-                    // _roastingTypeValue == "1"
-                    //     ? const SizedBox()
-                    //     : Align(
-                    //         alignment: Alignment.center,
-                    //         child: OutlinedButton.icon(
-                    //           onPressed: addGreenBean,
-                    //           icon: Icon(
-                    //             Icons.add_circle_outline_sharp,
-                    //             size: height / 40,
-                    //           ),
-                    //           label: const Text("생두 추가"),
-                    //           style: OutlinedButton.styleFrom(
-                    //             side: BorderSide(
-                    //               width: 1.5,
-                    //               color: Colors.brown[300]!,
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ),
-                    const SizedBox(height: 20),
-                    const WeightAlert(),
-                    const SizedBox(height: 20),
-                    if (_warehousingGreenBeanCtrl.roastingType == 2)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                child: SafeArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const HeaderTitle(title: "로스팅 일자", subTitle: "roasting day"),
+                      const CustomDatePicker(),
+                      const SizedBox(height: 20),
+                      const HeaderTitle(title: "로스팅 타입", subTitle: "roasting type"),
+                      Row(
                         children: [
-                          const SizedBox(height: 20),
-                          const HeaderTitle(title: "블렌드명", subTitle: "blend name"),
-                          SizedBox(
-                            width: double.infinity,
-                            child: TextField(
-                              controller: _warehousingGreenBeanCtrl.blendNameTECtrl,
-                              textAlign: TextAlign.center,
-                              decoration: const InputDecoration(
-                                hintText: "블렌드명",
-                              ),
-                              style: TextStyle(
-                                fontSize: height / 52,
-                              ),
+                          Expanded(
+                            child: RadioListTile(
+                              value: 1,
+                              groupValue: _warehousingGreenBeanCtrl.roastingType,
+                              selected: _warehousingGreenBeanCtrl.roastingType == 1 ? true : false,
+                              visualDensity: VisualDensity.compact,
+                              onChanged: (value) {
+                                _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
+                              },
+                              title: Text("싱글오리진"),
+                            ),
+                          ),
+                          Expanded(
+                            child: RadioListTile(
+                              value: 2,
+                              groupValue: _warehousingGreenBeanCtrl.roastingType,
+                              selected: _warehousingGreenBeanCtrl.roastingType == 2 ? true : false,
+                              visualDensity: VisualDensity.compact,
+                              onChanged: (value) {
+                                _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
+                              },
+                              title: const Text("블렌드"),
                             ),
                           ),
                         ],
                       ),
-                    const SizedBox(height: 100),
-                  ],
+                      const SizedBox(height: 20),
+                      const HeaderTitle(title: "투입 생두 정보", subTitle: "input green bean information"),
+                      const BeanSelectDropdownButton(listType: 2),
+                      const SizedBox(height: 5),
+                      if (_warehousingGreenBeanCtrl.roastingType == 2)
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _warehousingGreenBeanCtrl.blendBeanList.length,
+                          itemBuilder: (context, index) => Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                            margin: const EdgeInsets.only(bottom: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.brown[50],
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  flex: 5,
+                                  child: Text(
+                                    _warehousingGreenBeanCtrl.blendBeanList[index].toString(),
+                                    style: TextStyle(
+                                      fontSize: height / 54,
+                                    ),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 3,
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        flex: 2,
+                                        child: TextField(
+                                          controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
+                                          focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
+                                          textAlign: TextAlign.center,
+                                          decoration: const InputDecoration(
+                                            hintText: "투입 중량",
+                                            suffixText: "kg",
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: height / 52,
+                                          ),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          print("삭제");
+                                          _warehousingGreenBeanCtrl.deleteBlendBeanList(index);
+                                        },
+                                        icon: Icon(
+                                          Icons.clear,
+                                          size: height / 50,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 5),
+                      _warehousingGreenBeanCtrl.roastingType == 1
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "투입",
+                                  style: TextStyle(
+                                    fontSize: height / 54,
+                                    color: Colors.brown,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: TextField(
+                                    controller: _warehousingGreenBeanCtrl.weightTECtrl,
+                                    focusNode: _weightFN,
+                                    textAlign: TextAlign.center,
+                                    decoration: const InputDecoration(
+                                      hintText: "투입 중량",
+                                      suffixText: "kg",
+                                    ),
+                                    style: TextStyle(
+                                      fontSize: height / 52,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+                                Text(
+                                  "배출",
+                                  style: TextStyle(
+                                    fontSize: height / 54,
+                                    color: Colors.brown,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: TextField(
+                                    controller: _warehousingGreenBeanCtrl.roastingWeightTECtrl,
+                                    focusNode: _roastingWeightFN,
+                                    textAlign: TextAlign.center,
+                                    decoration: const InputDecoration(
+                                      hintText: "로스팅 후 중량",
+                                      suffixText: "kg",
+                                    ),
+                                    style: TextStyle(
+                                      fontSize: height / 52,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Text(
+                                  "배출",
+                                  style: TextStyle(
+                                    fontSize: height / 54,
+                                    color: Colors.brown,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: TextField(
+                                    controller: _warehousingGreenBeanCtrl.roastingWeightTECtrl,
+                                    focusNode: _roastingWeightFN,
+                                    textAlign: TextAlign.center,
+                                    decoration: const InputDecoration(
+                                      hintText: "로스팅 후 중량",
+                                      suffixText: "kg",
+                                    ),
+                                    style: TextStyle(
+                                      fontSize: height / 52,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                      const SizedBox(height: 20),
+                      const WeightAlert(),
+                      const SizedBox(height: 20),
+                      if (_warehousingGreenBeanCtrl.roastingType == 2)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 20),
+                            const HeaderTitle(title: "블렌드명", subTitle: "blend name"),
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextField(
+                                controller: _warehousingGreenBeanCtrl.blendNameTECtrl,
+                                textAlign: TextAlign.center,
+                                decoration: const InputDecoration(
+                                  hintText: "블렌드명",
+                                ),
+                                style: TextStyle(
+                                  fontSize: height / 52,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      const SizedBox(height: 100),
+                    ],
+                  ),
                 ),
               ),
               Align(
@@ -483,7 +460,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               }
 
                               String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
-                              String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", "");
+                              String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", "");
 
                               // type, name, roasting_weight, date
                               Map<String, String> value = {
@@ -505,6 +482,15 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               );
 
                               if (insertResult) {
+                                String useWeight = _warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", "");
+                                Map<String, String> updateValue = {
+                                  "type": _warehousingGreenBeanCtrl.roastingType.toString(),
+                                  "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
+                                  "weight": useWeight,
+                                  "date": date,
+                                };
+                                GreenBeanStockSqfLite().updateWeightGreenBeanStock(updateValue);
+                                _warehousingGreenBeanCtrl.updateBeanListWeight(_warehousingGreenBeanCtrl.selectedBean, useWeight);
                                 _warehousingGreenBeanCtrl.weightTECtrl.clear();
                                 _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
                                 _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
