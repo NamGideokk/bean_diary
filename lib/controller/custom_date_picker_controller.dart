@@ -39,7 +39,7 @@ class CustomDatePickerController extends GetxController {
     _day(day);
   }
 
-  void setDate(String date) {
+  void setDate() {
     _date("$_year-$_month-$_day");
   }
 

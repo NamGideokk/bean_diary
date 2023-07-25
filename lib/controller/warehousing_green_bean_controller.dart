@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 class WarehousingGreenBeanController extends GetxController {
   final companyTECtrl = TextEditingController();
   final weightTECtrl = TextEditingController();
+  final List weightTECtrlList = <TextEditingController>[];
+  final List weightFNList = <FocusNode>[];
   final roastingWeightTECtrl = TextEditingController();
   final blendNameTECtrl = TextEditingController();
 
@@ -18,8 +20,10 @@ class WarehousingGreenBeanController extends GetxController {
   RxString _roastingWeight = "".obs;
   // RxInt _listType = 2.obs;
   final _listType = Rxn<int>();
+  RxInt _roastingType = 1.obs;
 
   RxList<Map<String, dynamic>> _greenBeanStockList = <Map<String, dynamic>>[].obs;
+  RxList<Rxn<String>> _blendBeanList = <Rxn<String>>[].obs;
 
   RxBool _isLoading = true.obs;
 
@@ -29,8 +33,10 @@ class WarehousingGreenBeanController extends GetxController {
   get weight => _weight.value;
   get roastingWeight => _roastingWeight.value;
   get listType => _listType.value;
+  get roastingType => _roastingType.value;
 
   get greenBeanStockList => _greenBeanStockList;
+  get blendBeanList => _blendBeanList;
 
   get isLoading => _isLoading.value;
 
@@ -44,6 +50,10 @@ class WarehousingGreenBeanController extends GetxController {
   setListType(int value) {
     _listType(value);
     getBeanList();
+  }
+
+  void setRoastingType(int value) {
+    _roastingType(value);
   }
 
   getBeanList() async {
@@ -98,6 +108,34 @@ class WarehousingGreenBeanController extends GetxController {
 
   void setSelectBean(String value) {
     _selectedBean(value);
+  }
+
+  void addBlendBeanList(String value) {
+    print("블렌드 목록에 생두 추가하기");
+    final addElement = Rxn<String>();
+    addElement(value);
+    _blendBeanList.add(addElement);
+  }
+
+  void deleteBlendBeanList(int index) {
+    _blendBeanList.removeAt(index);
+    weightTECtrlList[index].dispose();
+    weightTECtrlList.removeAt(index);
+    weightFNList[index].dispose();
+    weightFNList.removeAt(index);
+  }
+
+  void addWeightTECtrlList() {
+    final weightTECtrl = TextEditingController();
+    final weightFN = FocusNode();
+    weightTECtrlList.add(weightTECtrl);
+    weightFNList.add(weightFN);
+  }
+
+  void initBlendInfo() {
+    _blendBeanList.clear();
+    weightTECtrlList.clear();
+    weightFNList.clear();
   }
 
   @override

@@ -74,7 +74,16 @@ class _BeanSelectDropdownButtonState extends State<BeanSelectDropdownButton> {
             );
           }).toList(),
           onChanged: (value) {
-            _warehousingGreenBeanCtrl.setSelectBean(value.toString());
+            if (_warehousingGreenBeanCtrl.roastingType == 0) {
+              _warehousingGreenBeanCtrl.setSelectBean(value.toString());
+            } else if (_warehousingGreenBeanCtrl.roastingType == 1) {
+              _warehousingGreenBeanCtrl.setSelectBean(value.toString());
+            } else {
+              _warehousingGreenBeanCtrl.addBlendBeanList(value.toString());
+              _warehousingGreenBeanCtrl.addWeightTECtrlList();
+              print("👹 텍스트 에디팅 컨트롤러 목록 : ${_warehousingGreenBeanCtrl.weightTECtrlList}");
+              print("🥐 블렌드 빈 목록 ~ ${_warehousingGreenBeanCtrl.blendBeanList}");
+            }
           },
         ),
       ),

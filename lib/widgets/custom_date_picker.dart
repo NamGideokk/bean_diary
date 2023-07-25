@@ -52,7 +52,7 @@ class CustomDatePicker extends StatelessWidget {
                       customDatePickerCtrl.setMonth(value.month.toString());
                       customDatePickerCtrl.setDay(value.day.toString());
                       customDatePickerCtrl.textEditingCtrl.text = "${value.year}년 ${value.month}월 ${value.day}일";
-                      customDatePickerCtrl.setDate;
+                      customDatePickerCtrl.setDate();
                     },
                   ),
                 );

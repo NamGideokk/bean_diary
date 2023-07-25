@@ -20,6 +20,7 @@ class CustomDialog {
           color: Colors.white,
         ),
       ),
+      // duration: const Duration(seconds: 30),
     );
   }
 
