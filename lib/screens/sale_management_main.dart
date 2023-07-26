@@ -2,6 +2,7 @@ import 'package:bean_diary/controller/custom_date_picker_controller.dart';
 import 'package:bean_diary/controller/roasting_bean_sales_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_sales_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
@@ -86,6 +87,11 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
       String successMsg = "${_customDatePickerCtrl.textEditingCtrl.text}\n$name\n${_roastingBeanSalesCtrl.weightTECtrl.text.trim()}kg\n판매 등록이 완료되었습니다.";
       if (!mounted) return;
       CustomDialog().showFloatingSnackBar(context, successMsg, bgColor: Colors.green);
+      bool updateWeightResult = await RoastingBeanStockSqfLite().updateWeightRoastingBeanStock(value);
+      if (!updateWeightResult) {
+        if (!mounted) return;
+        CustomDialog().showFloatingSnackBar(context, "판매한 원두의 재고량 차감이 실패했습니다.");
+      }
       _roastingBeanSalesCtrl.updateBeanListWeight(_roastingBeanSalesCtrl.selectedBean, sales_weight);
       allValueInit();
       return;

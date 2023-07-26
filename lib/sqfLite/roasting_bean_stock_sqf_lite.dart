@@ -74,4 +74,35 @@ class RoastingBeanStockSqfLite {
       return false;
     }
   }
+
+  Future updateWeightRoastingBeanStock(Map<String, String> value) async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        List? findWeight = await db.rawQuery(
+          "SELECT roasting_weight FROM $tableName WHERE name = ?",
+          [value["name"]],
+        );
+        if (findWeight.isNotEmpty) {
+          int beforeWeight = findWeight[0]["roasting_weight"];
+          await db.rawUpdate(
+            "UPDATE $tableName SET `roasting_weight` = ? WHERE name = ?",
+            [
+              beforeWeight - int.parse(value["sales_weight"]!),
+              value["name"],
+            ],
+          );
+          return true;
+        } else {
+          await db.insert(tableName, value);
+          return true;
+        }
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("😑 UPDATE WEIGHT ROASTING BEAN STOCK ERROR: $e");
+      return false;
+    }
+  }
 }
