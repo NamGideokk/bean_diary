@@ -1,4 +1,4 @@
-import 'package:bean_diary/sqflite/green_beans_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:get/get.dart';
 

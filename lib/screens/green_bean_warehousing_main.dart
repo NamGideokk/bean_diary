@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bean_diary/controller/custom_date_picker_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
-import 'package:bean_diary/sqflite/green_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
@@ -116,7 +116,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                   fontSize: height / 52,
                                 ),
                                 decoration: const InputDecoration(
-                                  hintText: "중량",
+                                  hintText: "입고 중량",
                                   suffixText: "kg",
                                 ),
                                 onChanged: (value) {},
@@ -161,20 +161,17 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 if (_warehousingGreenBeanCtrl.companyTECtrl.text.trim() == "") {
-                                  final snackBar = CustomDialog().showCustomSnackBar(context, "입고처(업체명)를 입력해 주세요.");
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  CustomDialog().showFloatingSnackBar(context, "입고처(업체명)를 입력해 주세요.");
                                   _companyFN.requestFocus();
                                   return;
                                 }
                                 if (_warehousingGreenBeanCtrl.selectedBean == "" || _warehousingGreenBeanCtrl.selectedBean == null) {
-                                  final snackBar = CustomDialog().showCustomSnackBar(context, "생두를 선택해 주세요.");
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  CustomDialog().showFloatingSnackBar(context, "생두를 선택해 주세요.");
                                   _nameFN.requestFocus();
                                   return;
                                 }
                                 if (_warehousingGreenBeanCtrl.weightTECtrl.text.trim() == "") {
-                                  final snackBar = CustomDialog().showCustomSnackBar(context, "중량을 입력해 주세요.");
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  CustomDialog().showFloatingSnackBar(context, "중량을 입력해 주세요.");
                                   _weightFN.requestFocus();
                                   return;
                                 }
@@ -183,17 +180,12 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 _warehousingGreenBeanCtrl.weightTECtrl.text = result["replaceValue"];
 
                                 if (!result["bool"]) {
-                                  final snackBar = CustomDialog().showCustomSnackBar(
-                                    context,
-                                    "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  CustomDialog().showFloatingSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
                                   _weightFN.requestFocus();
                                   return;
                                 }
 
                                 String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
-                                print("📆 D A T E > $date");
                                 String weight = _warehousingGreenBeanCtrl.weightTECtrl.text.replaceAll(".", "");
 
                                 Map<String, String> value = {
@@ -206,7 +198,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 var insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock(value);
 
                                 if (!mounted) return;
-                                final snackBar = CustomDialog().showCustomSnackBar(
+                                CustomDialog().showFloatingSnackBar(
                                   context,
                                   insertResult
                                       ? "${_customDatePickerCtrl.date}\n${_warehousingGreenBeanCtrl.companyTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.selectedBean}\n${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n입고 등록이 완료되었습니다."
@@ -220,8 +212,6 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                   _warehousingGreenBeanCtrl.companyTECtrl.clear();
                                   _warehousingGreenBeanCtrl.weightTECtrl.clear();
                                 }
-
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               },
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),

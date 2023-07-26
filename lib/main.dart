@@ -166,6 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text("원두 다이어리"),
@@ -177,33 +178,36 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(15.0),
+        height: height,
         color: Colors.brown[700],
-        child: Column(
-          children: <Widget>[
-            GridView.builder(
-              shrinkWrap: true,
-              itemCount: _menus.length,
-              physics: const ClampingScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1.4,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              GridView.builder(
+                shrinkWrap: true,
+                itemCount: _menus.length,
+                physics: const ClampingScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.4,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                ),
+                itemBuilder: (context, index) => _MenuButton(
+                  menus: _menus,
+                  index: index,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => _menus[index]["screen"],
+                      ),
+                    );
+                  },
+                ),
               ),
-              itemBuilder: (context, index) => _MenuButton(
-                menus: _menus,
-                index: index,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => _menus[index]["screen"],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,5 @@
-import 'package:bean_diary/sqflite/green_bean_stock_sqf_lite.dart';
-import 'package:bean_diary/sqflite/roasting_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:get/get.dart';
 
 class StockController extends GetxController {

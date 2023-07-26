@@ -1,5 +1,5 @@
-import 'package:bean_diary/sqflite/green_bean_stock_sqf_lite.dart';
-import 'package:bean_diary/sqflite/green_beans_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,6 +11,7 @@ class WarehousingGreenBeanController extends GetxController {
   final List weightFNList = <FocusNode>[];
   final roastingWeightTECtrl = TextEditingController();
   final blendNameTECtrl = TextEditingController();
+  final blendNameFN = FocusNode();
 
   RxString _day = "".obs;
   RxString _company = "".obs;

@@ -1,7 +1,7 @@
 import 'package:bean_diary/controller/custom_date_picker_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
-import 'package:bean_diary/sqflite/green_bean_stock_sqf_lite.dart';
-import 'package:bean_diary/sqflite/roasting_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
@@ -244,6 +244,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               width: double.infinity,
                               child: TextField(
                                 controller: _warehousingGreenBeanCtrl.blendNameTECtrl,
+                                focusNode: _warehousingGreenBeanCtrl.blendNameFN,
                                 textAlign: TextAlign.center,
                                 decoration: const InputDecoration(
                                   hintText: "블렌드명",
@@ -290,8 +291,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               if (_warehousingGreenBeanCtrl.roastingType == 2) {
                                 print("= = = = = = = = = = = = = = 블 렌 드 = = = = = = = = = = =\n\n\n");
                                 if (_warehousingGreenBeanCtrl.blendBeanList.isEmpty) {
-                                  final snackBar = CustomDialog().showCustomSnackBar(context, "투입할 생두를 선택해 주세요.");
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  CustomDialog().showFloatingSnackBar(context, "투입할 생두를 선택해 주세요.");
                                   FocusScope.of(context).requestFocus(FocusNode());
                                   return;
                                 }
@@ -303,9 +303,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   var divide = _warehousingGreenBeanCtrl.blendBeanList[i].toString().split(" / ");
 
                                   if (e.text == "") {
-                                    final snackBar = CustomDialog().showCustomSnackBar(context, "[${divide[0]}]\n생두의 투입량을 입력해 주세요.");
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                    // FocusScope.of(context).requestFocus(FocusNode());
+                                    CustomDialog().showFloatingSnackBar(context, "[${divide[0]}]\n생두의 투입량을 입력해 주세요.");
                                     return;
                                   }
                                   print("🐙 BLEND WEIGHT LIST i : *$i*>>>> \n ${e.text}");
@@ -313,29 +311,24 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   e.text = result["replaceValue"];
 
                                   if (!result["bool"]) {
-                                    final snackBar = CustomDialog().showCustomSnackBar(
+                                    CustomDialog().showFloatingSnackBar(
                                       context,
                                       "[${divide[0]}]\n생두의 중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
                                     );
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                    // _warehousingGreenBeanCtrl.weightFNList[i].requestFocus();
                                     return;
                                   } else {
                                     print("⚽️ ${_warehousingGreenBeanCtrl.blendBeanList[i]}");
                                     int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.kg]"), ""));
                                     int inputWeight = int.parse(e.text.trim().replaceAll(".", ""));
                                     if (totalWeight < inputWeight) {
-                                      final snackBar = CustomDialog().showCustomSnackBar(context, "[${divide[0]}]\n생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                      // _warehousingGreenBeanCtrl.weightFNList[i].requestFocus();
+                                      CustomDialog().showFloatingSnackBar(context, "[${divide[0]}]\n생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
                                       return;
                                     }
                                   }
                                 });
 
                                 if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
-                                  final snackBar = CustomDialog().showCustomSnackBar(context, "배출량을 입력해 주세요.");
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  CustomDialog().showFloatingSnackBar(context, "배출량을 입력해 주세요.");
                                   FocusScope.of(context).requestFocus(FocusNode());
                                   return;
                                 } else {
@@ -343,11 +336,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
 
                                   if (!result["bool"]) {
-                                    final snackBar = CustomDialog().showCustomSnackBar(
-                                      context,
-                                      "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    CustomDialog().showFloatingSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
                                     _roastingWeightFN.requestFocus();
                                     return;
                                   } else {
@@ -358,17 +347,15 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                       blendTotalWeight += int.parse(e.text.replaceAll(".", ""));
                                     });
                                     if (blendTotalWeight <= roastingWeight) {
-                                      final snackBar = CustomDialog().showCustomSnackBar(context, "배출량이 총 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                      CustomDialog().showFloatingSnackBar(context, "배출량이 총 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
                                       FocusScope.of(context).requestFocus(FocusNode());
                                       return;
                                     }
                                   }
                                 }
                                 if (_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim() == "") {
-                                  final snackBar = CustomDialog().showCustomSnackBar(context, "블렌드명을 입력해 주세요.");
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                  FocusScope.of(context).requestFocus(FocusNode());
+                                  CustomDialog().showFloatingSnackBar(context, "블렌드명을 입력해 주세요.");
+                                  _warehousingGreenBeanCtrl.blendNameFN.requestFocus();
                                   return;
                                 }
 
@@ -387,7 +374,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
 
                                 if (!mounted) return;
-                                final snackBar = CustomDialog().showCustomSnackBar(
+                                CustomDialog().showFloatingSnackBar(
                                   context,
                                   insertResult
                                       ? "${_customDatePickerCtrl.date}\n${_warehousingGreenBeanCtrl.roastingType == 1 ? "싱글오리진" : "블렌드"}\n${_warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim()}kg\n로스팅 등록이 완료되었습니다."
@@ -418,21 +405,19 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   _warehousingGreenBeanCtrl.initBlendInfo();
                                 }
 
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                FocusScope.of(context).requestFocus(FocusNode());
                                 return;
                               }
 
                               // 1
-                              print("로스팅");
+                              print("싱글오리진");
                               if (_warehousingGreenBeanCtrl.selectedBean == null) {
-                                final snackBar = CustomDialog().showCustomSnackBar(context, "투입할 생두를 선택해 주세요.");
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                CustomDialog().showFloatingSnackBar(context, "투입할 생두를 선택해 주세요.");
                                 FocusScope.of(context).requestFocus(FocusNode());
                                 return;
                               }
                               if (_warehousingGreenBeanCtrl.weightTECtrl.text.trim() == "") {
-                                final snackBar = CustomDialog().showCustomSnackBar(context, "투입량을 입력해 주세요.");
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                CustomDialog().showFloatingSnackBar(context, "투입량을 입력해 주세요.");
                                 _weightFN.requestFocus();
                                 return;
                               } else {
@@ -440,11 +425,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 _warehousingGreenBeanCtrl.weightTECtrl.text = result["replaceValue"];
 
                                 if (!result["bool"]) {
-                                  final snackBar = CustomDialog().showCustomSnackBar(
-                                    context,
-                                    "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  CustomDialog().showFloatingSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
                                   _weightFN.requestFocus();
                                   return;
                                 } else {
@@ -453,16 +434,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.kg]"), ""));
                                   int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
                                   if (totalWeight < inputWeight) {
-                                    final snackBar = CustomDialog().showCustomSnackBar(context, "투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    CustomDialog().showFloatingSnackBar(context, "투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
                                     _weightFN.requestFocus();
                                     return;
                                   }
                                 }
                               }
                               if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
-                                final snackBar = CustomDialog().showCustomSnackBar(context, "배출량을 입력해 주세요.");
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                CustomDialog().showFloatingSnackBar(context, "배출량을 입력해 주세요.");
                                 _roastingWeightFN.requestFocus();
                                 return;
                               } else {
@@ -470,11 +449,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
 
                                 if (!result["bool"]) {
-                                  final snackBar = CustomDialog().showCustomSnackBar(
-                                    context,
-                                    "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  CustomDialog().showFloatingSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
                                   _roastingWeightFN.requestFocus();
                                   return;
                                 } else {
@@ -482,8 +457,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
                                   int roastingWeight = int.parse(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", ""));
                                   if (inputWeight <= roastingWeight) {
-                                    final snackBar = CustomDialog().showCustomSnackBar(context, "배출량이 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    CustomDialog().showFloatingSnackBar(context, "배출량이 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
                                     _roastingWeightFN.requestFocus();
                                     return;
                                   }
@@ -504,7 +478,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
 
                               if (!mounted) return;
-                              final snackBar = CustomDialog().showCustomSnackBar(
+                              CustomDialog().showFloatingSnackBar(
                                 context,
                                 insertResult
                                     ? "${_customDatePickerCtrl.date}\n${_warehousingGreenBeanCtrl.roastingType == 1 ? "싱글오리진" : "블렌드"}\n${_warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim()}kg\n로스팅 등록이 완료되었습니다."
@@ -527,8 +501,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
                                 _customDatePickerCtrl.setDateToToday();
                               }
-
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),

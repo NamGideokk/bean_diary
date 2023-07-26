@@ -4,11 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomDialog {
-  showCustomSnackBar(
-    BuildContext context,
-    String content, {
-    Color bgColor = Colors.deepOrange,
-  }) {
+  showCustomSnackBar(BuildContext context, String content, Color bgColor) {
     final height = MediaQuery.of(context).size.height;
     return SnackBar(
       backgroundColor: bgColor.withOpacity(0.95),
@@ -22,6 +18,15 @@ class CustomDialog {
       ),
       // duration: const Duration(seconds: 30),
     );
+  }
+
+  showFloatingSnackBar(
+    BuildContext context,
+    String msg, {
+    Color bgColor = Colors.deepOrange,
+  }) {
+    SnackBar errorSnackBar = CustomDialog().showCustomSnackBar(context, msg, bgColor);
+    ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
   }
 
   Future showAlertDialog(

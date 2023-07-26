@@ -1,6 +1,6 @@
 import 'package:bean_diary/controller/regist_green_bean_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
-import 'package:bean_diary/sqflite/green_beans_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
@@ -38,7 +38,15 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
       _showErrorText = false;
       setState(() {});
       if (!mounted) return;
-      final snackBar = CustomDialog().showCustomSnackBar(
+      // final snackBar = CustomDialog().showCustomSnackBar(
+      //   context,
+      //   result == 0
+      //       ? "생두 등록에 실패했습니다.\n잠시 후 다시 시도해 주세요."
+      //       : result == 1
+      //           ? "[${_greenBeanNameTECtrl.text.trim()}]\n생두가 등록되었습니다."
+      //           : "이미 등록된 생두명입니다.\n생두는 중복으로 등록할 수 없습니다.",
+      //   bgColor: result == 1 ? Colors.green : Colors.red,
+      CustomDialog().showFloatingSnackBar(
         context,
         result == 0
             ? "생두 등록에 실패했습니다.\n잠시 후 다시 시도해 주세요."
@@ -48,16 +56,16 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
         bgColor: result == 1 ? Colors.green : Colors.red,
       );
       if (result == 0) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       } else if (result == 1) {
         _greenBeanNameTECtrl.clear();
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         _registGreenBeanCtrl.getGreenBeanList();
         _warehousingGreenBeanCtrl.getBeanList();
         return;
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         _greenBeanNameFN.requestFocus();
         return;
       }
@@ -75,17 +83,22 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
       bool result = await GreenBeansSqfLite().deleteGreenBean(_registGreenBeanCtrl.greenBeanList[index]["name"]);
 
       if (!mounted) return;
-      final snackBar = CustomDialog().showCustomSnackBar(
+      // final snackBar = CustomDialog().showCustomSnackBar(
+      //   context,
+      //   result ? "[${_registGreenBeanCtrl.greenBeanList[index]["name"]}]\n생두가 삭제되었습니다." : "생두 삭제 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
+      //   bgColor: result ? Colors.green : Colors.red,
+      // );
+      CustomDialog().showFloatingSnackBar(
         context,
         result ? "[${_registGreenBeanCtrl.greenBeanList[index]["name"]}]\n생두가 삭제되었습니다." : "생두 삭제 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
         bgColor: result ? Colors.green : Colors.red,
       );
       if (result) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         _registGreenBeanCtrl.deleteGreenBeanElement(index);
         _warehousingGreenBeanCtrl.deleteBeanList(index);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
     return;

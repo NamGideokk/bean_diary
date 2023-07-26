@@ -3,7 +3,7 @@ import 'package:path/path.dart';
 
 class RoastingBeanStockSqfLite {
   final int version = 1;
-  static const String tableName = "roasting_bean_stock_sqf_lite";
+  static const String tableName = "roasting_bean_stock";
   Database? db;
 
   Future<Database?> openDB() async {

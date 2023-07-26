@@ -1,3 +1,4 @@
+import 'package:bean_diary/controller/roasting_bean_sales_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ class BeanSelectDropdownButton extends StatefulWidget {
   /// * 0 = 생두 (green bean)
   /// * 1 = 원두 (coffee bean)
   /// * 2 = 생두 재고 (green bean stock)
+  /// * 3 =
   const BeanSelectDropdownButton({
     Key? key,
     required this.listType,
@@ -20,12 +22,16 @@ class BeanSelectDropdownButton extends StatefulWidget {
 
 class _BeanSelectDropdownButtonState extends State<BeanSelectDropdownButton> {
   final _warehousingGreenBeanCtrl = Get.find<WarehousingGreenBeanController>();
+  late final _roastingBeanSalesCtrl;
   final _beanSelectFN = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _warehousingGreenBeanCtrl.setListType(widget.listType);
+    if (widget.listType == 1) {
+      _roastingBeanSalesCtrl = Get.find<RoastingBeanSalesController>();
+    }
   }
 
   @override
@@ -57,7 +63,7 @@ class _BeanSelectDropdownButtonState extends State<BeanSelectDropdownButton> {
             ),
           ),
           underline: const SizedBox(),
-          value: _warehousingGreenBeanCtrl.selectedBean,
+          value: widget.listType == 0 || widget.listType == 2 ? _warehousingGreenBeanCtrl.selectedBean : _roastingBeanSalesCtrl.selectedBean,
           menuMaxHeight: height / 3,
           dropdownColor: Colors.brown[50],
           borderRadius: BorderRadius.circular(5),
@@ -67,22 +73,31 @@ class _BeanSelectDropdownButtonState extends State<BeanSelectDropdownButton> {
           ),
           iconEnabledColor: Colors.brown,
           hint: Text(widget.listType == 0 || widget.listType == 2 ? "생두 선택" : "원두 선택"),
-          items: _warehousingGreenBeanCtrl.beanList?.map<DropdownMenuItem<String>>((e) {
-            return DropdownMenuItem<String>(
-              value: e,
-              child: Text(e),
-            );
-          }).toList(),
+          items: widget.listType == 0 || widget.listType == 2
+              ? _warehousingGreenBeanCtrl.beanList?.map<DropdownMenuItem<String>>((e) {
+                  return DropdownMenuItem<String>(
+                    value: e,
+                    child: Text(e),
+                  );
+                }).toList()
+              : _roastingBeanSalesCtrl.beanList?.map<DropdownMenuItem<String>>((e) {
+                  return DropdownMenuItem<String>(
+                    value: e,
+                    child: Text(e),
+                  );
+                }).toList(),
           onChanged: (value) {
-            if (_warehousingGreenBeanCtrl.roastingType == 0) {
-              _warehousingGreenBeanCtrl.setSelectBean(value.toString());
-            } else if (_warehousingGreenBeanCtrl.roastingType == 1) {
-              _warehousingGreenBeanCtrl.setSelectBean(value.toString());
+            if (widget.listType == 0 || widget.listType == 2) {
+              if (_warehousingGreenBeanCtrl.roastingType == 1) {
+                _warehousingGreenBeanCtrl.setSelectBean(value.toString());
+              } else {
+                _warehousingGreenBeanCtrl.addBlendBeanList(value.toString());
+                _warehousingGreenBeanCtrl.addWeightTECtrlList();
+                print("👹 텍스트 에디팅 컨트롤러 목록 : ${_warehousingGreenBeanCtrl.weightTECtrlList}");
+                print("🥐 블렌드 빈 목록 ~ ${_warehousingGreenBeanCtrl.blendBeanList}");
+              }
             } else {
-              _warehousingGreenBeanCtrl.addBlendBeanList(value.toString());
-              _warehousingGreenBeanCtrl.addWeightTECtrlList();
-              print("👹 텍스트 에디팅 컨트롤러 목록 : ${_warehousingGreenBeanCtrl.weightTECtrlList}");
-              print("🥐 블렌드 빈 목록 ~ ${_warehousingGreenBeanCtrl.blendBeanList}");
+              _roastingBeanSalesCtrl.setSelectBean(value.toString());
             }
           },
         ),
