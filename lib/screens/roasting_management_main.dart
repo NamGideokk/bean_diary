@@ -128,6 +128,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                           controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
                                           focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
                                           textAlign: TextAlign.center,
+                                          textInputAction: TextInputAction.next,
                                           decoration: const InputDecoration(
                                             hintText: "투입 중량",
                                             suffixText: "kg",
@@ -298,10 +299,11 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 print("🐡 WEIGHT LIST TECTRL 체크 : ${_warehousingGreenBeanCtrl.weightTECtrlList.length}");
 
                                 _warehousingGreenBeanCtrl.weightTECtrlList.asMap().forEach((i, e) {
+                                  print("i i i i i ii i i i : $i");
                                   var divide = _warehousingGreenBeanCtrl.blendBeanList[i].toString().split(" / ");
 
                                   if (e.text == "") {
-                                    final snackBar = CustomDialog().showCustomSnackBar(context, "[${divide[0]}] 생두의 투입량을 입력해 주세요.");
+                                    final snackBar = CustomDialog().showCustomSnackBar(context, "[${divide[0]}]\n생두의 투입량을 입력해 주세요.");
                                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                     // FocusScope.of(context).requestFocus(FocusNode());
                                     return;
@@ -313,7 +315,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   if (!result["bool"]) {
                                     final snackBar = CustomDialog().showCustomSnackBar(
                                       context,
-                                      "[${divide[0]}] 생두의 중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
+                                      "[${divide[0]}]\n생두의 중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
                                     );
                                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                     // _warehousingGreenBeanCtrl.weightFNList[i].requestFocus();
@@ -323,7 +325,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.kg]"), ""));
                                     int inputWeight = int.parse(e.text.trim().replaceAll(".", ""));
                                     if (totalWeight < inputWeight) {
-                                      final snackBar = CustomDialog().showCustomSnackBar(context, "[${divide[0]}] 생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
+                                      final snackBar = CustomDialog().showCustomSnackBar(context, "[${divide[0]}]\n생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
                                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                       // _warehousingGreenBeanCtrl.weightFNList[i].requestFocus();
                                       return;
@@ -348,6 +350,19 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                     _roastingWeightFN.requestFocus();
                                     return;
+                                  } else {
+                                    // 배출량과 블렌드 투입 총량 비교 부분
+                                    int blendTotalWeight = 0;
+                                    int roastingWeight = int.parse(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", ""));
+                                    _warehousingGreenBeanCtrl.weightTECtrlList.forEach((e) {
+                                      blendTotalWeight += int.parse(e.text.replaceAll(".", ""));
+                                    });
+                                    if (blendTotalWeight <= roastingWeight) {
+                                      final snackBar = CustomDialog().showCustomSnackBar(context, "배출량이 총 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
+                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                      FocusScope.of(context).requestFocus(FocusNode());
+                                      return;
+                                    }
                                   }
                                 }
                                 if (_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim() == "") {
@@ -357,6 +372,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   return;
                                 }
 
+                                print("☕️ ${_warehousingGreenBeanCtrl.blendBeanList}");
                                 String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
                                 String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", "");
 
@@ -380,6 +396,21 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 );
 
                                 if (insertResult) {
+                                  // 드롭다운버튼 생두 무게 리프레쉬
+                                  _warehousingGreenBeanCtrl.blendBeanList.asMap().forEach((i, e) {
+                                    print("블렌드 인서트 성공하고 하나씩 꺼내기 : $i번째 : $e");
+                                    String useWeight = _warehousingGreenBeanCtrl.weightTECtrlList[i].text.replaceAll(".", "");
+                                    print("$e의 무게 : $useWeight");
+                                    print("🥶💯 이름 추출 : ${e.toString().split(" / ")[0]}");
+                                    Map<String, String> updateValue = {
+                                      "type": _warehousingGreenBeanCtrl.roastingType.toString(),
+                                      "name": e.toString().split(" / ")[0],
+                                      "weight": useWeight,
+                                      "date": date,
+                                    };
+                                    GreenBeanStockSqfLite().updateWeightGreenBeanStock(updateValue);
+                                    _warehousingGreenBeanCtrl.updateBeanListWeight(e.toString(), useWeight);
+                                  });
                                   _warehousingGreenBeanCtrl.weightTECtrl.clear();
                                   _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
                                   _warehousingGreenBeanCtrl.blendNameTECtrl.clear();

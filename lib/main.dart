@@ -183,6 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
             GridView.builder(
               shrinkWrap: true,
               itemCount: _menus.length,
+              physics: const ClampingScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 1.4,

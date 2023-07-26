@@ -110,6 +110,7 @@ class WarehousingGreenBeanController extends GetxController {
   }
 
   void updateBeanListWeight(String name, String useWeight) {
+    final beforeSelectedBean = _selectedBean;
     final divideName = name.split(" / ");
     int weight = int.parse(divideName[1].replaceAll(RegExp("[.kg]"), ""));
     int iUseWeight = int.parse(useWeight);
@@ -119,7 +120,13 @@ class WarehousingGreenBeanController extends GetxController {
     String replaceString = "${divideName[0]} / ${Utility().parseToDoubleWeight(clacWeight)}kg";
     copyList[findElementIndex] = replaceString;
     _beanList(copyList);
-    _selectedBean(replaceString);
+    if (roastingType == 1) {
+      _selectedBean(replaceString);
+    } else {
+      if (beforeSelectedBean == name) {
+        _selectedBean(replaceString);
+      }
+    }
   }
 
   void setCompany(String value) {

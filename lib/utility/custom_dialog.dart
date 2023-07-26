@@ -7,7 +7,7 @@ class CustomDialog {
   showCustomSnackBar(
     BuildContext context,
     String content, {
-    Color bgColor = Colors.red,
+    Color bgColor = Colors.deepOrange,
   }) {
     final height = MediaQuery.of(context).size.height;
     return SnackBar(
