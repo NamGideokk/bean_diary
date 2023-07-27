@@ -65,10 +65,18 @@ class _StockStatusMainState extends State<StockStatusMain> {
                               Expanded(
                                 child: Text(
                                   _stockCtrl.greenBeanStockList[index]["name"],
+                                  style: TextStyle(
+                                    fontSize: height / 52,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 5),
-                              Text("${Utility().parseToDoubleWeight(_stockCtrl.greenBeanStockList[index]["weight"])}kg"),
+                              Text(
+                                "${Utility().parseToDoubleWeight(_stockCtrl.greenBeanStockList[index]["weight"])}kg",
+                                style: TextStyle(
+                                  fontSize: height / 52,
+                                ),
+                              ),
                             ],
                           ),
                         ),

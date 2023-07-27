@@ -201,7 +201,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 CustomDialog().showFloatingSnackBar(
                                   context,
                                   insertResult
-                                      ? "${_customDatePickerCtrl.date}\n${_warehousingGreenBeanCtrl.companyTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.selectedBean}\n${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n입고 등록이 완료되었습니다."
+                                      ? "${_customDatePickerCtrl.textEditingCtrl.text}\n${_warehousingGreenBeanCtrl.companyTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.selectedBean}\n${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n입고 등록이 완료되었습니다."
                                       : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                   bgColor: insertResult ? Colors.green : Colors.red,
                                 );

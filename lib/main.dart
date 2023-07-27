@@ -201,35 +201,61 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       drawer: Container(
         color: Colors.brown[50],
+        padding: const EdgeInsets.all(10),
         width: width * 0.85,
         child: SafeArea(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(
-                "assets/images/logo.png",
-                width: height / 14,
+              const SizedBox(),
+              Column(
+                children: [
+                  Image.asset(
+                    "assets/images/logo.png",
+                    width: height / 14,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Bean Diary",
+                    style: TextStyle(
+                      fontSize: height / 60,
+                      color: Colors.black54,
+                      height: 0.6,
+                    ),
+                  ),
+                  Text(
+                    "원두 다이어리",
+                    style: TextStyle(
+                      fontSize: height / 40,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              Text(
-                "Bean Diary",
-                style: TextStyle(
-                  fontSize: height / 60,
-                  color: Colors.black54,
-                  height: 0.6,
-                ),
+              Column(
+                children: [
+                  Text(
+                    "v1.0.0",
+                    style: TextStyle(
+                      fontSize: height / 58,
+                    ),
+                  ),
+                  Text(
+                    "created by 남기덕",
+                    style: TextStyle(
+                      fontSize: height / 58,
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  Text(
+                    "all icons created by Freepik - Flaticon",
+                    style: TextStyle(
+                      color: Colors.black26,
+                      fontSize: height / 70,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                "원두 다이어리",
-                style: TextStyle(
-                  fontSize: height / 40,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 50),
-              const Text("v1.0.0"),
-              const Text("created by 남기덕"),
-              Text("Coffee icons created by Freepik - Flaticon")
             ],
           ),
         ),

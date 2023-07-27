@@ -377,7 +377,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 CustomDialog().showFloatingSnackBar(
                                   context,
                                   insertResult
-                                      ? "${_customDatePickerCtrl.date}\n${_warehousingGreenBeanCtrl.roastingType == 1 ? "싱글오리진" : "블렌드"}\n${_warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim()}kg\n로스팅 등록이 완료되었습니다."
+                                      ? "${_customDatePickerCtrl.textEditingCtrl.text}\n블렌드 - ${_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim()}kg\n로스팅 등록이 완료되었습니다."
                                       : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                   bgColor: insertResult ? Colors.green : Colors.red,
                                 );
@@ -481,7 +481,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               CustomDialog().showFloatingSnackBar(
                                 context,
                                 insertResult
-                                    ? "${_customDatePickerCtrl.textEditingCtrl.text}\n${_warehousingGreenBeanCtrl.roastingType == 1 ? "싱글오리진" : "블렌드"} - ${_warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim()}kg\n로스팅 등록이 완료되었습니다."
+                                    ? "${_customDatePickerCtrl.textEditingCtrl.text}\n싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim()}kg\n로스팅 등록이 완료되었습니다."
                                     : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                 bgColor: insertResult ? Colors.green : Colors.red,
                               );

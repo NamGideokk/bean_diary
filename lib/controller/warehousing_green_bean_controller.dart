@@ -145,7 +145,10 @@ class WarehousingGreenBeanController extends GetxController {
         return (e == value);
       });
     }
-    if (dupCheck) return;
+    if (dupCheck) {
+      return;
+    }
+    addWeightCtrlList();
     print("블렌드 목록에 생두 추가하기");
     final addElement = Rxn<String>();
     addElement(value);
@@ -160,7 +163,7 @@ class WarehousingGreenBeanController extends GetxController {
     weightFNList.removeAt(index);
   }
 
-  void addWeightTECtrlList() {
+  void addWeightCtrlList() {
     final weightTECtrl = TextEditingController();
     final weightFN = FocusNode();
     weightTECtrlList.add(weightTECtrl);

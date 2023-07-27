@@ -56,8 +56,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
               const HeaderTitle(title: "판매 내역", subTitle: "sale history"),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.ideographic,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   _saleHistoryCtrl.totalList.length > 0
                       ? Text(
@@ -122,6 +121,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                       style: TextStyle(
                                         color: Colors.brown[700],
                                         fontSize: height / 54,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                   ),

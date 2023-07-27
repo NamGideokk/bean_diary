@@ -8,7 +8,7 @@ class RoastingTypeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         color: Colors.brown[400]!.withOpacity(0.9),
         border: Border.all(
@@ -20,8 +20,8 @@ class RoastingTypeWidget extends StatelessWidget {
         type == "1" ? "싱글오리진" : "블렌드",
         style: TextStyle(
           color: Colors.white,
-          fontSize: height / 68,
-          fontWeight: FontWeight.bold,
+          fontSize: height / 67,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
