@@ -37,7 +37,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton.small(
-        backgroundColor: Colors.brown.withOpacity(0.5),
+        backgroundColor: Colors.brown.withOpacity(0.85),
         foregroundColor: Colors.white,
         tooltip: "날짜순",
         elevation: 3,
@@ -59,17 +59,19 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.ideographic,
                 children: [
-                  Text(
-                    _saleHistoryCtrl.filterValue == "전체"
-                        ? "\t\t${_saleHistoryCtrl.totalList.length} 건"
-                        : _saleHistoryCtrl.filterValue == "싱글오리진"
-                            ? "\t\t${_saleHistoryCtrl.singleList.length} 건"
-                            : "\t\t${_saleHistoryCtrl.blendList.length} 건",
-                    style: TextStyle(
-                      fontSize: height / 60,
-                      color: Colors.black87,
-                    ),
-                  ),
+                  _saleHistoryCtrl.totalList.length > 0
+                      ? Text(
+                          _saleHistoryCtrl.filterValue == "전체"
+                              ? "\t\t${_saleHistoryCtrl.totalList.length} 건"
+                              : _saleHistoryCtrl.filterValue == "싱글오리진"
+                                  ? "\t\t${_saleHistoryCtrl.singleList.length} 건"
+                                  : "\t\t${_saleHistoryCtrl.blendList.length} 건",
+                          style: TextStyle(
+                            fontSize: height / 60,
+                            color: Colors.black87,
+                          ),
+                        )
+                      : const SizedBox(),
                   Row(
                     children: [
                       TextButton(

@@ -41,6 +41,7 @@ class CustomDatePicker extends StatelessWidget {
             showModalBottomSheet(
               context: context,
               showDragHandle: true,
+              backgroundColor: Colors.white,
               builder: (context) {
                 return SizedBox(
                   height: height / 3.5,

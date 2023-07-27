@@ -5,8 +5,10 @@ import 'package:bean_diary/screens/sale_management_main.dart';
 import 'package:bean_diary/screens/stock_status_main.dart';
 import 'package:bean_diary/utility/colors_list.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -165,13 +167,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  PackageInfo? packageInfo;
   final List<Map<String, dynamic>> _menus = [
     {"title": "재고 현황", "img": "assets/images/stock.png", "screen": const StockStatusMain()},
-    {"title": "생두 입고 관리", "img": "assets/images/warehouse.png", "screen": const GreenBeanWarehousingMain()},
+    {"title": "생두 입고 관리", "img": "assets/images/delivery.png", "screen": const GreenBeanWarehousingMain()},
     {"title": "로스팅 관리", "img": "assets/images/roaster.png", "screen": const RoastingManagementMain()},
-    {"title": "판매 관리", "img": "assets/images/coffee_bag.png", "screen": const SaleManagementMain()},
-    {"title": "판매 내역", "img": "assets/images/sales_management.png", "screen": const SaleHistoryMain()},
+    {"title": "판매 관리", "img": "assets/images/production.png", "screen": const SaleManagementMain()},
+    {"title": "판매 내역", "img": "assets/images/coffee_bag.png", "screen": const SaleHistoryMain()},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    getPackageInfo();
+  }
+
+  Future getPackageInfo() async {
+    packageInfo = await PackageInfo.fromPlatform();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       drawer: Container(
         color: Colors.brown[50],
-        width: width * 0.8,
+        width: width * 0.85,
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -199,7 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 20),
               Text(
-                "bean diary",
+                "Bean Diary",
                 style: TextStyle(
                   fontSize: height / 60,
                   color: Colors.black54,
@@ -214,8 +227,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               const SizedBox(height: 50),
-              const Text("v 1.0.0"),
+              const Text("v1.0.0"),
               const Text("created by 남기덕"),
+              Text("Coffee icons created by Freepik - Flaticon")
             ],
           ),
         ),
