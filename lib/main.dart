@@ -176,6 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text("원두 다이어리"),
@@ -184,6 +185,40 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Image.asset("assets/images/logo.png"),
         ),
         leadingWidth: 44,
+      ),
+      drawer: Container(
+        color: Colors.brown[50],
+        width: width * 0.8,
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/images/logo.png",
+                width: height / 14,
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "bean diary",
+                style: TextStyle(
+                  fontSize: height / 60,
+                  color: Colors.black54,
+                  height: 0.6,
+                ),
+              ),
+              Text(
+                "원두 다이어리",
+                style: TextStyle(
+                  fontSize: height / 40,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 50),
+              const Text("v 1.0.0"),
+              const Text("created by 남기덕"),
+            ],
+          ),
+        ),
       ),
       body: Container(
         padding: const EdgeInsets.all(15.0),
