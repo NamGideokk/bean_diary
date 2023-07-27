@@ -72,19 +72,27 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
     }
 
     String name = _roastingBeanSalesCtrl.selectedBean.toString().split(" / ")[0];
+    String type = "1";
+    _roastingBeanSalesCtrl.beanMapDataList.forEach((e) {
+      if (name == e["name"]) type = e["type"].toString();
+    });
+    // String type =
     String sales_weight = _roastingBeanSalesCtrl.weightTECtrl.text.trim().replaceAll(".", "");
+    String company = _roastingBeanSalesCtrl.companyTECtrl.text.trim();
     String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
 
     // 등록할 데이터
     Map<String, String> value = {
       "name": name,
+      "type": type,
       "sales_weight": sales_weight,
+      "company": company,
       "date": date,
     };
     bool result = await RoastingBeanSalesSqfLite().insertRoastingBeanSales(value);
 
     if (result) {
-      String successMsg = "${_customDatePickerCtrl.textEditingCtrl.text}\n$name\n${_roastingBeanSalesCtrl.weightTECtrl.text.trim()}kg\n판매 등록이 완료되었습니다.";
+      String successMsg = "${_customDatePickerCtrl.textEditingCtrl.text}\n$company\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${_roastingBeanSalesCtrl.weightTECtrl.text.trim()}kg\n판매 등록이 완료되었습니다.";
       if (!mounted) return;
       CustomDialog().showFloatingSnackBar(context, successMsg, bgColor: Colors.green);
       bool updateWeightResult = await RoastingBeanStockSqfLite().updateWeightRoastingBeanStock(value);

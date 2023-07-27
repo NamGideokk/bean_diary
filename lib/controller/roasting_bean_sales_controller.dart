@@ -10,10 +10,12 @@ class RoastingBeanSalesController extends GetxController {
   final companyFN = FocusNode();
   final weightFN = FocusNode();
 
-  RxList _beanList = <String?>[].obs;
+  final RxList _beanList = <String?>[].obs;
+  RxList _beanMapDataList = [].obs;
   final _selectedBean = Rxn<String>();
 
   get beanList => _beanList;
+  get beanMapDataList => _beanMapDataList;
   get selectedBean => _selectedBean.value;
 
   @override
@@ -30,9 +32,11 @@ class RoastingBeanSalesController extends GetxController {
       list = Utility().sortingName(list);
       for (var item in list) {
         _beanList.add("${item["name"]} / ${Utility().parseToDoubleWeight(item["roasting_weight"])}kg");
+        _beanMapDataList.add(item);
       }
     }
     print("원 두 재 고 가 져 옴 : $_beanList");
+    print("원 두 재 고 맵 데 이 터 넣 음 : $_beanMapDataList");
   }
 
   void setSelectBean(String value) {

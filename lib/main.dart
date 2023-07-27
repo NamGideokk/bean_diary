@@ -130,6 +130,15 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.compact,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
+        cardTheme: CardTheme(
+          color: Colors.brown[50],
+          shape: const RoundedRectangleBorder(),
+          elevation: 0,
+          margin: EdgeInsets.zero,
+        ),
+        listTileTheme: const ListTileThemeData(
+          visualDensity: VisualDensity.comfortable,
+        ),
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown).copyWith(background: ColorsList().bgColor),
       ),

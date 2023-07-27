@@ -4,6 +4,7 @@ import 'package:bean_diary/controller/stock_controller.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/roasting_type_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +18,6 @@ class StockStatusMain extends StatefulWidget {
 
 class _StockStatusMainState extends State<StockStatusMain> {
   late final SharedPreferences _pref;
-  // late final Future _getHistoryData = getSharedPreferences();
   final _stockCtrl = Get.put(StockController());
   List _history = [];
 
@@ -25,21 +25,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
   void initState() {
     super.initState();
     print("⭕️ 재 고 현 황 INIT");
-    // getSharedPreferences();
   }
-
-  // Future getSharedPreferences() async {
-  //   _pref = await SharedPreferences.getInstance();
-  //   var jsonList = _pref.getStringList("warehousing");
-  //   if (jsonList != null) {
-  //     for (var item in jsonList) {
-  //       var decodingData = jsonDecode(item);
-  //       _history.add(decodingData);
-  //     }
-  //     print("재고 현황 >\n$_history");
-  //     print("💎 재고 현황 길이 >\n${_history.length}");
-  //   }
-  // }
 
   @override
   void dispose() {
@@ -74,7 +60,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
                         itemBuilder: (context, index) => ExpansionTile(
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Expanded(
                                 child: Text(
@@ -99,27 +85,11 @@ class _StockStatusMainState extends State<StockStatusMain> {
                         itemBuilder: (context, index) => ExpansionTile(
                           title: Row(
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 7),
-                                margin: const EdgeInsets.only(bottom: 5),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.brown,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(
-                                  "${_stockCtrl.roastingBeanStockList[index]["type"] == "1" ? "싱글오리진" : "블렌드"}",
-                                  style: TextStyle(
-                                    color: Colors.brown,
-                                    fontSize: height / 65,
-                                  ),
-                                ),
-                              ),
+                              RoastingTypeWidget(type: _stockCtrl.roastingBeanStockList[index]["type"].toString()),
                             ],
                           ),
                           subtitle: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Expanded(
                                 child: Text(

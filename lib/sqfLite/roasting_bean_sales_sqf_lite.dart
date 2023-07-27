@@ -12,7 +12,7 @@ class RoastingBeanSalesSqfLite {
         db = await openDatabase(
           join(await getDatabasesPath(), "$tableName.db"),
           onCreate: (db, version) => db.execute(
-            'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, name TEXT NOT NULL, sales_weight INTEGER, date TEXT NOT NULL)',
+            'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, type TEXT NOT NULL, name TEXT NOT NULL, sales_weight INTEGER, company TEXT NOT NULL, date TEXT NOT NULL)',
           ),
           version: version,
         );

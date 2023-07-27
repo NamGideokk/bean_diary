@@ -21,7 +21,6 @@ class Utility {
   /// 중량에 소수점 붙이기
   String parseToDoubleWeight(int value) {
     String returnValue = "";
-    print("무게~~~ $value");
     if (value < 10) {
       returnValue = "0.$value";
     } else {
@@ -42,5 +41,23 @@ class Utility {
     print("T :: $iTotalWeight \n I :: $iInputWeight");
 
     return false;
+  }
+
+  /// 날짜에 년월일 붙이기
+  String pasteTextToDate(String date) => "${date.replaceFirst("-", "년 ").replaceFirst("-", "월 ")}일";
+
+  /// 날짜순 정렬
+  List sortingDate(List list) {
+    List copyList = [...list];
+    copyList.forEach((e) {
+      List divide = e["date"].toString().split("-");
+      String month = divide[1].toString().padLeft(2, "0");
+      String day = divide[2].toString().padLeft(2, "0");
+
+      // e["date"] = divide[0] + month + day;
+      print(e["date"]);
+    });
+    copyList.sort((a, b) => a["date"].compareTo(b["date"]));
+    return copyList;
   }
 }

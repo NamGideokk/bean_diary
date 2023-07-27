@@ -1,5 +1,11 @@
+import 'package:bean_diary/controller/sale_history_controller.dart';
+import 'package:bean_diary/utility/utility.dart';
+import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/roasting_type_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SaleHistoryMain extends StatefulWidget {
   const SaleHistoryMain({Key? key}) : super(key: key);
@@ -9,11 +15,17 @@ class SaleHistoryMain extends StatefulWidget {
 }
 
 class _SaleHistoryMainState extends State<SaleHistoryMain> {
-  String _selectValue = "전체";
+  final SaleHistoryController _saleHistoryCtrl = Get.put(SaleHistoryController());
 
-  void _setFilter(String title) {
-    _selectValue = title;
-    setState(() {});
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Get.delete<SaleHistoryController>();
   }
 
   @override
@@ -21,45 +33,140 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text("판매 내역"),
+        title: const Text("판매 내역"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const HeaderTitle(title: "판매 내역", subTitle: "sale history"),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.ideographic,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    _setFilter("전체");
-                  },
-                  child: _FilterText(title: "전체", selectValue: _selectValue),
-                ),
-                TextButton(
-                  onPressed: () {
-                    _setFilter("싱글빈");
-                  },
-                  child: _FilterText(title: "싱글빈", selectValue: _selectValue),
-                ),
-                TextButton(
-                  onPressed: () {
-                    _setFilter("블렌드");
-                  },
-                  child: _FilterText(title: "블렌드", selectValue: _selectValue),
-                ),
-              ],
-            ),
-            const Divider(
-              height: 10,
-              color: Colors.black12,
-            ),
-          ],
+      floatingActionButton: FloatingActionButton.small(
+        backgroundColor: Colors.brown.withOpacity(0.5),
+        foregroundColor: Colors.white,
+        tooltip: "날짜순",
+        elevation: 3,
+        onPressed: () => _saleHistoryCtrl.setReverseDate(),
+        child: Icon(
+          CupertinoIcons.arrow_up_arrow_down,
+          size: height / 40,
+        ),
+      ),
+      body: Obx(
+        () => Container(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HeaderTitle(title: "판매 내역", subTitle: "sale history"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.ideographic,
+                children: [
+                  Text(
+                    _saleHistoryCtrl.filterValue == "전체"
+                        ? "\t\t${_saleHistoryCtrl.totalList.length} 건"
+                        : _saleHistoryCtrl.filterValue == "싱글오리진"
+                            ? "\t\t${_saleHistoryCtrl.singleList.length} 건"
+                            : "\t\t${_saleHistoryCtrl.blendList.length} 건",
+                    style: TextStyle(
+                      fontSize: height / 60,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () => _saleHistoryCtrl.setChangeFilterValue("전체"),
+                        child: _FilterText(title: "전체", filterValue: _saleHistoryCtrl.filterValue),
+                      ),
+                      TextButton(
+                        onPressed: () => _saleHistoryCtrl.setChangeFilterValue("싱글오리진"),
+                        child: _FilterText(title: "싱글오리진", filterValue: _saleHistoryCtrl.filterValue),
+                      ),
+                      TextButton(
+                        onPressed: () => _saleHistoryCtrl.setChangeFilterValue("블렌드"),
+                        child: _FilterText(title: "블렌드", filterValue: _saleHistoryCtrl.filterValue),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const Divider(height: 8, color: Colors.black12),
+              _saleHistoryCtrl.showList.isNotEmpty
+                  ? Expanded(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.only(bottom: height / 11),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _saleHistoryCtrl.showList.length,
+                          separatorBuilder: (context, index) => const Divider(),
+                          itemBuilder: (context, index) => Card(
+                            child: ListTile(
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.ideographic,
+                                children: [
+                                  Text(
+                                    Utility().pasteTextToDate(_saleHistoryCtrl.showList[index]["date"]),
+                                    style: TextStyle(
+                                      fontSize: height / 54,
+                                      color: Colors.brown[700],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      _saleHistoryCtrl.showList[index]["company"],
+                                      textAlign: TextAlign.right,
+                                      style: TextStyle(
+                                        color: Colors.brown[700],
+                                        fontSize: height / 54,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          RoastingTypeWidget(type: _saleHistoryCtrl.showList[index]["type"].toString()),
+                                          Text(
+                                            _saleHistoryCtrl.showList[index]["name"],
+                                            style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: height / 50,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      "${Utility().parseToDoubleWeight(_saleHistoryCtrl.showList[index]["sales_weight"])}kg",
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: height / 44,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const EmptyWidget(content: "원두 판매 내역이 없습니다."),
+              // SizedBox(height: height / 10),
+            ],
+          ),
         ),
       ),
     );
@@ -67,11 +174,11 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
 }
 
 class _FilterText extends StatelessWidget {
-  final String title, selectValue;
+  final String title, filterValue;
   const _FilterText({
     Key? key,
     required this.title,
-    required this.selectValue,
+    required this.filterValue,
   }) : super(key: key);
 
   @override
@@ -80,8 +187,8 @@ class _FilterText extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
-        fontWeight: selectValue == title ? FontWeight.bold : FontWeight.normal,
-        fontSize: selectValue == title ? height / 56 : height / 60,
+        fontWeight: filterValue == title ? FontWeight.bold : FontWeight.normal,
+        fontSize: filterValue == title ? height / 56 : height / 60,
       ),
     );
   }

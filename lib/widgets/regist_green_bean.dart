@@ -38,14 +38,6 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
       _showErrorText = false;
       setState(() {});
       if (!mounted) return;
-      // final snackBar = CustomDialog().showCustomSnackBar(
-      //   context,
-      //   result == 0
-      //       ? "생두 등록에 실패했습니다.\n잠시 후 다시 시도해 주세요."
-      //       : result == 1
-      //           ? "[${_greenBeanNameTECtrl.text.trim()}]\n생두가 등록되었습니다."
-      //           : "이미 등록된 생두명입니다.\n생두는 중복으로 등록할 수 없습니다.",
-      //   bgColor: result == 1 ? Colors.green : Colors.red,
       CustomDialog().showFloatingSnackBar(
         context,
         result == 0
@@ -56,16 +48,13 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
         bgColor: result == 1 ? Colors.green : Colors.red,
       );
       if (result == 0) {
-        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       } else if (result == 1) {
         _greenBeanNameTECtrl.clear();
-        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         _registGreenBeanCtrl.getGreenBeanList();
         _warehousingGreenBeanCtrl.getBeanList();
         return;
       } else {
-        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         _greenBeanNameFN.requestFocus();
         return;
       }
@@ -83,23 +72,15 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
       bool result = await GreenBeansSqfLite().deleteGreenBean(_registGreenBeanCtrl.greenBeanList[index]["name"]);
 
       if (!mounted) return;
-      // final snackBar = CustomDialog().showCustomSnackBar(
-      //   context,
-      //   result ? "[${_registGreenBeanCtrl.greenBeanList[index]["name"]}]\n생두가 삭제되었습니다." : "생두 삭제 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
-      //   bgColor: result ? Colors.green : Colors.red,
-      // );
       CustomDialog().showFloatingSnackBar(
         context,
         result ? "[${_registGreenBeanCtrl.greenBeanList[index]["name"]}]\n생두가 삭제되었습니다." : "생두 삭제 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
         bgColor: result ? Colors.green : Colors.red,
       );
       if (result) {
-        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         _registGreenBeanCtrl.deleteGreenBeanElement(index);
         _warehousingGreenBeanCtrl.deleteBeanList(index);
-      } else {
-        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
+      } else {}
     }
     return;
   }
@@ -173,42 +154,44 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
                 _registGreenBeanCtrl.greenBeanList.isEmpty
                     ? const EmptyWidget(content: "등록된 생두가 없습니다.")
                     : Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: ListView.separated(
-                            itemCount: _registGreenBeanCtrl.greenBeanList.length,
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.only(bottom: 10),
-                            physics: const BouncingScrollPhysics(),
-                            separatorBuilder: (context, index) => const Divider(height: 8),
-                            itemBuilder: (context, index) {
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      _registGreenBeanCtrl.greenBeanList[index]["name"],
-                                      style: TextStyle(
-                                        fontSize: height / 52,
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                          child: SafeArea(
+                            child: ListView.separated(
+                              itemCount: _registGreenBeanCtrl.greenBeanList.length,
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.only(bottom: 10),
+                              physics: const BouncingScrollPhysics(),
+                              separatorBuilder: (context, index) => const Divider(height: 8),
+                              itemBuilder: (context, index) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        _registGreenBeanCtrl.greenBeanList[index]["name"],
+                                        style: TextStyle(
+                                          fontSize: height / 52,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  TextButton.icon(
-                                    onPressed: () => onTapDeleteGreenBean(index),
-                                    icon: Icon(
-                                      CupertinoIcons.delete_simple,
-                                      size: height / 70,
-                                    ),
-                                    label: Text(
-                                      "삭제",
-                                      style: TextStyle(
-                                        fontSize: height / 60,
+                                    TextButton.icon(
+                                      onPressed: () => onTapDeleteGreenBean(index),
+                                      icon: Icon(
+                                        CupertinoIcons.delete_simple,
+                                        size: height / 70,
+                                      ),
+                                      label: Text(
+                                        "삭제",
+                                        style: TextStyle(
+                                          fontSize: height / 60,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            },
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
