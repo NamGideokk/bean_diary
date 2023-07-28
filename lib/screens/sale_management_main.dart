@@ -24,6 +24,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
   final WarehousingGreenBeanController _warehousingGreenBeanCtrl = Get.put(WarehousingGreenBeanController());
   final CustomDatePickerController _customDatePickerCtrl = Get.put(CustomDatePickerController());
   final RoastingBeanSalesController _roastingBeanSalesCtrl = Get.put(RoastingBeanSalesController());
+  final _scrollCtrl = ScrollController();
 
   @override
   void initState() {
@@ -131,6 +132,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
             SafeArea(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(10),
+                controller: _scrollCtrl,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -165,13 +167,14 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                               hintText: "판매 중량",
                               suffixText: "kg",
                             ),
+                            onTap: () => Utility().moveScrolling(_scrollCtrl),
                           ),
                         )
                       ],
                     ),
                     const SizedBox(height: 20),
                     const WeightAlert(),
-                    const SizedBox(height: 100),
+                    SizedBox(height: height / 9),
                   ],
                 ),
               ),

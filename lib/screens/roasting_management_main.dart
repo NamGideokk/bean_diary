@@ -28,6 +28,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
   final _weightFN = FocusNode();
   final _roastingWeightFN = FocusNode();
 
+  final _scrollCtrl = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +66,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
               SingleChildScrollView(
                 padding: const EdgeInsets.all(10),
                 physics: const ClampingScrollPhysics(),
+                controller: _scrollCtrl,
                 child: SafeArea(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,6 +159,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                           style: TextStyle(
                                             fontSize: height / 52,
                                           ),
+                                          onTap: () => Utility().moveScrolling(_scrollCtrl),
                                         ),
                                       ),
                                       IconButton(
@@ -199,6 +203,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     style: TextStyle(
                                       fontSize: height / 52,
                                     ),
+                                    onTap: () => Utility().moveScrolling(_scrollCtrl),
                                   ),
                                 ),
                                 const SizedBox(width: 15),
@@ -221,6 +226,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     style: TextStyle(
                                       fontSize: height / 52,
                                     ),
+                                    onTap: () => Utility().moveScrolling(_scrollCtrl),
                                   ),
                                 ),
                               ],
@@ -246,6 +252,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     style: TextStyle(
                                       fontSize: height / 52,
                                     ),
+                                    onTap: () => Utility().moveScrolling(_scrollCtrl),
                                   ),
                                 ),
                               ],
@@ -271,11 +278,12 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 style: TextStyle(
                                   fontSize: height / 52,
                                 ),
+                                onTap: () => Utility().moveScrolling(_scrollCtrl),
                               ),
                             ),
                           ],
                         ),
-                      const SizedBox(height: 100),
+                      SizedBox(height: height / 9),
                     ],
                   ),
                 ),

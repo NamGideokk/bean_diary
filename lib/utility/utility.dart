@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class Utility {
   checkWeightRegEx(String value) {
     value = value.replaceAll(RegExp(r"\s"), "");
@@ -62,5 +64,18 @@ class Utility {
     });
     copyList.sort((a, b) => a["date"].compareTo(b["date"]));
     return copyList;
+  }
+
+  /// 키보드 입력 시 스크롤 이동
+  void moveScrolling(ScrollController scrollCtrl) {
+    Future.delayed(const Duration(milliseconds: 470), () {
+      if (scrollCtrl.hasClients) {
+        scrollCtrl.animateTo(
+          scrollCtrl.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOutQuart,
+        );
+      }
+    });
   }
 }

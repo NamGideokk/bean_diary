@@ -28,6 +28,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
   final _companyFN = FocusNode();
   final _nameFN = FocusNode();
   final _weightFN = FocusNode();
+  final _scrollCtrl = ScrollController();
 
   @override
   void initState() {
@@ -65,6 +66,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
             SingleChildScrollView(
               padding: const EdgeInsets.all(10),
               physics: const ClampingScrollPhysics(),
+              controller: _scrollCtrl,
               child: SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,7 +127,16 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                   hintText: "입고 중량",
                                   suffixText: "kg",
                                 ),
-                                onChanged: (value) {},
+                                onTap: () => Utility().moveScrolling(_scrollCtrl),
+                                // Future.delayed(const Duration(milliseconds: 300), () {
+                                //   if (_scrollCtrl.hasClients) {
+                                //     _scrollCtrl.animateTo(
+                                //       _scrollCtrl.position.maxScrollExtent,
+                                //       duration: const Duration(milliseconds: 450),
+                                //       curve: Curves.easeInOut,
+                                //     );
+                                //   }
+                                // });
                               ),
                             ),
                           ],
@@ -134,7 +145,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                         const WeightAlert(),
                       ],
                     ),
-                    const SizedBox(height: 100),
+                    SizedBox(height: height / 9),
                   ],
                 ),
               ),
