@@ -33,6 +33,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
     super.initState();
   }
 
+  void allValueInit() {
+    FocusScope.of(context).requestFocus(FocusNode());
+    _customDatePickerCtrl.setDateToToday();
+    _warehousingGreenBeanCtrl.weightTECtrl.clear();
+    _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
+    _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -281,7 +289,10 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                     child: Row(
                       children: [
                         OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
+                            if (confirm) allValueInit();
+                          },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                           ),

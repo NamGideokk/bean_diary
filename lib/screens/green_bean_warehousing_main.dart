@@ -34,6 +34,13 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
     super.initState();
   }
 
+  void allValueInit() {
+    FocusScope.of(context).requestFocus(FocusNode());
+    _customDatePickerCtrl.setDateToToday();
+    _warehousingGreenBeanCtrl.companyTECtrl.clear();
+    _warehousingGreenBeanCtrl.weightTECtrl.clear();
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -145,7 +152,10 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                       Row(
                         children: [
                           OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
+                              if (confirm) allValueInit();
+                            },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                             ),
@@ -212,12 +222,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                   bgColor: insertResult ? Colors.green : Colors.red,
                                 );
 
-                                if (insertResult) {
-                                  FocusScope.of(context).requestFocus(FocusNode());
-                                  _customDatePickerCtrl.setDateToToday();
-                                  _warehousingGreenBeanCtrl.companyTECtrl.clear();
-                                  _warehousingGreenBeanCtrl.weightTECtrl.clear();
-                                }
+                                if (insertResult) allValueInit();
                               },
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),

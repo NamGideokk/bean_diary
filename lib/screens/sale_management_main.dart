@@ -31,11 +31,10 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
   }
 
   void allValueInit() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     _customDatePickerCtrl.setDateToToday();
     _roastingBeanSalesCtrl.companyTECtrl.clear();
     _roastingBeanSalesCtrl.weightTECtrl.clear();
-    if (!mounted) return;
-    FocusScope.of(context).requestFocus(FocusNode());
   }
 
   void onTapSalesButton() async {
@@ -190,12 +189,8 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                         children: [
                           OutlinedButton(
                             onPressed: () async {
-                              bool confirm = await CustomDialog().showAlertDialog(context, "입력값 초기화", "모든 값을 초기화하시겠습니까?");
-                              if (confirm) {
-                                allValueInit();
-                              } else {
-                                return;
-                              }
+                              bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
+                              if (confirm) allValueInit();
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
