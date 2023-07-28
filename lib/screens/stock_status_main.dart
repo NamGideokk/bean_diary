@@ -92,7 +92,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           SizedBox(
-                                            width: width / 4.5,
+                                            width: width / 4,
                                             child: Text(
                                               Utility().dateFormattingYYMMDD(history[i]["date"]),
                                               style: TextStyle(
@@ -184,7 +184,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               SizedBox(
-                                                width: width / 4.5,
+                                                width: width / 4,
                                                 child: Text(
                                                   Utility().dateFormattingYYMMDD(history[i]["date"]),
                                                   style: TextStyle(

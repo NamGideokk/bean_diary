@@ -159,7 +159,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                           style: TextStyle(
                                             fontSize: height / 52,
                                           ),
-                                          onTap: () => Utility().moveScrolling(_scrollCtrl),
                                         ),
                                       ),
                                       IconButton(

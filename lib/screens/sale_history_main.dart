@@ -144,7 +144,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                             _saleHistoryCtrl.showList[index]["name"],
                                             style: TextStyle(
                                               color: Colors.black87,
-                                              fontSize: height / 50,
+                                              fontSize: height / 54,
                                             ),
                                           ),
                                         ],
@@ -155,7 +155,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                       "${Utility().parseToDoubleWeight(_saleHistoryCtrl.showList[index]["sales_weight"])}kg",
                                       style: TextStyle(
                                         color: Colors.black87,
-                                        fontSize: height / 44,
+                                        fontSize: height / 48,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),

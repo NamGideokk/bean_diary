@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:bean_diary/controller/custom_date_picker_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
@@ -128,15 +127,6 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                   suffixText: "kg",
                                 ),
                                 onTap: () => Utility().moveScrolling(_scrollCtrl),
-                                // Future.delayed(const Duration(milliseconds: 300), () {
-                                //   if (_scrollCtrl.hasClients) {
-                                //     _scrollCtrl.animateTo(
-                                //       _scrollCtrl.position.maxScrollExtent,
-                                //       duration: const Duration(milliseconds: 450),
-                                //       curve: Curves.easeInOut,
-                                //     );
-                                //   }
-                                // });
                               ),
                             ),
                           ],
