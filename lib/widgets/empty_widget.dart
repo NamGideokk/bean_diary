@@ -9,13 +9,15 @@ class EmptyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Text(
           content,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.grey,
+            fontSize: height / 60,
           ),
         ),
       ),

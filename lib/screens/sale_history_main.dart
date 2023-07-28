@@ -31,24 +31,26 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("판매 내역"),
-        centerTitle: true,
-      ),
-      floatingActionButton: FloatingActionButton.small(
-        backgroundColor: Colors.brown.withOpacity(0.85),
-        foregroundColor: Colors.white,
-        tooltip: "날짜순",
-        elevation: 3,
-        onPressed: () => _saleHistoryCtrl.setReverseDate(),
-        child: Icon(
-          CupertinoIcons.arrow_up_arrow_down,
-          size: height / 40,
+    return Obx(
+      () => Scaffold(
+        appBar: AppBar(
+          title: const Text("판매 내역"),
+          centerTitle: true,
         ),
-      ),
-      body: Obx(
-        () => Container(
+        floatingActionButton: _saleHistoryCtrl.totalList.length > 0
+            ? FloatingActionButton.small(
+                backgroundColor: Colors.brown.withOpacity(0.85),
+                foregroundColor: Colors.white,
+                tooltip: "날짜순",
+                elevation: 3,
+                onPressed: () => _saleHistoryCtrl.setReverseDate(),
+                child: Icon(
+                  CupertinoIcons.arrow_up_arrow_down,
+                  size: height / 40,
+                ),
+              )
+            : const SizedBox(),
+        body: Container(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

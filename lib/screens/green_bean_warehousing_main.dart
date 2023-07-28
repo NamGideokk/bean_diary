@@ -118,7 +118,6 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 textAlign: TextAlign.center,
                                 controller: _warehousingGreenBeanCtrl.weightTECtrl,
                                 focusNode: _weightFN,
-                                keyboardType: Platform.isAndroid ? TextInputType.number : null,
                                 style: TextStyle(
                                   fontSize: height / 52,
                                 ),
@@ -157,12 +156,12 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                               if (confirm) allValueInit();
                             },
                             style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                             ),
                             child: Text(
                               "초기화",
                               style: TextStyle(
-                                fontSize: height / 46,
+                                fontSize: height / 50,
                               ),
                             ),
                           ),
@@ -225,12 +224,12 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 if (insertResult) allValueInit();
                               },
                               style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                               ),
                               child: Text(
                                 "입고",
                                 style: TextStyle(
-                                  fontSize: height / 46,
+                                  fontSize: height / 50,
                                 ),
                               ),
                             ),

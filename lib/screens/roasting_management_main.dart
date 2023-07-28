@@ -294,12 +294,12 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                             if (confirm) allValueInit();
                           },
                           style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                           ),
                           child: Text(
                             "초기화",
                             style: TextStyle(
-                              fontSize: height / 46,
+                              fontSize: height / 50,
                             ),
                           ),
                         ),
@@ -524,12 +524,12 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                             ),
                             child: Text(
                               "로스팅",
                               style: TextStyle(
-                                fontSize: height / 46,
+                                fontSize: height / 50,
                               ),
                             ),
                           ),

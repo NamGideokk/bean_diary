@@ -193,12 +193,12 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                               if (confirm) allValueInit();
                             },
                             style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                             ),
                             child: Text(
                               "초기화",
                               style: TextStyle(
-                                fontSize: height / 46,
+                                fontSize: height / 50,
                               ),
                             ),
                           ),
@@ -207,12 +207,12 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                             child: ElevatedButton(
                               onPressed: onTapSalesButton,
                               style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                               ),
                               child: Text(
                                 "판매",
                                 style: TextStyle(
-                                  fontSize: height / 46,
+                                  fontSize: height / 50,
                                 ),
                               ),
                             ),

@@ -4,6 +4,7 @@ import 'package:bean_diary/screens/sale_history_main.dart';
 import 'package:bean_diary/screens/sale_management_main.dart';
 import 'package:bean_diary/screens/stock_status_main.dart';
 import 'package:bean_diary/utility/colors_list.dart';
+import 'package:bean_diary/widgets/drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -115,7 +116,7 @@ class MyApp extends StatelessWidget {
         expansionTileTheme: ExpansionTileThemeData(
           tilePadding: const EdgeInsets.fromLTRB(15, 0, 5, 0),
           collapsedBackgroundColor: Colors.brown[50],
-          backgroundColor: Colors.brown[100]!.withOpacity(0.7),
+          backgroundColor: Colors.brown[100]!.withOpacity(0.5),
         ),
         dividerTheme: const DividerThemeData(
           color: Colors.brown,
@@ -200,81 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         leadingWidth: 44,
       ),
-      drawer: Container(
-        padding: const EdgeInsets.only(bottom: 10),
-        color: Colors.brown[50],
-        width: width * 0.85,
-        child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                height: height / 5,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.brown[100]!,
-                      Colors.brown[50]!,
-                    ],
-                  ),
-                ),
-              ),
-              Column(
-                children: [
-                  Image.asset(
-                    "assets/images/logo.png",
-                    width: height / 14,
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    "Bean Diary",
-                    style: TextStyle(
-                      fontSize: height / 60,
-                      color: Colors.black54,
-                      height: 0.6,
-                    ),
-                  ),
-                  Text(
-                    "원두 다이어리",
-                    style: TextStyle(
-                      fontSize: height / 40,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(),
-              Column(
-                children: [
-                  Text(
-                    "v1.0.0",
-                    style: TextStyle(
-                      fontSize: height / 58,
-                    ),
-                  ),
-                  Text(
-                    "created by 남기덕",
-                    style: TextStyle(
-                      fontSize: height / 58,
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  Text(
-                    "all icons created by Freepik - Flaticon",
-                    style: TextStyle(
-                      color: Colors.black26,
-                      fontSize: height / 70,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: const DrawerWidget(),
       body: Container(
         padding: const EdgeInsets.all(15.0),
         height: height,
