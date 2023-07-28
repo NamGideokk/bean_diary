@@ -4,8 +4,10 @@ import 'package:bean_diary/screens/sale_history_main.dart';
 import 'package:bean_diary/screens/sale_management_main.dart';
 import 'package:bean_diary/screens/stock_status_main.dart';
 import 'package:bean_diary/utility/colors_list.dart';
+import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/drawer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 void main() async {
@@ -191,48 +193,63 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("원두 다이어리"),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 15),
-          child: Image.asset("assets/images/logo.png"),
-        ),
-        leadingWidth: 44,
-      ),
-      drawer: const DrawerWidget(),
-      body: Container(
-        padding: const EdgeInsets.all(15.0),
-        height: height,
-        color: Colors.brown[700],
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              GridView.builder(
-                shrinkWrap: true,
-                itemCount: _menus.length,
-                physics: const ClampingScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.25,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                itemBuilder: (context, index) => _MenuButton(
-                  menus: _menus,
-                  index: index,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => _menus[index]["screen"],
-                      ),
-                    );
-                  },
-                ),
+    return WillPopScope(
+      onWillPop: () async {
+        bool confirm = await CustomDialog().showAlertDialog(context, "앱 종료", "앱을 종료하시겠습니까?");
+        if (confirm) {
+          SystemNavigator.pop();
+          return true;
+        } else {
+          return false;
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("원두 다이어리"),
+          leading: Builder(
+            builder: (context) => GestureDetector(
+              onTap: () => Scaffold.of(context).openDrawer(),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Image.asset("assets/images/logo.png"),
               ),
-            ],
+            ),
+          ),
+          leadingWidth: 44,
+        ),
+        drawer: const DrawerWidget(),
+        body: Container(
+          padding: const EdgeInsets.all(15.0),
+          height: height,
+          color: Colors.brown[700],
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: _menus.length,
+                  physics: const ClampingScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.25,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                  ),
+                  itemBuilder: (context, index) => _MenuButton(
+                    menus: _menus,
+                    index: index,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => _menus[index]["screen"],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
