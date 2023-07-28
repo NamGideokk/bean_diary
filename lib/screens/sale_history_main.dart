@@ -107,7 +107,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                 textBaseline: TextBaseline.ideographic,
                                 children: [
                                   Text(
-                                    Utility().pasteTextToDate(_saleHistoryCtrl.showList[index]["date"]),
+                                    Utility().dateFormattingYYMMDD(_saleHistoryCtrl.showList[index]["date"]),
                                     style: TextStyle(
                                       fontSize: height / 54,
                                       color: Colors.brown[700],
@@ -166,7 +166,6 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                       ),
                     )
                   : const EmptyWidget(content: "원두 판매 내역이 없습니다."),
-              // SizedBox(height: height / 10),
             ],
           ),
         ),

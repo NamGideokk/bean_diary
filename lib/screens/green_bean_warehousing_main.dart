@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:bean_diary/controller/custom_date_picker_controller.dart';
@@ -9,7 +10,7 @@ import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
-import 'package:bean_diary/widgets/regist_green_bean.dart';
+import 'package:bean_diary/screens/regist_green_bean.dart';
 import 'package:bean_diary/widgets/weight_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,7 +32,6 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
   @override
   void initState() {
     super.initState();
-    print("🙌 GREEN BEAN MANAGEMENT MAIN INIT");
   }
 
   @override
@@ -187,12 +187,18 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
 
                                 String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
                                 String weight = _warehousingGreenBeanCtrl.weightTECtrl.text.replaceAll(".", "");
+                                String history = jsonEncode([
+                                  {
+                                    "date": date,
+                                    "company": _warehousingGreenBeanCtrl.companyTECtrl.text.trim(),
+                                    "weight": weight,
+                                  },
+                                ]);
 
                                 Map<String, String> value = {
                                   "name": _warehousingGreenBeanCtrl.selectedBean,
                                   "weight": weight,
-                                  "date": date,
-                                  "company": _warehousingGreenBeanCtrl.companyTECtrl.text.trim(),
+                                  "history": history,
                                 };
 
                                 var insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock(value);

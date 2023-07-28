@@ -21,12 +21,10 @@ class RoastingBeanSalesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print("⭕️ ROASTING BEAN SALES CONTROLLER INIT");
     getRoastingBeanStockList();
   }
 
   getRoastingBeanStockList() async {
-    await RoastingBeanStockSqfLite().openDB();
     List list = await RoastingBeanStockSqfLite().getRoastingBeanStock();
     if (list.isNotEmpty) {
       list = Utility().sortingName(list);
@@ -35,8 +33,6 @@ class RoastingBeanSalesController extends GetxController {
         _beanMapDataList.add(item);
       }
     }
-    print("원 두 재 고 가 져 옴 : $_beanList");
-    print("원 두 재 고 맵 데 이 터 넣 음 : $_beanMapDataList");
   }
 
   void setSelectBean(String value) {
@@ -59,6 +55,5 @@ class RoastingBeanSalesController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    print("❌ ROASTING BEAN SALES CONTROLLER CLOSE");
   }
 }

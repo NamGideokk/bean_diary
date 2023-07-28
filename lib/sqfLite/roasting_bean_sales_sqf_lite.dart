@@ -16,8 +16,8 @@ class RoastingBeanSalesSqfLite {
           ),
           version: version,
         );
-        print("$tableName DB 생성 >>> $db");
-        print("===========================\n\n\n$tableName DB PATH >>> ${getDatabasesPath()}");
+        // print("$tableName DB 생성 >>> $db");
+        // print("===========================\n\n\n$tableName DB PATH >>> ${getDatabasesPath()}");
       } else {
         return null;
       }

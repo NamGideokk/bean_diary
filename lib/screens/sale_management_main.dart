@@ -28,7 +28,6 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
   @override
   void initState() {
     super.initState();
-    print("🙌 SALE MANAGEMENT MAIN INIT");
   }
 
   void allValueInit() async {
@@ -76,7 +75,6 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
     _roastingBeanSalesCtrl.beanMapDataList.forEach((e) {
       if (name == e["name"]) type = e["type"].toString();
     });
-    // String type =
     String sales_weight = _roastingBeanSalesCtrl.weightTECtrl.text.trim().replaceAll(".", "");
     String company = _roastingBeanSalesCtrl.companyTECtrl.text.trim();
     String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
@@ -110,8 +108,6 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
       return;
     }
   }
-
-  void showSnackBar() {}
 
   @override
   void dispose() {

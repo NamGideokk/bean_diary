@@ -11,17 +11,14 @@ class RegistGreenBeanController extends GetxController {
   void onInit() {
     super.onInit();
     getGreenBeanList();
-    print("⭕️ REGIST GREEN BEAN CONTROLLER INIT");
   }
 
   void getGreenBeanList() async {
-    await GreenBeansSqfLite().openDB();
     final list = await GreenBeansSqfLite().getGreenBeans();
     if (list.isNotEmpty) {
       List sortingList = Utility().sortingName(list);
       _greenBeanList(sortingList);
     }
-    print("등 록 용 생 두 목 록 : \n$_greenBeanList");
   }
 
   void deleteGreenBeanElement(int index) {
@@ -33,6 +30,5 @@ class RegistGreenBeanController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    print("❌ REGIST GREEN BEAN CONTROLLER CLOSE");
   }
 }

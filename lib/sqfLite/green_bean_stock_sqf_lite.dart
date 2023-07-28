@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -12,12 +14,12 @@ class GreenBeanStockSqfLite {
         db = await openDatabase(
           join(await getDatabasesPath(), "$tableName.db"),
           onCreate: (db, version) => db.execute(
-            'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, name TEXT NOT NULL, weight INTEGER, date TEXT NOT NULL, company TEXT NOT NULL)',
+            'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, name TEXT NOT NULL, weight INTEGER, history TEXT NOT NULL)',
           ),
           version: version,
         );
-        print("$tableName DB 생성 >>> $db");
-        print("===========================\n\n\n$tableName DB PATH >>> ${getDatabasesPath()}");
+        // print("$tableName DB 생성 >>> $db");
+        // print("===========================\n\n\n$tableName DB PATH >>> ${getDatabasesPath()}");
       } else {
         return null;
       }
@@ -33,7 +35,6 @@ class GreenBeanStockSqfLite {
       final db = await openDB();
       if (db != null) {
         final List result = await db.query(tableName);
-        print(result);
         return result;
       } else {
         return [];
@@ -44,20 +45,23 @@ class GreenBeanStockSqfLite {
     }
   }
 
-  Future insertGreenBeanStock(Map<String, String> value) async {
+  Future insertGreenBeanStock(Map<String, dynamic> value) async {
     try {
       final db = await openDB();
       if (db != null) {
         List? findWeight = await db.rawQuery(
-          "SELECT weight FROM $tableName WHERE name = ?",
+          "SELECT weight, history FROM $tableName WHERE name = ?",
           [value["name"]],
         );
         if (findWeight.isNotEmpty) {
           int beforeWeight = findWeight[0]["weight"];
+          List decodeHistory = jsonDecode(findWeight[0]["history"]);
+          List insertHistory = jsonDecode(value["history"]);
           await db.rawUpdate(
-            "UPDATE $tableName SET `weight` = ? WHERE name = ?",
+            "UPDATE $tableName SET `weight` = ?, 'history' = ? WHERE name = ?",
             [
               beforeWeight + int.parse(value["weight"]!),
+              jsonEncode([...decodeHistory, ...insertHistory]),
               value["name"],
             ],
           );
@@ -76,8 +80,6 @@ class GreenBeanStockSqfLite {
   }
 
   Future updateWeightGreenBeanStock(Map<String, String> value) async {
-    print("⚽️ 무 게 업 데 이 트 실 행");
-    print("V  A  L  U  E : $value");
     try {
       final db = await openDB();
       if (db != null) {
@@ -94,7 +96,6 @@ class GreenBeanStockSqfLite {
               value["name"],
             ],
           );
-          print("WEIGHTㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n$beforeWeight ,,,,,,,,,,, ${int.parse(value["weight"]!)}");
           return true;
         } else {
           await db.insert(tableName, value);

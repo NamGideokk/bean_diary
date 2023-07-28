@@ -14,7 +14,6 @@ class CustomDatePickerController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print("⭕️ CUSTOM DATE PICKER CONTROLLER INIT");
     _year(_now.year.toString());
     _month(_now.month.toString());
     _day(_now.day.toString());
@@ -46,6 +45,5 @@ class CustomDatePickerController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    print("❌️ CUSTOM DATE PICKER CONTROLLER CLOSE");
   }
 }

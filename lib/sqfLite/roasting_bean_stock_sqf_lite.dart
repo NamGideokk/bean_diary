@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -12,12 +14,12 @@ class RoastingBeanStockSqfLite {
         db = await openDatabase(
           join(await getDatabasesPath(), "$tableName.db"),
           onCreate: (db, version) => db.execute(
-            'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, type TEXT NOT NULL, name TEXT NOT NULL, roasting_weight INTEGER, date TEXT NOT NULL)',
+            'CREATE TABLE $tableName(id INTEGER PRIMARY KEY, type TEXT NOT NULL, name TEXT NOT NULL, roasting_weight INTEGER, history TEXT NOT NULL)',
           ),
           version: version,
         );
-        print("$tableName DB 생성 >>> $db");
-        print("===========================\n\n\n$tableName DB PATH >>> ${getDatabasesPath()}");
+        // print("$tableName DB 생성 >>> $db");
+        // print("===========================\n\n\n$tableName DB PATH >>> ${getDatabasesPath()}");
       } else {
         return null;
       }
@@ -33,7 +35,6 @@ class RoastingBeanStockSqfLite {
       final db = await openDB();
       if (db != null) {
         final List result = await db.query(tableName);
-        print("☕️ 로 스 팅 빈 S T O C K :\n$result");
         return result;
       } else {
         return [];
@@ -49,15 +50,18 @@ class RoastingBeanStockSqfLite {
       final db = await openDB();
       if (db != null) {
         List? findWeight = await db.rawQuery(
-          "SELECT roasting_weight FROM $tableName WHERE name = ?",
+          "SELECT roasting_weight, history FROM $tableName WHERE name = ?",
           [value["name"]],
         );
         if (findWeight.isNotEmpty) {
           int beforeWeight = findWeight[0]["roasting_weight"];
+          List decodeHistory = jsonDecode(findWeight[0]["history"]);
+          List insertHistory = jsonDecode(value["history"]!);
           await db.rawUpdate(
-            "UPDATE $tableName SET `roasting_weight` = ? WHERE name = ?",
+            "UPDATE $tableName SET `roasting_weight` = ?, 'history' = ? WHERE name = ?",
             [
               beforeWeight + int.parse(value["roasting_weight"]!),
+              jsonEncode([...decodeHistory, ...insertHistory]),
               value["name"],
             ],
           );

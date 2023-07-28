@@ -16,7 +16,6 @@ class CustomDialog {
           color: Colors.white,
         ),
       ),
-      // duration: const Duration(seconds: 30),
     );
   }
 
@@ -46,7 +45,7 @@ class CustomDialog {
                   onPressed: () {
                     Navigator.pop(context, false);
                   },
-                  child: Text("취소"),
+                  child: const Text("취소"),
                 ),
                 TextButton(
                   onPressed: () {
@@ -64,7 +63,7 @@ class CustomDialog {
               content: Text(content),
               actions: [
                 CupertinoDialogAction(
-                  child: Text("취소"),
+                  child: const Text("취소"),
                   onPressed: () {
                     Navigator.pop(context, false);
                   },

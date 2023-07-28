@@ -46,6 +46,12 @@ class Utility {
   /// 날짜에 년월일 붙이기
   String pasteTextToDate(String date) => "${date.replaceFirst("-", "년 ").replaceFirst("-", "월 ")}일";
 
+  /// 날짜 형식 (YY-MM-DD)
+  String dateFormattingYYMMDD(String date) {
+    List divideDate = date.split("-");
+    return "${divideDate[0]}-${divideDate[1].padLeft(2, "0")}-${divideDate[2].padLeft(2, "0")}";
+  }
+
   /// 날짜순 정렬
   List sortingDate(List list) {
     List copyList = [...list];
@@ -53,9 +59,6 @@ class Utility {
       List divide = e["date"].toString().split("-");
       String month = divide[1].toString().padLeft(2, "0");
       String day = divide[2].toString().padLeft(2, "0");
-
-      // e["date"] = divide[0] + month + day;
-      print(e["date"]);
     });
     copyList.sort((a, b) => a["date"].compareTo(b["date"]));
     return copyList;

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bean_diary/controller/custom_date_picker_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
@@ -73,7 +75,12 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               onChanged: (value) {
                                 _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
                               },
-                              title: Text("싱글오리진"),
+                              title: Text(
+                                "싱글오리진",
+                                style: TextStyle(
+                                  fontSize: height / 54,
+                                ),
+                              ),
                             ),
                           ),
                           Expanded(
@@ -85,7 +92,12 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               onChanged: (value) {
                                 _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
                               },
-                              title: const Text("블렌드"),
+                              title: Text(
+                                "블렌드",
+                                style: TextStyle(
+                                  fontSize: height / 54,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -140,7 +152,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                       ),
                                       IconButton(
                                         onPressed: () {
-                                          print("삭제");
                                           _warehousingGreenBeanCtrl.deleteBlendBeanList(index);
                                         },
                                         icon: Icon(
@@ -270,9 +281,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                     child: Row(
                       children: [
                         OutlinedButton(
-                          onPressed: () {
-                            print("초기화");
-                          },
+                          onPressed: () {},
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                           ),
@@ -289,24 +298,19 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                             onPressed: () async {
                               // 블렌드
                               if (_warehousingGreenBeanCtrl.roastingType == 2) {
-                                print("= = = = = = = = = = = = = = 블 렌 드 = = = = = = = = = = =\n\n\n");
                                 if (_warehousingGreenBeanCtrl.blendBeanList.isEmpty) {
                                   CustomDialog().showFloatingSnackBar(context, "투입할 생두를 선택해 주세요.");
                                   FocusScope.of(context).requestFocus(FocusNode());
                                   return;
                                 }
                                 // 여기서부터 블렌드 n개 체크하기
-                                print("🐡 WEIGHT LIST TECTRL 체크 : ${_warehousingGreenBeanCtrl.weightTECtrlList.length}");
-
                                 _warehousingGreenBeanCtrl.weightTECtrlList.asMap().forEach((i, e) {
-                                  print("i i i i i ii i i i : $i");
                                   var divide = _warehousingGreenBeanCtrl.blendBeanList[i].toString().split(" / ");
 
                                   if (e.text == "") {
                                     CustomDialog().showFloatingSnackBar(context, "[${divide[0]}]\n생두의 투입량을 입력해 주세요.");
                                     return;
                                   }
-                                  print("🐙 BLEND WEIGHT LIST i : *$i*>>>> \n ${e.text}");
                                   var result = Utility().checkWeightRegEx(e.text.trim());
                                   e.text = result["replaceValue"];
 
@@ -317,7 +321,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     );
                                     return;
                                   } else {
-                                    print("⚽️ ${_warehousingGreenBeanCtrl.blendBeanList[i]}");
                                     int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.kg]"), ""));
                                     int inputWeight = int.parse(e.text.trim().replaceAll(".", ""));
                                     if (totalWeight < inputWeight) {
@@ -359,16 +362,21 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   return;
                                 }
 
-                                print("☕️ ${_warehousingGreenBeanCtrl.blendBeanList}");
                                 String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
                                 String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", "");
+                                String history = jsonEncode([
+                                  {
+                                    "date": date,
+                                    "roasting_weight": roastingWeight,
+                                  },
+                                ]);
 
-                                // type, name, roasting_weight, date
+                                // type, name, roasting_weight, history
                                 Map<String, String> value = {
                                   "type": _warehousingGreenBeanCtrl.roastingType.toString(),
                                   "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
                                   "roasting_weight": roastingWeight,
-                                  "date": date,
+                                  "history": history,
                                 };
 
                                 bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
@@ -385,10 +393,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 if (insertResult) {
                                   // 드롭다운버튼 생두 무게 리프레쉬
                                   _warehousingGreenBeanCtrl.blendBeanList.asMap().forEach((i, e) {
-                                    print("블렌드 인서트 성공하고 하나씩 꺼내기 : $i번째 : $e");
                                     String useWeight = _warehousingGreenBeanCtrl.weightTECtrlList[i].text.replaceAll(".", "");
-                                    print("$e의 무게 : $useWeight");
-                                    print("🥶💯 이름 추출 : ${e.toString().split(" / ")[0]}");
                                     Map<String, String> updateValue = {
                                       "type": _warehousingGreenBeanCtrl.roastingType.toString(),
                                       "name": e.toString().split(" / ")[0],
@@ -410,7 +415,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               }
 
                               // 1
-                              print("싱글오리진");
                               if (_warehousingGreenBeanCtrl.selectedBean == null) {
                                 CustomDialog().showFloatingSnackBar(context, "투입할 생두를 선택해 주세요.");
                                 FocusScope.of(context).requestFocus(FocusNode());
@@ -466,13 +470,19 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
 
                               String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
                               String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", "");
+                              String history = jsonEncode([
+                                {
+                                  "date": date,
+                                  "roasting_weight": roastingWeight,
+                                },
+                              ]);
 
-                              // type, name, roasting_weight, date
+                              // type, name, roasting_weight, history
                               Map<String, String> value = {
                                 "type": _warehousingGreenBeanCtrl.roastingType.toString(),
                                 "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
                                 "roasting_weight": roastingWeight,
-                                "date": date,
+                                "history": history,
                               };
 
                               bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);

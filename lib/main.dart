@@ -7,8 +7,9 @@ import 'package:bean_diary/utility/colors_list.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // await Future.delayed(const Duration(seconds: 2));
   runApp(const MyApp());
 }
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xff2f2722),
+          backgroundColor: const Color(0xff2f2722),
           foregroundColor: Colors.white,
           titleTextStyle: TextStyle(
             fontSize: height / 40,
@@ -112,9 +113,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
         expansionTileTheme: ExpansionTileThemeData(
-          // childrenPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+          tilePadding: const EdgeInsets.fromLTRB(15, 0, 5, 0),
           collapsedBackgroundColor: Colors.brown[50],
-          backgroundColor: Colors.brown[100],
+          backgroundColor: Colors.brown[100]!.withOpacity(0.7),
         ),
         dividerTheme: const DividerThemeData(
           color: Colors.brown,
@@ -200,14 +201,27 @@ class _MyHomePageState extends State<MyHomePage> {
         leadingWidth: 44,
       ),
       drawer: Container(
+        padding: const EdgeInsets.only(bottom: 10),
         color: Colors.brown[50],
-        padding: const EdgeInsets.all(10),
         width: width * 0.85,
         child: SafeArea(
+          top: false,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(),
+              Container(
+                height: height / 5,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.brown[100]!,
+                      Colors.brown[50]!,
+                    ],
+                  ),
+                ),
+              ),
               Column(
                 children: [
                   Image.asset(
@@ -232,6 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
+              const SizedBox(),
               Column(
                 children: [
                   Text(
@@ -273,7 +288,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 physics: const ClampingScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 1.4,
+                  childAspectRatio: 1.25,
                   crossAxisSpacing: 20,
                   mainAxisSpacing: 20,
                 ),

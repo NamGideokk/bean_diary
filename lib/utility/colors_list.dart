@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
 
 class ColorsList {
-  final bgColor = Color(0xffFFFEFD);
+  final bgColor = const Color(0xffFFFEFD);
 }

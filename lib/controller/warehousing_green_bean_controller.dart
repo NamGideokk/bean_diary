@@ -44,8 +44,6 @@ class WarehousingGreenBeanController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // getBeanList();
-    print("⭕️ WAREHOUSING GREEN BEAN CONTROLLER INIT");
   }
 
   setListType(int value) {
@@ -58,13 +56,11 @@ class WarehousingGreenBeanController extends GetxController {
   }
 
   getBeanList() async {
-    print("😍 종합 원두 목록 가져오기 타입 : $listType");
     _beanList.clear();
     switch (listType) {
       // 생두
       case 0:
         {
-          await GreenBeansSqfLite().openDB();
           List beanList = await GreenBeansSqfLite().getGreenBeans();
           if (beanList.isNotEmpty) {
             beanList = Utility().sortingName(beanList);
@@ -72,7 +68,6 @@ class WarehousingGreenBeanController extends GetxController {
               _beanList.add(item["name"]);
             }
           }
-          print("🌿 원두리스트 ::: $_beanList");
           _isLoading(false);
           return;
         }
@@ -85,7 +80,6 @@ class WarehousingGreenBeanController extends GetxController {
       // 생두 재고
       case 2:
         {
-          await GreenBeanStockSqfLite().openDB();
           List greenBeanStockList = await GreenBeanStockSqfLite().getGreenBeanStock();
           if (greenBeanStockList.isNotEmpty) {
             for (var item in greenBeanStockList) {
@@ -93,9 +87,6 @@ class WarehousingGreenBeanController extends GetxController {
               _greenBeanStockList.add({item["name"]: item["weight"]});
             }
           }
-          // _beanList(greenBeanStockList);
-          print("🥶 생두 재고 리스트 : $_beanList");
-          print(" 💯 생두 재고 맵 데이터 : $_greenBeanStockList");
           _isLoading(false);
           return;
         }
@@ -149,7 +140,6 @@ class WarehousingGreenBeanController extends GetxController {
       return;
     }
     addWeightCtrlList();
-    print("블렌드 목록에 생두 추가하기");
     final addElement = Rxn<String>();
     addElement(value);
     _blendBeanList.add(addElement);
@@ -179,6 +169,5 @@ class WarehousingGreenBeanController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    print("❌  WAREHOUSING GREEN BEAN CONTROLLER CLOSE");
   }
 }

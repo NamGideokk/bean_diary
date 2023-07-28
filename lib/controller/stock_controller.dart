@@ -12,28 +12,22 @@ class StockController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print("⭕️ STOCK CONTROLLER INIT");
     getGreenBeanList();
     getRoastingBeanStockList();
   }
 
   void getGreenBeanList() async {
-    await GreenBeanStockSqfLite().openDB();
     final list = await GreenBeanStockSqfLite().getGreenBeanStock();
-    print("🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸 생 두 재 고 🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸🇺🇸\n$list");
     if (list.isNotEmpty) _greenBeanStockList(list);
   }
 
   void getRoastingBeanStockList() async {
-    await RoastingBeanStockSqfLite().openDB();
     final list = await RoastingBeanStockSqfLite().getRoastingBeanStock();
-    print("🇰🇵🇰🇵🇰🇵🇰🇵🇰🇵🇰🇵🇰🇵 원 두 재 고 🇰🇵🇰🇵🇰🇵🇰🇵🇰🇵🇰🇵🇰🇵🇰🇵\n$list");
     if (list.isNotEmpty) _roastingBeanStockList(list);
   }
 
   @override
   void onClose() {
     super.onClose();
-    print("❌ STOCK CONTROLLER CLOSE");
   }
 }

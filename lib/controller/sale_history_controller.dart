@@ -20,12 +20,10 @@ class SaleHistoryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print("⭕️ SALE HISTORY CONTROLLER INIT");
     getSaleHistory();
   }
 
   void getSaleHistory() async {
-    await RoastingBeanSalesSqfLite().openDB();
     List list = await RoastingBeanSalesSqfLite().getRoastingBeanSales();
     if (list.isNotEmpty) {
       list = Utility().sortingDate(list);
@@ -66,6 +64,5 @@ class SaleHistoryController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    print("❌️ SALE HISTORY CONTROLLER CLOSE");
   }
 }
