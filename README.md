@@ -24,3 +24,13 @@ Packages
   <img src="https://github.com/NamGideokk/bean_diary/assets/96227239/7515b3e9-1911-414d-ad30-eaae54dd50d7" width="200px">
 </p>
 <br>
+
+## 라이센스
+사용 아이콘
+<a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/warehouse" title="warehouse icons">Warehouse icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/coffee-truck" title="coffee truck icons">Coffee truck icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/roaster" title="roaster icons">Roaster icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/food-and-restaurant" title="food and restaurant icons">Food and restaurant icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/data-recovery" title="data recovery icons">Data recovery icons created by Freepik - Flaticon</a>
