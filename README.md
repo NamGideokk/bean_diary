@@ -7,3 +7,7 @@
 - flutter
   - sqflite
   - shared_preferences
+
+
+## 화면 구성
+![001](https://github.com/NamGideokk/bean_diary/assets/96227239/b6bbfccf-a328-45fd-9300-23caaa209ce1)

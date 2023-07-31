@@ -1,3 +1,4 @@
+import 'package:bean_diary/screens/data_backup_main.dart';
 import 'package:bean_diary/screens/green_bean_warehousing_main.dart';
 import 'package:bean_diary/screens/roasting_management_main.dart';
 import 'package:bean_diary/screens/sale_history_main.dart';
@@ -178,6 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
     {"title": "로스팅 관리", "img": "assets/images/roaster.png", "screen": const RoastingManagementMain()},
     {"title": "판매 관리", "img": "assets/images/production.png", "screen": const SaleManagementMain()},
     {"title": "판매 내역", "img": "assets/images/coffee_bag.png", "screen": const SaleHistoryMain()},
+    {"title": "데이터 백업", "img": "assets/images/backup.png", "screen": const DataBackupMain()},
   ];
 
   @override
