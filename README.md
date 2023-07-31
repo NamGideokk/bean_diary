@@ -1,13 +1,14 @@
-# bean_diary
-# - 원두 다이어리
-##   카페 생두, 원두 재고 및 판매 내역 관리
+# bean_diary - 원두 다이어리
+### 카페 생두, 원두 재고 및 판매 내역 관리
+<br>
 
-## skill
-- dart
-- flutter
-  - sqflite
-  - shared_preferences
+## 스킬
+<img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=Dart&logoColor=white"> <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=Flutter&logoColor=white">
 
+Packages
+- GetX
+- sqflite
+  <br>
 
 ## 화면 구성
 <p align="center">
@@ -22,3 +23,4 @@
   <img src="https://github.com/NamGideokk/bean_diary/assets/96227239/7f07fd13-ce26-4ac1-a7cd-c261bec1ab17" width="200px">
   <img src="https://github.com/NamGideokk/bean_diary/assets/96227239/7515b3e9-1911-414d-ad30-eaae54dd50d7" width="200px">
 </p>
+<br>
