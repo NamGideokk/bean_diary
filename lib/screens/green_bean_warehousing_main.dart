@@ -10,7 +10,7 @@ import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/screens/regist_green_bean.dart';
-import 'package:bean_diary/widgets/weight_alert.dart';
+import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -132,7 +132,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        const WeightAlert(),
+                        const UsageAlertWidget(),
                       ],
                     ),
                     SizedBox(height: height / 9),

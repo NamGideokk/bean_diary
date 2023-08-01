@@ -22,6 +22,7 @@ Packages
   <img src="https://github.com/NamGideokk/bean_diary/assets/96227239/246d4289-b193-4e12-aefd-ea7d4329bf64" width="200px">
   <img src="https://github.com/NamGideokk/bean_diary/assets/96227239/7f07fd13-ce26-4ac1-a7cd-c261bec1ab17" width="200px">
   <img src="https://github.com/NamGideokk/bean_diary/assets/96227239/7515b3e9-1911-414d-ad30-eaae54dd50d7" width="200px">
+  <img src="https://github.com/NamGideokk/bean_diary/assets/96227239/af84d03a-9369-49af-afc6-fb7888a1b2e9" width="200px">
 </p>
 <br>
 
