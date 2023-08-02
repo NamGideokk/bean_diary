@@ -37,3 +37,25 @@ Packages
 <a href="https://www.flaticon.com/free-icons/food-and-restaurant" title="food and restaurant icons">Food and restaurant icons created by Freepik - Flaticon</a><br>
 <a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik - Flaticon</a><br>
 <a href="https://www.flaticon.com/free-icons/data-recovery" title="data recovery icons">Data recovery icons created by Freepik - Flaticon</a><br>
+<br>
+
+## 앱 동작
+- 생두 등록 / 관리
+
+<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/5f52c84a-c709-46b3-9b6c-d9d140a44d29" width="300px"><br>
+- - -
+- 생두 입고
+
+<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/6986137c-443f-419e-bd44-dac81e36a865" width="300px"><br>
+- - -
+- 생두 입고 - 초기화
+
+<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/73e6b7a3-064c-4418-b5aa-d735288f1050" width="300px"><br>
+- - -
+- 생두 입고 - 에러 안내
+
+<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/a6d94584-716c-4f94-9cb4-7e7a98d75510" width="300px"><br>
+- - -
+
+
+
