@@ -2,13 +2,25 @@
 ### 카페 생두, 원두 재고 및 판매 내역 관리
 <br>
 
+
+## 목차
+1. [스킬](#스킬)
+2. [화면 구성](#화면-구성)
+3. [앱 동작](#앱-동작)
+4. [라이센스](#라이센스)
+<br>
+
+
 ## 스킬
 <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=Dart&logoColor=white"> <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=Flutter&logoColor=white">
+<br>
+
 
 Packages
 - GetX
 - sqflite
-  <br>
+<br>
+
 
 ## 화면 구성
 <p align="center">
@@ -24,19 +36,6 @@ Packages
   <img src="https://github.com/NamGideokk/bean_diary/assets/96227239/7515b3e9-1911-414d-ad30-eaae54dd50d7" width="200px">
   <img src="https://github.com/NamGideokk/bean_diary/assets/96227239/af84d03a-9369-49af-afc6-fb7888a1b2e9" width="200px">
 </p>
-<br>
-
-## 라이센스
-사용 아이콘
-
-
-<a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik - Flaticon</a><br>
-<a href="https://www.flaticon.com/free-icons/warehouse" title="warehouse icons">Warehouse icons created by Freepik - Flaticon</a><br>
-<a href="https://www.flaticon.com/free-icons/coffee-truck" title="coffee truck icons">Coffee truck icons created by Freepik - Flaticon</a><br>
-<a href="https://www.flaticon.com/free-icons/roaster" title="roaster icons">Roaster icons created by Freepik - Flaticon</a><br>
-<a href="https://www.flaticon.com/free-icons/food-and-restaurant" title="food and restaurant icons">Food and restaurant icons created by Freepik - Flaticon</a><br>
-<a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik - Flaticon</a><br>
-<a href="https://www.flaticon.com/free-icons/data-recovery" title="data recovery icons">Data recovery icons created by Freepik - Flaticon</a><br>
 <br>
 
 ## 앱 동작
@@ -73,9 +72,17 @@ Packages
 |-|--------|
 |시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/62ff272e-4b81-4c4d-acfd-5727394df332" width="300px">
 |비고|- 데이터 보유 시 성공 스낵바 출력<br>- 데이터 미 보유 시 실패 스낵바 출력
+<br>
 
 
+## 라이센스
+사용 아이콘
 
 
-
-
+<a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik - Flaticon</a><br>
+<a href="https://www.flaticon.com/free-icons/warehouse" title="warehouse icons">Warehouse icons created by Freepik - Flaticon</a><br>
+<a href="https://www.flaticon.com/free-icons/coffee-truck" title="coffee truck icons">Coffee truck icons created by Freepik - Flaticon</a><br>
+<a href="https://www.flaticon.com/free-icons/roaster" title="roaster icons">Roaster icons created by Freepik - Flaticon</a><br>
+<a href="https://www.flaticon.com/free-icons/food-and-restaurant" title="food and restaurant icons">Food and restaurant icons created by Freepik - Flaticon</a><br>
+<a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik - Flaticon</a><br>
+<a href="https://www.flaticon.com/free-icons/data-recovery" title="data recovery icons">Data recovery icons created by Freepik - Flaticon</a><br>
