@@ -50,6 +50,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
     }
     if (_roastingBeanSalesCtrl.weightTECtrl.text.trim() == "") {
       CustomDialog().showFloatingSnackBar(context, "판매 중량을 입력해 주세요.");
+      _roastingBeanSalesCtrl.weightFN.requestFocus();
       return;
     } else {
       var result = Utility().checkWeightRegEx(_roastingBeanSalesCtrl.weightTECtrl.text.trim());
@@ -62,8 +63,8 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
       } else {
         int beanTotalWeight = int.parse(_roastingBeanSalesCtrl.selectedBean.toString().split(" / ")[1].replaceAll(RegExp("[.kg]"), ""));
         int salesWeight = int.parse(_roastingBeanSalesCtrl.weightTECtrl.text.replaceAll(".", ""));
-        if (beanTotalWeight <= salesWeight) {
-          CustomDialog().showFloatingSnackBar(context, "판매 중량이 재고량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
+        if (beanTotalWeight < salesWeight) {
+          CustomDialog().showFloatingSnackBar(context, "판매 중량이 재고량보다 클 수 없습니다.\n다시 입력해 주세요.");
           _roastingBeanSalesCtrl.weightFN.requestFocus();
           return;
         }
