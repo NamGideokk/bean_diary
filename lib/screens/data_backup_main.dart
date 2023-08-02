@@ -1,7 +1,10 @@
+import 'package:bean_diary/controller/data_backup_controller.dart';
+import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 class DataBackupMain extends StatefulWidget {
   const DataBackupMain({Key? key}) : super(key: key);
@@ -11,8 +14,57 @@ class DataBackupMain extends StatefulWidget {
 }
 
 class _DataBackupMainState extends State<DataBackupMain> {
+  final _dataBackupCtrl = Get.put(DataBackupController());
+
   void dataRecovery(String? value) {
     print("복구");
+  }
+
+  Future<void> getGreenBeansBackup(int type) async {
+    List list;
+    String title;
+    switch (type) {
+      case 0:
+        await _dataBackupCtrl.getGreenBeans();
+        list = _dataBackupCtrl.greenBeans;
+        title = "생두 목록";
+        break;
+      case 1:
+        await _dataBackupCtrl.getGreenBeanStock();
+        list = _dataBackupCtrl.greenBeanStock;
+        title = "생두 재고";
+        break;
+      case 2:
+        await _dataBackupCtrl.getRoastingBeanStock();
+        list = _dataBackupCtrl.roastingBeanStock;
+        title = "원두 재고";
+        break;
+      case 3:
+        await _dataBackupCtrl.getSalesHistory();
+        list = _dataBackupCtrl.salesHistory;
+        title = "판매 내역";
+        break;
+      default:
+        return;
+    }
+    if (list.isEmpty) {
+      if (!mounted) return;
+      return CustomDialog().showFloatingSnackBar(context, "[$title]\n백업할 데이터가 없습니다.");
+    } else {
+      Clipboard.setData(ClipboardData(text: title + list.toString()));
+      if (!mounted) return;
+      return CustomDialog().showFloatingSnackBar(
+        context,
+        "[$title]\n데이터가 복사되었습니다.",
+        bgColor: Colors.green,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Get.delete<DataBackupController>();
   }
 
   @override
@@ -40,32 +92,22 @@ class _DataBackupMainState extends State<DataBackupMain> {
                       children: [
                         _BackupButton(
                           title: "생두 목록 백업",
-                          onPressed: () async {
-                            print("a");
-                            await Clipboard.setData(ClipboardData(text: "야야야"));
-                            print(Clipboard.hasStrings().then((value) => print("가져왔어요 ${value}를")));
-                          },
+                          onPressed: () => getGreenBeansBackup(0),
                         ),
                         const SizedBox(height: 10),
                         _BackupButton(
                           title: "생두 재고 백업",
-                          onPressed: () {
-                            print("b");
-                          },
+                          onPressed: () => getGreenBeansBackup(1),
                         ),
                         const SizedBox(height: 10),
                         _BackupButton(
                           title: "원두 재고 백업",
-                          onPressed: () {
-                            print("c");
-                          },
+                          onPressed: () => getGreenBeansBackup(2),
                         ),
                         const SizedBox(height: 10),
                         _BackupButton(
                           title: "판매 내역 백업",
-                          onPressed: () {
-                            print("d");
-                          },
+                          onPressed: () => getGreenBeansBackup(3),
                         ),
                       ],
                     ),
@@ -98,9 +140,7 @@ class _DataBackupMainState extends State<DataBackupMain> {
                     const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () => dataRecovery(""),
-                      child: Text(
-                        "복구",
-                      ),
+                      child: const Text("복구"),
                     ),
                   ],
                 ),
