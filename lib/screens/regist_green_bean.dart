@@ -80,6 +80,7 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
       if (result) {
         _registGreenBeanCtrl.deleteGreenBeanElement(index);
         _warehousingGreenBeanCtrl.deleteBeanList(index);
+        _warehousingGreenBeanCtrl.getBeanList();
       } else {}
     }
     return;
