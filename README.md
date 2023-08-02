@@ -59,10 +59,15 @@ Packages
 |시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/b8cd5434-a1f1-45bb-9f32-089b1b745497" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/a3bbc141-f7ff-4f2f-a9e9-bd1361c16eee" width="300px">
 |비고|판매 등록 후<br>- 드롭다운 항목의 판매량만큼 보유량 바로 차감|입력 중량 체크 사항<br>- 보유 재고량보다 판매량이 높을 수 없음
 - - -
-| |판매내역|
+| |판매 내역|
 |-|------|
 |시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/1570b50a-02a2-4566-9894-b69b30541757" width="300px">
 |비고|- 로스팅 타입별 보기 필터<br>- 기본 판매일 오름차순 정렬<br>- 하단 FAB 판매일 reverse 정렬
+- - -
+| |재고 현황|
+|-|-------|
+|시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/2288ac1a-178b-4d91-a062-ae3c6e98bad6" width="300px">
+|비고|생두 재고<br>- 항목 선택 시 입고 내역(히스토리) 출력<br>- 히스토리 : 입고일 오름차순 정렬<br>- header 중량 : 현재 보유량 (로스팅 사용량 차감됨)<br>원두 재고<br>- 항목 선택 시 로스팅 내역(히스토리) 출력<br>- 히스토리 : 로스팅일 오름차순 정렬<br>- header 중량 : 현재 보유량 (판매량 차감됨)
 
 
 
