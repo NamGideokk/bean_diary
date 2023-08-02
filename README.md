@@ -68,6 +68,11 @@ Packages
 |-|-------|
 |시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/2288ac1a-178b-4d91-a062-ae3c6e98bad6" width="300px">
 |비고|생두 재고<br>- 항목 선택 시 입고 내역(히스토리) 출력<br>- 히스토리 : 입고일 오름차순 정렬<br>- header 중량 : 현재 보유량 (로스팅 사용량 차감됨)<br>원두 재고<br>- 항목 선택 시 로스팅 내역(히스토리) 출력<br>- 히스토리 : 로스팅일 오름차순 정렬<br>- header 중량 : 현재 보유량 (판매량 차감됨)
+- - -
+| |데이터 백업|
+|-|--------|
+|시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/62ff272e-4b81-4c4d-acfd-5727394df332" width="300px">
+|비고|- 데이터 보유 시 성공 스낵바 출력<br>- 데이터 미 보유 시 실패 스낵바 출력
 
 
 
