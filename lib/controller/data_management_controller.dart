@@ -4,7 +4,7 @@ import 'package:bean_diary/sqfLite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:get/get.dart';
 
-class DataBackupController extends GetxController {
+class DataManagementController extends GetxController {
   RxList _greenBeans = [].obs;
   RxList _greenBeanStock = [].obs;
   RxList _roastingBeanStock = [].obs;

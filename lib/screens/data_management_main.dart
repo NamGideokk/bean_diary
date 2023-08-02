@@ -1,4 +1,4 @@
-import 'package:bean_diary/controller/data_backup_controller.dart';
+import 'package:bean_diary/controller/data_management_controller.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
@@ -6,42 +6,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class DataBackupMain extends StatefulWidget {
-  const DataBackupMain({Key? key}) : super(key: key);
+class DataManagementMain extends StatefulWidget {
+  const DataManagementMain({Key? key}) : super(key: key);
 
   @override
-  State<DataBackupMain> createState() => _DataBackupMainState();
+  State<DataManagementMain> createState() => _DataManagementMainState();
 }
 
-class _DataBackupMainState extends State<DataBackupMain> {
-  final _dataBackupCtrl = Get.put(DataBackupController());
+class _DataManagementMainState extends State<DataManagementMain> {
+  final _dataManagementCtrl = Get.put(DataManagementController());
 
-  void dataRecovery(String? value) {
-    print("복구");
-  }
+  void dataRecovery(String? value) {}
 
   Future<void> getGreenBeansBackup(int type) async {
     List list;
     String title;
     switch (type) {
       case 0:
-        await _dataBackupCtrl.getGreenBeans();
-        list = _dataBackupCtrl.greenBeans;
+        await _dataManagementCtrl.getGreenBeans();
+        list = _dataManagementCtrl.greenBeans;
         title = "생두 목록";
         break;
       case 1:
-        await _dataBackupCtrl.getGreenBeanStock();
-        list = _dataBackupCtrl.greenBeanStock;
+        await _dataManagementCtrl.getGreenBeanStock();
+        list = _dataManagementCtrl.greenBeanStock;
         title = "생두 재고";
         break;
       case 2:
-        await _dataBackupCtrl.getRoastingBeanStock();
-        list = _dataBackupCtrl.roastingBeanStock;
+        await _dataManagementCtrl.getRoastingBeanStock();
+        list = _dataManagementCtrl.roastingBeanStock;
         title = "원두 재고";
         break;
       case 3:
-        await _dataBackupCtrl.getSalesHistory();
-        list = _dataBackupCtrl.salesHistory;
+        await _dataManagementCtrl.getSalesHistory();
+        list = _dataManagementCtrl.salesHistory;
         title = "판매 내역";
         break;
       default:
@@ -64,7 +62,7 @@ class _DataBackupMainState extends State<DataBackupMain> {
   @override
   void dispose() {
     super.dispose();
-    Get.delete<DataBackupController>();
+    Get.delete<DataManagementController>();
   }
 
   @override
@@ -74,7 +72,7 @@ class _DataBackupMainState extends State<DataBackupMain> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("데이터 백업"),
+          title: const Text("데이터 관리"),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
