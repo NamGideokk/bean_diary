@@ -39,9 +39,11 @@ Packages
 <br>
 
 ## 앱 동작
-| |생두 등록 / 관리
-|-|------------|
-|시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/5f52c84a-c709-46b3-9b6c-d9d140a44d29" width="300px">
+| |생두 등록 / 관리|생두 등록 - 에러 안내|
+|-|------------|-----------------|
+|시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/5f52c84a-c709-46b3-9b6c-d9d140a44d29" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/d719195d-2591-4d7a-9ff1-b783f8c09599" width="300px">
+|비고| |중복 등록 불가|
+
 |비고|문자열 오름차순 정렬
 - - -
 |    |생두 입고   |생두 입고 - 초기화    |생두 입고 - 에러 안내
