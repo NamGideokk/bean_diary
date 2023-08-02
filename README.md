@@ -43,6 +43,7 @@ Packages
 | |생두 등록 / 관리
 |-|------------|
 |시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/5f52c84a-c709-46b3-9b6c-d9d140a44d29" width="300px">
+|비고|문자열 오름차순 정렬
 - - -
 |    |생두 입고   |생두 입고 - 초기화    |생두 입고 - 에러 안내
 |----|-------|-------|------
@@ -51,7 +52,7 @@ Packages
 | |로스팅 - 싱글오리진|로스팅 - 블렌드|로스팅 - 에러 안내
 |-|--------------|------------|--------------|
 |시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/2e0e1c41-b5e7-499c-a2d2-ba77a97f2f40" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/30fd8c67-f562-428d-9d11-baa60fb08a89" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/b720551e-05d4-43cd-a175-dedaf70e2154" width="300px">
-|비고| | |- 입력 중량 체크 사항<br>보유 재고량보다 투입량이 높을 수 없음<br>배출량이 투입량과 같거나 클 수 없음
+|비고|- 로스팅 등록 후<br>드롭다운 항목의 투입량만큼 보유량 바로 차감|좌측과 동일|- 입력 중량 체크 사항<br>보유 재고량보다 투입량이 높을 수 없음<br>배출량이 투입량과 같거나 클 수 없음
 
 
 
