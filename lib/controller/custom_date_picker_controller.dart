@@ -4,16 +4,19 @@ import 'package:get/get.dart';
 class CustomDatePickerController extends GetxController {
   final TextEditingController textEditingCtrl = TextEditingController();
   final _now = DateTime.now();
+  late final RxInt _thisYear = 0.obs;
   RxString _year = "".obs;
   RxString _month = "".obs;
   RxString _day = "".obs;
   RxString _date = "".obs;
 
+  get thisYear => _thisYear.value;
   get date => _date.value;
 
   @override
   void onInit() {
     super.onInit();
+    _thisYear(_now.year);
     _year(_now.year.toString());
     _month(_now.month.toString());
     _day(_now.day.toString());

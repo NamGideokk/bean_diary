@@ -9,6 +9,7 @@ import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 void main() async {
@@ -149,15 +150,14 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown).copyWith(background: ColorsList().bgColor),
       ),
-      // localizationsDelegates: <LocalizationsDelegate<Object>>[
-      //   DefaultMaterialLocalizations.delegate,
-      //   DefaultWidgetsLocalizations.delegate,
-      // ],
-      // locale: Locale("ko", "KR"),
-      // supportedLocales: const [
-      //   Locale("ko", "KR"),
-      //   Locale("en", "EN"),
-      // ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('ko', ''),
+      ],
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
     );

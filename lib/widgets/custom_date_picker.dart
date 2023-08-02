@@ -45,16 +45,20 @@ class CustomDatePicker extends StatelessWidget {
               builder: (context) {
                 return SizedBox(
                   height: height / 3.5,
-                  child: CupertinoDatePicker(
-                    initialDateTime: DateTime.now(),
-                    mode: CupertinoDatePickerMode.date,
-                    onDateTimeChanged: (value) {
-                      customDatePickerCtrl.setYear(value.year.toString());
-                      customDatePickerCtrl.setMonth(value.month.toString());
-                      customDatePickerCtrl.setDay(value.day.toString());
-                      customDatePickerCtrl.textEditingCtrl.text = "${value.year}년 ${value.month}월 ${value.day}일";
-                      customDatePickerCtrl.setDate();
-                    },
+                  child: SafeArea(
+                    child: CupertinoDatePicker(
+                      dateOrder: DatePickerDateOrder.ymd,
+                      maximumYear: customDatePickerCtrl.thisYear,
+                      initialDateTime: DateTime.now(),
+                      mode: CupertinoDatePickerMode.date,
+                      onDateTimeChanged: (value) {
+                        customDatePickerCtrl.setYear(value.year.toString());
+                        customDatePickerCtrl.setMonth(value.month.toString());
+                        customDatePickerCtrl.setDay(value.day.toString());
+                        customDatePickerCtrl.textEditingCtrl.text = "${value.year}년 ${value.month}월 ${value.day}일";
+                        customDatePickerCtrl.setDate();
+                      },
+                    ),
                   ),
                 );
               },
