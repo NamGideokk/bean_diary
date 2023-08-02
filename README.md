@@ -48,6 +48,13 @@ Packages
 |----|-------|-------|------
 |시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/5f52c84a-c709-46b3-9b6c-d9d140a44d29" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/73e6b7a3-064c-4418-b5aa-d735288f1050" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/a6d94584-716c-4f94-9cb4-7e7a98d75510" width="300px">
 - - -
+| |로스팅 - 싱글오리진|로스팅 - 블렌드|로스팅 - 에러 안내
+|-|--------------|------------|--------------|
+|시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/2e0e1c41-b5e7-499c-a2d2-ba77a97f2f40" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/30fd8c67-f562-428d-9d11-baa60fb08a89" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/b720551e-05d4-43cd-a175-dedaf70e2154" width="300px">
+|비고| | |- 입력 중량 체크 사항<br>보유 재고량보다 투입량이 높을 수 없음<br>배출량이 투입량과 같거나 클 수 없음
+
+
+
 
 
 
