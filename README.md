@@ -52,8 +52,13 @@ Packages
 | |로스팅 - 싱글오리진|로스팅 - 블렌드|로스팅 - 에러 안내
 |-|--------------|------------|--------------|
 |시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/2e0e1c41-b5e7-499c-a2d2-ba77a97f2f40" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/30fd8c67-f562-428d-9d11-baa60fb08a89" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/b720551e-05d4-43cd-a175-dedaf70e2154" width="300px">
-|비고|- 로스팅 등록 후<br>드롭다운 항목의 투입량만큼 보유량 바로 차감|좌측과 동일|- 입력 중량 체크 사항<br>보유 재고량보다 투입량이 높을 수 없음<br>배출량이 투입량과 같거나 클 수 없음
-
+|비고|로스팅 등록 후<br>- 드롭다운 항목의 투입량만큼 보유량 바로 차감|좌측과 동일|입력 중량 체크 사항<br>- 보유 재고량보다 투입량이 높을 수 없음<br>- 배출량이 투입량과 같거나 클 수 없음
+- - -
+| |판매|판매 - 에러 안내 
+|-|---|------------|
+|시연|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/b8cd5434-a1f1-45bb-9f32-089b1b745497" width="300px">|<img src="https://github.com/NamGideokk/bean_diary/assets/96227239/a3bbc141-f7ff-4f2f-a9e9-bd1361c16eee" width="300px">
+|비고|판매 등록 후<br>- 드롭다운 항목의 판매량만큼 보유량 바로 차감|입력 중량 체크 사항<br>- 보유 재고량보다 판매량이 높을 수 없음
+- - -
 
 
 
