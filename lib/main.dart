@@ -195,6 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return WillPopScope(
       onWillPop: () async {
         bool confirm = await CustomDialog().showAlertDialog(context, "앱 종료", "앱을 종료하시겠습니까?");
@@ -231,8 +232,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   shrinkWrap: true,
                   itemCount: _menus.length,
                   physics: const ClampingScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: width < 700 ? 2 : 3,
                     childAspectRatio: 1.25,
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20,
