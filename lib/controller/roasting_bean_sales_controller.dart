@@ -29,7 +29,7 @@ class RoastingBeanSalesController extends GetxController {
     if (list.isNotEmpty) {
       list = Utility().sortingName(list);
       for (var item in list) {
-        _beanList.add("${item["name"]} / ${Utility().parseToDoubleWeight(item["roasting_weight"])}kg");
+        _beanList.add("${item["name"]} / ${Utility().numberFormat(Utility().parseToDoubleWeight(item["roasting_weight"]))}kg");
         _beanMapDataList.add(item);
       }
     }
@@ -41,12 +41,12 @@ class RoastingBeanSalesController extends GetxController {
 
   void updateBeanListWeight(String name, String useWeight) {
     final divideName = name.split(" / ");
-    int weight = int.parse(divideName[1].replaceAll(RegExp("[.kg]"), ""));
+    int weight = int.parse(divideName[1].replaceAll(RegExp("[.,kg]"), ""));
     int iUseWeight = int.parse(useWeight);
-    int clacWeight = weight - iUseWeight;
+    int calcWeight = weight - iUseWeight;
     List copyList = <String?>[..._beanList];
     int findElementIndex = copyList.indexOf(name);
-    String replaceString = "${divideName[0]} / ${Utility().parseToDoubleWeight(clacWeight)}kg";
+    String replaceString = "${divideName[0]} / ${Utility().numberFormat(Utility().parseToDoubleWeight(calcWeight))}kg";
     copyList[findElementIndex] = replaceString;
     _beanList(copyList);
     _selectedBean(replaceString);

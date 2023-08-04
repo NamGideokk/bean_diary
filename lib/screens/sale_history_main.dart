@@ -102,6 +102,12 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                           itemCount: _saleHistoryCtrl.showList.length,
                           separatorBuilder: (context, index) => const Divider(),
                           itemBuilder: (context, index) => Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(index == 0 ? 8 : 0),
+                                bottom: Radius.circular(index == _saleHistoryCtrl.showList.length - 1 ? 8 : 0),
+                              ),
+                            ),
                             child: ListTile(
                               title: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,7 +158,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                     ),
                                     const SizedBox(width: 10),
                                     Text(
-                                      "${Utility().parseToDoubleWeight(_saleHistoryCtrl.showList[index]["sales_weight"])}kg",
+                                      "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.showList[index]["sales_weight"]))}kg",
                                       style: TextStyle(
                                         color: Colors.black87,
                                         fontSize: height / 48,

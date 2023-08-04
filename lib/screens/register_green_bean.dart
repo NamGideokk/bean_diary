@@ -1,4 +1,4 @@
-import 'package:bean_diary/controller/regist_green_bean_controller.dart';
+import 'package:bean_diary/controller/register_green_bean_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
@@ -8,15 +8,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class RegistGreenBean extends StatefulWidget {
-  const RegistGreenBean({Key? key}) : super(key: key);
+class RegisterGreenBean extends StatefulWidget {
+  const RegisterGreenBean({Key? key}) : super(key: key);
 
   @override
-  State<RegistGreenBean> createState() => _RegistGreenBeanState();
+  State<RegisterGreenBean> createState() => _RegisterGreenBeanState();
 }
 
-class _RegistGreenBeanState extends State<RegistGreenBean> {
-  final _registGreenBeanCtrl = Get.put(RegistGreenBeanController());
+class _RegisterGreenBeanState extends State<RegisterGreenBean> {
+  final _registerGreenBeanCtrl = Get.put(RegisterGreenBeanController());
   final _warehousingGreenBeanCtrl = Get.find<WarehousingGreenBeanController>();
   final _greenBeanNameTECtrl = TextEditingController();
   final _greenBeanNameFN = FocusNode();
@@ -51,7 +51,7 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
         return;
       } else if (result == 1) {
         _greenBeanNameTECtrl.clear();
-        _registGreenBeanCtrl.getGreenBeanList();
+        _registerGreenBeanCtrl.getGreenBeanList();
         _warehousingGreenBeanCtrl.getBeanList();
         return;
       } else {
@@ -65,20 +65,20 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
     bool confirm = await CustomDialog().showAlertDialog(
       context,
       "생두 삭제",
-      "[${_registGreenBeanCtrl.greenBeanList[index]["name"]}]\n생두를 삭제하시겠습니까?",
+      "[${_registerGreenBeanCtrl.greenBeanList[index]["name"]}]\n생두를 삭제하시겠습니까?",
       acceptTitle: "삭제",
     );
     if (confirm) {
-      bool result = await GreenBeansSqfLite().deleteGreenBean(_registGreenBeanCtrl.greenBeanList[index]["name"]);
+      bool result = await GreenBeansSqfLite().deleteGreenBean(_registerGreenBeanCtrl.greenBeanList[index]["name"]);
 
       if (!mounted) return;
       CustomDialog().showFloatingSnackBar(
         context,
-        result ? "[${_registGreenBeanCtrl.greenBeanList[index]["name"]}]\n생두가 삭제되었습니다." : "생두 삭제 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
+        result ? "[${_registerGreenBeanCtrl.greenBeanList[index]["name"]}]\n생두가 삭제되었습니다." : "생두 삭제 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
         bgColor: result ? Colors.green : Colors.red,
       );
       if (result) {
-        _registGreenBeanCtrl.deleteGreenBeanElement(index);
+        _registerGreenBeanCtrl.deleteGreenBeanElement(index);
         _warehousingGreenBeanCtrl.deleteBeanList(index);
         _warehousingGreenBeanCtrl.getBeanList();
       } else {}
@@ -89,7 +89,7 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
   @override
   void dispose() {
     super.dispose();
-    Get.delete<RegistGreenBeanController>();
+    Get.delete<RegisterGreenBeanController>();
   }
 
   @override
@@ -142,9 +142,9 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
                   textBaseline: TextBaseline.ideographic,
                   children: [
                     const HeaderTitle(title: "생두 목록", subTitle: "green bean list"),
-                    if (_registGreenBeanCtrl.greenBeanList.isNotEmpty)
+                    if (_registerGreenBeanCtrl.greenBeanList.isNotEmpty)
                       Text(
-                        "${_registGreenBeanCtrl.greenBeanList.length}건",
+                        "${_registerGreenBeanCtrl.greenBeanList.length}건",
                         style: TextStyle(
                           fontSize: height / 60,
                           color: Colors.black,
@@ -152,14 +152,14 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
                       ),
                   ],
                 ),
-                _registGreenBeanCtrl.greenBeanList.isEmpty
+                _registerGreenBeanCtrl.greenBeanList.isEmpty
                     ? const EmptyWidget(content: "등록된 생두가 없습니다.")
                     : Expanded(
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                           child: SafeArea(
                             child: ListView.separated(
-                              itemCount: _registGreenBeanCtrl.greenBeanList.length,
+                              itemCount: _registerGreenBeanCtrl.greenBeanList.length,
                               shrinkWrap: true,
                               padding: const EdgeInsets.only(bottom: 10),
                               physics: const BouncingScrollPhysics(),
@@ -170,7 +170,7 @@ class _RegistGreenBeanState extends State<RegistGreenBean> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        _registGreenBeanCtrl.greenBeanList[index]["name"],
+                                        _registerGreenBeanCtrl.greenBeanList[index]["name"],
                                         style: TextStyle(
                                           fontSize: height / 52,
                                         ),

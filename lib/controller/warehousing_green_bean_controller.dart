@@ -83,7 +83,7 @@ class WarehousingGreenBeanController extends GetxController {
           List greenBeanStockList = await GreenBeanStockSqfLite().getGreenBeanStock();
           if (greenBeanStockList.isNotEmpty) {
             for (var item in greenBeanStockList) {
-              _beanList.add("${item["name"]} / ${Utility().parseToDoubleWeight(item["weight"])}kg");
+              _beanList.add("${item["name"]} / ${Utility().numberFormat(Utility().parseToDoubleWeight(item["weight"]))}kg");
               _greenBeanStockList.add({item["name"]: item["weight"]});
             }
           }
@@ -104,12 +104,12 @@ class WarehousingGreenBeanController extends GetxController {
   void updateBeanListWeight(String name, String useWeight) {
     final beforeSelectedBean = _selectedBean;
     final divideName = name.split(" / ");
-    int weight = int.parse(divideName[1].replaceAll(RegExp("[.kg]"), ""));
+    int weight = int.parse(divideName[1].replaceAll(RegExp("[.,kg]"), ""));
     int iUseWeight = int.parse(useWeight);
-    int clacWeight = weight - iUseWeight;
+    int calcWeight = weight - iUseWeight;
     List copyList = <String?>[..._beanList];
     int findElementIndex = copyList.indexOf(name);
-    String replaceString = "${divideName[0]} / ${Utility().parseToDoubleWeight(clacWeight)}kg";
+    String replaceString = "${divideName[0]} / ${Utility().numberFormat(Utility().parseToDoubleWeight(calcWeight))}kg";
     copyList[findElementIndex] = replaceString;
     _beanList(copyList);
     if (roastingType == 1) {

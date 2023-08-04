@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 class Utility {
   checkWeightRegEx(String value) {
@@ -78,4 +79,11 @@ class Utility {
       }
     });
   }
+
+  /// 숫자 단위 표시
+  String numberFormat(String value) => NumberFormat.simpleCurrency(
+        locale: "ko-KR",
+        name: "",
+        decimalDigits: 1,
+      ).format(double.parse(value));
 }

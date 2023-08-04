@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bean_diary/controller/custom_date_picker_controller.dart';
 import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/screens/register_green_bean.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
@@ -9,7 +10,6 @@ import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
-import 'package:bean_diary/screens/regist_green_bean.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -97,7 +97,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const RegistGreenBean(),
+                                  builder: (context) => const RegisterGreenBean(),
                                 ),
                               );
                             },
@@ -217,7 +217,11 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 CustomDialog().showFloatingSnackBar(
                                   context,
                                   insertResult
-                                      ? "${_customDatePickerCtrl.textEditingCtrl.text}\n${_warehousingGreenBeanCtrl.companyTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.selectedBean}\n${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n입고 등록이 완료되었습니다."
+                                      ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
+                                          "${_warehousingGreenBeanCtrl.companyTECtrl.text.trim()}\n" +
+                                          "${_warehousingGreenBeanCtrl.selectedBean}\n" +
+                                          "${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n" +
+                                          "입고 등록이 완료되었습니다."
                                       : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                   bgColor: insertResult ? Colors.green : Colors.red,
                                 );

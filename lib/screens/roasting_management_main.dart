@@ -339,7 +339,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     );
                                     return;
                                   } else {
-                                    int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.kg]"), ""));
+                                    int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
                                     int inputWeight = int.parse(e.text.trim().replaceAll(".", ""));
                                     if (totalWeight < inputWeight) {
                                       CustomDialog().showFloatingSnackBar(context, "[${divide[0]}]\n생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
@@ -403,7 +403,10 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 CustomDialog().showFloatingSnackBar(
                                   context,
                                   insertResult
-                                      ? "${_customDatePickerCtrl.textEditingCtrl.text}\n블렌드 - ${_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim()}kg\n로스팅 등록이 완료되었습니다."
+                                      ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
+                                          "블렌드 - ${_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n" +
+                                          "${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n" +
+                                          "로스팅 등록이 완료되었습니다."
                                       : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                   bgColor: insertResult ? Colors.green : Colors.red,
                                 );
@@ -453,7 +456,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 } else {
                                   // 투입량이랑 보유량이랑 비교하는 로직 부분
                                   var divide = _warehousingGreenBeanCtrl.selectedBean.split(" / ");
-                                  int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.kg]"), ""));
+                                  int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
                                   int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
                                   if (totalWeight < inputWeight) {
                                     CustomDialog().showFloatingSnackBar(context, "투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
@@ -509,7 +512,10 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               CustomDialog().showFloatingSnackBar(
                                 context,
                                 insertResult
-                                    ? "${_customDatePickerCtrl.textEditingCtrl.text}\n싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim()}kg\n로스팅 등록이 완료되었습니다."
+                                    ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
+                                        "싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n" +
+                                        "${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n" +
+                                        "로스팅 등록이 완료되었습니다."
                                     : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                 bgColor: insertResult ? Colors.green : Colors.red,
                               );

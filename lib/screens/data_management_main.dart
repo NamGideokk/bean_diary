@@ -16,8 +16,6 @@ class DataManagementMain extends StatefulWidget {
 class _DataManagementMainState extends State<DataManagementMain> {
   final _dataManagementCtrl = Get.put(DataManagementController());
 
-  void dataRecovery(String? value) {}
-
   Future<void> getGreenBeansBackup(int type) async {
     List list;
     String title;
@@ -57,6 +55,42 @@ class _DataManagementMainState extends State<DataManagementMain> {
         bgColor: Colors.green,
       );
     }
+  }
+
+  void dataRecovery(String? value) {
+    String backupData = _dataManagementCtrl.backupDataTECtrl.text;
+
+    if (backupData.trim().isEmpty) {
+      if (!mounted) return;
+      CustomDialog().showFloatingSnackBar(context, "백업 데이터를 넣어주세요.");
+      _dataManagementCtrl.backupDataFN.requestFocus();
+      return;
+    }
+
+    if (backupData.startsWith("생두 목록")) {
+      print("생두 목록 이야!");
+      backupData.replaceAll("생두 목록", "");
+      print(backupData);
+      return;
+    } else if (backupData.startsWith("생두 재고")) {
+      print("생두 재고 이야!");
+      return;
+    } else if (backupData.startsWith("원두 재고")) {
+      print("원두 재고 이야!");
+      return;
+    } else if (backupData.startsWith("판매 내역")) {
+      print("판매 내역 이야!");
+      return;
+    } else {
+      if (!mounted) return;
+      CustomDialog().showFloatingSnackBar(context, "백업 데이터가 올바르지 않습니다.\n복구가 불가능합니다.");
+      return;
+    }
+  }
+
+  void clearBackupDataText() {
+    _dataManagementCtrl.backupDataTECtrl.clear();
+    _dataManagementCtrl.backupDataFN.requestFocus();
   }
 
   @override
@@ -122,6 +156,8 @@ class _DataManagementMainState extends State<DataManagementMain> {
                   children: [
                     Expanded(
                       child: TextField(
+                        controller: _dataManagementCtrl.backupDataTECtrl,
+                        focusNode: _dataManagementCtrl.backupDataFN,
                         textAlign: TextAlign.center,
                         textInputAction: TextInputAction.go,
                         onSubmitted: dataRecovery,
@@ -132,6 +168,10 @@ class _DataManagementMainState extends State<DataManagementMain> {
                             fontSize: height / 60,
                           ),
                           helperMaxLines: 3,
+                          suffixIcon: IconButton(
+                            onPressed: clearBackupDataText,
+                            icon: const Icon(Icons.clear_rounded),
+                          ),
                         ),
                       ),
                     ),

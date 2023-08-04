@@ -31,8 +31,6 @@ class _StockStatusMainState extends State<StockStatusMain> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text("재고 현황"),
@@ -56,76 +54,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: _stockCtrl.greenBeanStockList.length,
                         separatorBuilder: (context, index) => const Divider(),
-                        itemBuilder: (context, index) => ExpansionTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  _stockCtrl.greenBeanStockList[index]["name"],
-                                  style: TextStyle(
-                                    fontSize: height / 54,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 5),
-                              Text(
-                                "${Utility().parseToDoubleWeight(_stockCtrl.greenBeanStockList[index]["weight"])}kg",
-                                style: TextStyle(
-                                  fontSize: height / 54,
-                                ),
-                              ),
-                            ],
-                          ),
-                          children: [
-                            jsonDecode(_stockCtrl.greenBeanStockList[index]["history"]).length > 0
-                                ? ListView.builder(
-                                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                                    itemCount: jsonDecode(_stockCtrl.greenBeanStockList[index]["history"]).length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, i) {
-                                      final history = Utility().sortingDate(jsonDecode(_stockCtrl.greenBeanStockList[index]["history"]));
-                                      return Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: width / 4,
-                                            child: Text(
-                                              Utility().dateFormattingYYMMDD(history[i]["date"]),
-                                              style: TextStyle(
-                                                fontSize: height / 56,
-                                                fontWeight: FontWeight.w300,
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                              child: Text(
-                                                history[i]["company"],
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                  fontSize: height / 56,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            "${Utility().parseToDoubleWeight(int.parse(history[i]["weight"]))}kg",
-                                            style: TextStyle(
-                                              fontSize: height / 56,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  )
-                                : const SizedBox(),
-                          ],
-                        ),
+                        itemBuilder: (context, index) => _GreenBeanTile(stockList: _stockCtrl.greenBeanStockList, index: index),
                       ),
                       const SizedBox(height: 5),
                       const _GuideText(text: "입고"),
@@ -142,73 +71,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: _stockCtrl.roastingBeanStockList.length,
                             separatorBuilder: (context, index) => const Divider(),
-                            itemBuilder: (context, index) => ExpansionTile(
-                              title: Row(
-                                children: [
-                                  RoastingTypeWidget(type: _stockCtrl.roastingBeanStockList[index]["type"].toString()),
-                                ],
-                              ),
-                              subtitle: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "${_stockCtrl.roastingBeanStockList[index]["name"]}",
-                                      style: TextStyle(
-                                        fontSize: height / 54,
-                                        height: 1.2,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "${Utility().parseToDoubleWeight(_stockCtrl.roastingBeanStockList[index]["roasting_weight"])}kg",
-                                    style: TextStyle(
-                                      fontSize: height / 54,
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              children: [
-                                jsonDecode(_stockCtrl.roastingBeanStockList[index]["history"]).length > 0
-                                    ? ListView.builder(
-                                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                                        itemCount: jsonDecode(_stockCtrl.roastingBeanStockList[index]["history"]).length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, i) {
-                                          final history = Utility().sortingDate(jsonDecode(_stockCtrl.roastingBeanStockList[index]["history"]));
-                                          return Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: width / 4,
-                                                child: Text(
-                                                  Utility().dateFormattingYYMMDD(history[i]["date"]),
-                                                  style: TextStyle(
-                                                    fontSize: height / 56,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  "${Utility().parseToDoubleWeight(int.parse(history[i]["roasting_weight"]))}kg",
-                                                  textAlign: TextAlign.right,
-                                                  style: TextStyle(
-                                                    fontSize: height / 56,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      )
-                                    : const SizedBox(),
-                              ],
-                            ),
+                            itemBuilder: (context, index) => _RoastingBeanTile(stockList: _stockCtrl.roastingBeanStockList, index: index),
                           ),
                           const SizedBox(height: 5),
                           const _GuideText(text: "로스팅"),
@@ -236,6 +99,195 @@ class _GuideText extends StatelessWidget {
         fontSize: height / 70,
         color: Colors.black54,
       ),
+    );
+  }
+}
+
+class _GreenBeanTile extends StatelessWidget {
+  final List stockList;
+  final int index;
+  const _GreenBeanTile({Key? key, required this.stockList, required this.index}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
+    return ExpansionTile(
+      collapsedShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(index == 0 ? 8 : 0),
+          bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
+        ),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(index == 0 ? 8 : 0),
+          bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
+        ),
+      ),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Text(
+              stockList[index]["name"],
+              style: TextStyle(
+                fontSize: height / 54,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            "${Utility().numberFormat(Utility().parseToDoubleWeight(stockList[index]["weight"]))}kg",
+            style: TextStyle(
+              fontSize: height / 54,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+      children: [
+        jsonDecode(stockList[index]["history"]).length > 0
+            ? ListView.builder(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                itemCount: jsonDecode(stockList[index]["history"]).length,
+                shrinkWrap: true,
+                itemBuilder: (context, i) {
+                  final history = Utility().sortingDate(jsonDecode(stockList[index]["history"]));
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: width / 4,
+                        child: Text(
+                          Utility().dateFormattingYYMMDD(history[i]["date"]),
+                          style: TextStyle(
+                            fontSize: height / 56,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Text(
+                            history[i]["company"],
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: height / 56,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["weight"])))}kg",
+                        style: TextStyle(
+                          fontSize: height / 56,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              )
+            : const SizedBox(),
+      ],
+    );
+  }
+}
+
+class _RoastingBeanTile extends StatelessWidget {
+  final List stockList;
+  final int index;
+  const _RoastingBeanTile({Key? key, required this.stockList, required this.index}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
+    return ExpansionTile(
+      collapsedShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(index == 0 ? 8 : 0),
+          bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
+        ),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(index == 0 ? 8 : 0),
+          bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
+        ),
+      ),
+      title: Row(
+        children: [
+          RoastingTypeWidget(type: stockList[index]["type"].toString()),
+        ],
+      ),
+      subtitle: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Text(
+              "${stockList[index]["name"]}",
+              style: TextStyle(
+                fontSize: height / 54,
+                height: 1.2,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            "${Utility().numberFormat(Utility().parseToDoubleWeight(stockList[index]["roasting_weight"]))}kg",
+            style: TextStyle(
+              fontSize: height / 54,
+              fontWeight: FontWeight.w600,
+              height: 1.2,
+            ),
+          ),
+        ],
+      ),
+      children: [
+        jsonDecode(stockList[index]["history"]).length > 0
+            ? ListView.builder(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                itemCount: jsonDecode(stockList[index]["history"]).length,
+                shrinkWrap: true,
+                itemBuilder: (context, i) {
+                  final history = Utility().sortingDate(jsonDecode(stockList[index]["history"]));
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: width / 4,
+                        child: Text(
+                          Utility().dateFormattingYYMMDD(history[i]["date"]),
+                          style: TextStyle(
+                            fontSize: height / 56,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["roasting_weight"])))}kg",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontSize: height / 56,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              )
+            : const SizedBox(),
+      ],
     );
   }
 }

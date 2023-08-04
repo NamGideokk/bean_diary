@@ -61,7 +61,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
         _roastingBeanSalesCtrl.weightFN.requestFocus();
         return;
       } else {
-        int beanTotalWeight = int.parse(_roastingBeanSalesCtrl.selectedBean.toString().split(" / ")[1].replaceAll(RegExp("[.kg]"), ""));
+        int beanTotalWeight = int.parse(_roastingBeanSalesCtrl.selectedBean.toString().split(" / ")[1].replaceAll(RegExp("[.,kg]"), ""));
         int salesWeight = int.parse(_roastingBeanSalesCtrl.weightTECtrl.text.replaceAll(".", ""));
         if (beanTotalWeight < salesWeight) {
           CustomDialog().showFloatingSnackBar(context, "판매 중량이 재고량보다 클 수 없습니다.\n다시 입력해 주세요.");
@@ -91,7 +91,8 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
     bool result = await RoastingBeanSalesSqfLite().insertRoastingBeanSales(value);
 
     if (result) {
-      String successMsg = "${_customDatePickerCtrl.textEditingCtrl.text}\n$company\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${_roastingBeanSalesCtrl.weightTECtrl.text.trim()}kg\n판매 등록이 완료되었습니다.";
+      String successMsg =
+          "${_customDatePickerCtrl.textEditingCtrl.text}\n$company\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(_roastingBeanSalesCtrl.weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
       if (!mounted) return;
       CustomDialog().showFloatingSnackBar(context, successMsg, bgColor: Colors.green);
       bool updateWeightResult = await RoastingBeanStockSqfLite().updateWeightRoastingBeanStock(value);
