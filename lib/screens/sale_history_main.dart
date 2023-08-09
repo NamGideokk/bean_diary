@@ -117,65 +117,68 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                 ],
               ),
               const Divider(height: 8, color: Colors.black12),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.ideographic,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.ideographic,
-                      children: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            visualDensity: VisualDensity.compact,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 3),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
+              _saleHistoryCtrl.totalList.length > 0
+                  ? Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.ideographic,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.ideographic,
+                            children: [
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  visualDensity: VisualDensity.compact,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    showDragHandle: true,
+                                    backgroundColor: Colors.white,
+                                    context: context,
+                                    builder: (context) => const CustomYearPicker(),
+                                  );
+                                },
+                                child: Text(
+                                  _yearPickerController.selectedYear,
+                                  style: TextStyle(
+                                    fontSize: height / 40,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                "년 총 판매량",
+                                style: TextStyle(
+                                  fontSize: height / 60,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w300,
+                                  letterSpacing: -0.3,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Text(
+                              _saleHistoryCtrl.totalWeightForYear != 0 ? "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalWeightForYear))}kg" : "판매 내역이 없습니다",
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                fontSize: _saleHistoryCtrl.totalWeightForYear != 0 ? height / 46 : height / 60,
+                                fontWeight: _saleHistoryCtrl.totalWeightForYear != 0 ? FontWeight.w600 : FontWeight.w300,
+                                color: _saleHistoryCtrl.totalWeightForYear != 0 ? Colors.black : Colors.black54,
+                              ),
                             ),
                           ),
-                          onPressed: () {
-                            showModalBottomSheet(
-                              showDragHandle: true,
-                              context: context,
-                              builder: (context) => const CustomYearPicker(),
-                            );
-                          },
-                          child: Text(
-                            _yearPickerController.selectedYear,
-                            style: TextStyle(
-                              fontSize: height / 40,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          "년 총 판매량",
-                          style: TextStyle(
-                            fontSize: height / 60,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w300,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: Text(
-                        _saleHistoryCtrl.totalWeightForYear != 0 ? "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalWeightForYear))}kg" : "판매 내역이 없습니다",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: _saleHistoryCtrl.totalWeightForYear != 0 ? height / 46 : height / 60,
-                          fontWeight: _saleHistoryCtrl.totalWeightForYear != 0 ? FontWeight.w600 : FontWeight.w300,
-                          color: _saleHistoryCtrl.totalWeightForYear != 0 ? Colors.black : Colors.black54,
-                        ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    )
+                  : const SizedBox(),
               _saleHistoryCtrl.showList.isNotEmpty
                   ? Expanded(
                       child: SingleChildScrollView(
