@@ -1,5 +1,7 @@
 import 'package:bean_diary/controller/sale_history_controller.dart';
+import 'package:bean_diary/controller/year_picker_controller.dart';
 import 'package:bean_diary/utility/utility.dart';
+import 'package:bean_diary/widgets/custom_year_picker.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/roasting_type_widget.dart';
@@ -16,6 +18,8 @@ class SaleHistoryMain extends StatefulWidget {
 
 class _SaleHistoryMainState extends State<SaleHistoryMain> {
   final SaleHistoryController _saleHistoryCtrl = Get.put(SaleHistoryController());
+  final YearPickerController _yearPickerController = Get.put(YearPickerController());
+  final _scrollCtrl = ScrollController();
 
   @override
   void initState() {
@@ -26,6 +30,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
   void dispose() {
     super.dispose();
     Get.delete<SaleHistoryController>();
+    Get.delete<YearPickerController>();
   }
 
   @override
@@ -38,16 +43,36 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
           centerTitle: true,
         ),
         floatingActionButton: _saleHistoryCtrl.totalList.length > 0
-            ? FloatingActionButton.small(
-                backgroundColor: Colors.brown.withOpacity(0.85),
-                foregroundColor: Colors.white,
-                tooltip: "날짜순",
-                elevation: 3,
-                onPressed: () => _saleHistoryCtrl.setReverseDate(),
-                child: Icon(
-                  CupertinoIcons.arrow_up_arrow_down,
-                  size: height / 40,
-                ),
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton.small(
+                    backgroundColor: Colors.brown.withOpacity(0.85),
+                    foregroundColor: Colors.white,
+                    heroTag: "filter",
+                    tooltip: "날짜순",
+                    elevation: 3,
+                    onPressed: () => _saleHistoryCtrl.setReverseDate(),
+                    child: Icon(
+                      CupertinoIcons.arrow_up_arrow_down,
+                      size: height / 40,
+                    ),
+                  ),
+                  _saleHistoryCtrl.totalList.length >= 10
+                      ? FloatingActionButton.small(
+                          backgroundColor: Colors.brown.withOpacity(0.85),
+                          foregroundColor: Colors.white,
+                          heroTag: "moveTop",
+                          tooltip: "맨 위로",
+                          elevation: 3,
+                          onPressed: () => _saleHistoryCtrl.scrollToTop(_scrollCtrl),
+                          child: Icon(
+                            Icons.vertical_align_top_rounded,
+                            size: height / 40,
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
               )
             : const SizedBox(),
         body: Container(
@@ -92,10 +117,70 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                 ],
               ),
               const Divider(height: 8, color: Colors.black12),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.ideographic,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.ideographic,
+                      children: [
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 3),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: () {
+                            showModalBottomSheet(
+                              showDragHandle: true,
+                              context: context,
+                              builder: (context) => const CustomYearPicker(),
+                            );
+                          },
+                          child: Text(
+                            _yearPickerController.selectedYear,
+                            style: TextStyle(
+                              fontSize: height / 40,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          "년 총 판매량",
+                          style: TextStyle(
+                            fontSize: height / 60,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Text(
+                        _saleHistoryCtrl.totalWeightForYear != 0 ? "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalWeightForYear))}kg" : "판매 내역이 없습니다",
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontSize: _saleHistoryCtrl.totalWeightForYear != 0 ? height / 46 : height / 60,
+                          fontWeight: _saleHistoryCtrl.totalWeightForYear != 0 ? FontWeight.w600 : FontWeight.w300,
+                          color: _saleHistoryCtrl.totalWeightForYear != 0 ? Colors.black : Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               _saleHistoryCtrl.showList.isNotEmpty
                   ? Expanded(
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.only(bottom: height / 11),
+                        padding: EdgeInsets.only(bottom: height / 6.5),
+                        controller: _scrollCtrl,
                         child: ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),

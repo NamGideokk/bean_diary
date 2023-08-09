@@ -1,14 +1,16 @@
 import 'package:bean_diary/sqflite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/utility/utility.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class SaleHistoryController extends GetxController {
-  RxList _showList = [].obs;
-  RxList _totalList = [].obs;
-  RxList _singleList = [].obs;
-  RxList _blendList = [].obs;
+  final RxList _showList = [].obs;
+  final RxList _totalList = [].obs;
+  final RxList _singleList = [].obs;
+  final RxList _blendList = [].obs;
 
-  RxString _filterValue = "전체".obs;
+  final RxString _filterValue = "전체".obs;
+  final RxInt _totalWeightForYear = 0.obs;
 
   get showList => _showList;
   get totalList => _totalList;
@@ -16,6 +18,7 @@ class SaleHistoryController extends GetxController {
   get blendList => _blendList;
 
   get filterValue => _filterValue.value;
+  get totalWeightForYear => _totalWeightForYear.value;
 
   @override
   void onInit() {
@@ -36,6 +39,7 @@ class SaleHistoryController extends GetxController {
       }
       _totalList(list);
       _showList([..._totalList]);
+      calcYearTotalSalesWeight(DateTime.now().year);
     }
   }
 
@@ -59,6 +63,26 @@ class SaleHistoryController extends GetxController {
   void setReverseDate() {
     List revList = _showList.reversed.toList();
     _showList(revList);
+  }
+
+  void calcYearTotalSalesWeight(int year) {
+    int totalWeight = 0;
+    for (var e in _totalList) {
+      if (e["date"].toString().substring(0, 4) == year.toString()) {
+        totalWeight += int.parse(e["sales_weight"].toString());
+      }
+    }
+    _totalWeightForYear(totalWeight);
+  }
+
+  void scrollToTop(ScrollController ctrl) {
+    if (ctrl.hasClients && ctrl.offset != 0.0) {
+      ctrl.animateTo(
+        0.0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
