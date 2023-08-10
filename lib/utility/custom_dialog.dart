@@ -4,10 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomDialog {
-  showCustomSnackBar(BuildContext context, String content, Color bgColor) {
+  showCustomSnackBar(
+    BuildContext context,
+    String content,
+    Color bgColor,
+    bool isLongTime,
+  ) {
     final height = MediaQuery.of(context).size.height;
     return SnackBar(
       backgroundColor: bgColor.withOpacity(0.95),
+      duration: Duration(seconds: isLongTime ? 7 : 3),
       behavior: SnackBarBehavior.floating,
       content: Text(
         content,
@@ -23,8 +29,14 @@ class CustomDialog {
     BuildContext context,
     String msg, {
     Color bgColor = Colors.deepOrange,
+    bool isLongTime = false,
   }) {
-    SnackBar errorSnackBar = CustomDialog().showCustomSnackBar(context, msg, bgColor);
+    SnackBar errorSnackBar = CustomDialog().showCustomSnackBar(
+      context,
+      msg,
+      bgColor,
+      isLongTime,
+    );
     ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
   }
 

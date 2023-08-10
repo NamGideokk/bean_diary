@@ -58,11 +58,11 @@ class Utility {
   /// 날짜순 정렬
   List sortingDate(List list) {
     List copyList = [...list];
-    copyList.forEach((e) {
+    for (var e in copyList) {
       List divide = e["date"].toString().split("-");
       String month = divide[1].toString().padLeft(2, "0");
       String day = divide[2].toString().padLeft(2, "0");
-    });
+    }
     copyList.sort((a, b) => a["date"].compareTo(b["date"]));
     return copyList;
   }
@@ -81,9 +81,9 @@ class Utility {
   }
 
   /// 숫자 단위 표시
-  String numberFormat(String value) => NumberFormat.simpleCurrency(
+  String numberFormat(String value, {isWeight = true}) => NumberFormat.simpleCurrency(
         locale: "ko-KR",
         name: "",
-        decimalDigits: 1,
+        decimalDigits: isWeight ? 1 : 0,
       ).format(double.parse(value));
 }

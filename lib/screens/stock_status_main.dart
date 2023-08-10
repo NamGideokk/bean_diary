@@ -194,6 +194,36 @@ class _GreenBeanTile extends StatelessWidget {
                 },
               )
             : const SizedBox(),
+        //ngd 총 누적량 추가중
+        // Divider(
+        //   indent: 10,
+        //   endIndent: 10,
+        //   color: Colors.brown[200],
+        // ),
+        // Padding(
+        //   padding: const EdgeInsets.all(10),
+        //   child: Align(
+        //     alignment: Alignment.centerRight,
+        //     child: RichText(
+        //       text: TextSpan(
+        //         text: "총\t\t",
+        //         style: TextStyle(
+        //           fontSize: height / 70,
+        //           color: Colors.black54,
+        //         ),
+        //         children: [
+        //           TextSpan(
+        //             text: "1,200.0kg",
+        //             style: TextStyle(
+        //               fontSize: height / 54,
+        //               color: Colors.black87,
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

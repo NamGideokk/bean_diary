@@ -88,10 +88,10 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                   _saleHistoryCtrl.totalList.length > 0
                       ? Text(
                           _saleHistoryCtrl.filterValue == "전체"
-                              ? "\t\t${_saleHistoryCtrl.totalList.length} 건"
+                              ? "\t\t${Utility().numberFormat(_saleHistoryCtrl.totalList.length.toString(), isWeight: false)} 건"
                               : _saleHistoryCtrl.filterValue == "싱글오리진"
-                                  ? "\t\t${_saleHistoryCtrl.singleList.length} 건"
-                                  : "\t\t${_saleHistoryCtrl.blendList.length} 건",
+                                  ? "\t\t${Utility().numberFormat(_saleHistoryCtrl.singleList.length.toString(), isWeight: false)} 건"
+                                  : "\t\t${Utility().numberFormat(_saleHistoryCtrl.blendList.length.toString(), isWeight: false)} 건",
                           style: TextStyle(
                             fontSize: height / 60,
                             color: Colors.black87,
