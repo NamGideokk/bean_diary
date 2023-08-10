@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bean_diary/controller/data_management_controller.dart';
+import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/header_title.dart';
@@ -19,7 +20,7 @@ class DataManagementMain extends StatefulWidget {
 class _DataManagementMainState extends State<DataManagementMain> {
   final _dataManagementCtrl = Get.put(DataManagementController());
 
-  Future<void> getGreenBeansBackup(int type) async {
+  Future<void> getBackupData(int type) async {
     List list;
     String title;
     switch (type) {
@@ -77,11 +78,22 @@ class _DataManagementMainState extends State<DataManagementMain> {
     if (key[0] == "생두 목록") {
       List errorData = [];
       for (var e in jsonData["생두 목록"]) {
-        Map<String, String> value = {"name": e["name"]};
-        int result = await GreenBeansSqfLite().insertGreenBean(value);
+        try {
+          Map<String, String> value = {"name": e["name"]};
+          int result = await GreenBeansSqfLite().insertGreenBean(value);
 
-        if (result != 1) {
-          errorData.add(e["name"]);
+          if (result != 1) {
+            errorData.add(e["name"] ?? "알수없음");
+          }
+        } catch (err) {
+          errorData.add(e["name"] ?? "알수없음");
+          print("green bean data recovery ERROR: $err");
+          if (!mounted) return;
+          CustomDialog().showFloatingSnackBar(
+            context,
+            "[${e["name"] ?? "알수없음"}] 생두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
+            isLongTime: true,
+          );
         }
       }
       if (errorData.isNotEmpty) {
@@ -100,11 +112,60 @@ class _DataManagementMainState extends State<DataManagementMain> {
           "${jsonData["생두 목록"].length} 건 성공\n[생두 목록] 데이터가 정상적으로 복구되었습니다.",
           bgColor: Colors.green,
         );
+        _dataManagementCtrl.backupDataTECtrl.clear();
       }
-      _dataManagementCtrl.backupDataTECtrl.clear();
       return;
     } else if (key[0] == "생두 재고") {
-      print("생두 재고 이야!");
+      List errorData = [];
+      List<bool> totalCount = [];
+      for (var e in jsonData["생두 재고"]) {
+        List history = jsonDecode(e["history"]);
+        for (var hisE in history) {
+          String jsonHistory = "";
+          try {
+            jsonHistory = jsonEncode([
+              {
+                "date": hisE["date"],
+                "company": hisE["company"],
+                "weight": hisE["weight"],
+              },
+            ]);
+            Map<String, String> value = {
+              "name": e["name"],
+              "weight": hisE["weight"],
+              "history": jsonHistory,
+            };
+            var insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock(value);
+            totalCount.add(insertResult);
+            if (!insertResult) errorData.add(e["name"] ?? "알수 없음");
+          } catch (err) {
+            errorData.add(e["name"] ?? "알수없음");
+            print("green bean stock data recovery ERROR: $err");
+            if (!mounted) return;
+            CustomDialog().showFloatingSnackBar(
+              context,
+              "[${e["name"] ?? "알수없음"}] 생두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
+              isLongTime: true,
+            );
+          }
+        }
+      }
+      if (errorData.isNotEmpty) {
+        if (!mounted) return;
+        CustomDialog().showFloatingSnackBar(
+          context,
+          "${totalCount.length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n" + "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." + "재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
+          isLongTime: true,
+        );
+      } else {
+        if (!mounted) return;
+        CustomDialog().showFloatingSnackBar(
+          context,
+          "${totalCount.length} 건 성공\n[생두 재고] 데이터가 정상적으로 복구되었습니다.",
+          bgColor: Colors.green,
+        );
+        _dataManagementCtrl.backupDataTECtrl.clear();
+      }
       return;
     } else if (key[0] == "원두 재고") {
       print("원두 재고 이야!");
@@ -155,22 +216,22 @@ class _DataManagementMainState extends State<DataManagementMain> {
                       children: [
                         _BackupButton(
                           title: "생두 목록 백업",
-                          onPressed: () => getGreenBeansBackup(0),
+                          onPressed: () => getBackupData(0),
                         ),
                         const SizedBox(height: 10),
                         _BackupButton(
                           title: "생두 재고 백업",
-                          onPressed: () => getGreenBeansBackup(1),
+                          onPressed: () => getBackupData(1),
                         ),
                         const SizedBox(height: 10),
                         _BackupButton(
                           title: "원두 재고 백업",
-                          onPressed: () => getGreenBeansBackup(2),
+                          onPressed: () => getBackupData(2),
                         ),
                         const SizedBox(height: 10),
                         _BackupButton(
                           title: "판매 내역 백업",
-                          onPressed: () => getGreenBeansBackup(3),
+                          onPressed: () => getBackupData(3),
                         ),
                       ],
                     ),
