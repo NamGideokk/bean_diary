@@ -9,7 +9,6 @@ import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class DataManagementMain extends StatefulWidget {
@@ -22,45 +21,21 @@ class DataManagementMain extends StatefulWidget {
 class _DataManagementMainState extends State<DataManagementMain> {
   final _dataManagementCtrl = Get.put(DataManagementController());
 
-  Future<void> getBackupData(int type) async {
-    List list;
-    String title;
-    switch (type) {
-      case 0:
-        await _dataManagementCtrl.getGreenBeans();
-        list = _dataManagementCtrl.greenBeans;
-        title = "생두 목록";
-        break;
-      case 1:
-        await _dataManagementCtrl.getGreenBeanStock();
-        list = _dataManagementCtrl.greenBeanStock;
-        title = "생두 재고";
-        break;
-      case 2:
-        await _dataManagementCtrl.getRoastingBeanStock();
-        list = _dataManagementCtrl.roastingBeanStock;
-        title = "원두 재고";
-        break;
-      case 3:
-        await _dataManagementCtrl.getSalesHistory();
-        list = _dataManagementCtrl.salesHistory;
-        title = "판매 내역";
-        break;
-      default:
-        return;
-    }
-    if (list.isEmpty) {
+  void getBackupData(int type) async {
+    final Map<String, dynamic> result = await _dataManagementCtrl.getBackupData(type);
+
+    if (result["bool"]) {
       if (!mounted) return;
-      return CustomDialog().showFloatingSnackBar(context, "[$title]\n백업할 데이터가 없습니다.");
-    } else {
-      final jsonString = jsonEncode({title: list});
-      Clipboard.setData(ClipboardData(text: jsonString));
-      if (!mounted) return;
-      return CustomDialog().showFloatingSnackBar(
+      CustomDialog().showFloatingSnackBar(
         context,
-        "[$title]\n데이터가 복사되었습니다.",
+        "[${result["title"]}]\n데이터가 복사되었습니다.",
         bgColor: Colors.green,
       );
+      return;
+    } else {
+      if (!mounted) return;
+      CustomDialog().showFloatingSnackBar(context, "[${result["title"]}]\n백업할 데이터가 없습니다.");
+      return;
     }
   }
 
@@ -78,96 +53,10 @@ class _DataManagementMainState extends State<DataManagementMain> {
     var key = jsonData.keys.toList();
 
     if (key[0] == "생두 목록") {
-      List errorData = [];
-      for (var e in jsonData["생두 목록"]) {
-        try {
-          Map<String, String> value = {"name": e["name"]};
-          int result = await GreenBeansSqfLite().insertGreenBean(value);
-
-          if (result != 1) {
-            errorData.add(e["name"] ?? "알수없음");
-          }
-        } catch (err) {
-          errorData.add(e["name"] ?? "알수없음");
-          print("green bean data recovery ERROR: $err");
-          if (!mounted) return;
-          CustomDialog().showFloatingSnackBar(
-            context,
-            "[${e["name"] ?? "알수없음"}] 생두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
-            isLongTime: true,
-          );
-        }
-      }
-      if (errorData.isNotEmpty) {
-        if (!mounted) return;
-        CustomDialog().showFloatingSnackBar(
-          context,
-          "${jsonData["생두 목록"].length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n${errorData.toString()}\n" +
-              "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." +
-              "중복 데이터인지 확인하시거나, 재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
-          isLongTime: true,
-        );
-      } else {
-        if (!mounted) return;
-        CustomDialog().showFloatingSnackBar(
-          context,
-          "${jsonData["생두 목록"].length} 건 성공\n[생두 목록] 데이터가 정상적으로 복구되었습니다.",
-          bgColor: Colors.green,
-        );
-        _dataManagementCtrl.backupDataTECtrl.clear();
-      }
+      recoveryGreenBean(jsonData);
       return;
     } else if (key[0] == "생두 재고") {
-      List errorData = [];
-      List<bool> totalCount = [];
-      for (var e in jsonData["생두 재고"]) {
-        List history = jsonDecode(e["history"]);
-        for (var hisE in history) {
-          String jsonHistory = "";
-          try {
-            jsonHistory = jsonEncode([
-              {
-                "date": hisE["date"],
-                "company": hisE["company"],
-                "weight": hisE["weight"],
-              },
-            ]);
-            Map<String, String> value = {
-              "name": e["name"],
-              "weight": hisE["weight"],
-              "history": jsonHistory,
-            };
-            var insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock(value);
-            totalCount.add(insertResult);
-            if (!insertResult) errorData.add(e["name"] ?? "알수 없음");
-          } catch (err) {
-            errorData.add(e["name"] ?? "알수없음");
-            print("green bean stock data recovery ERROR: $err");
-            if (!mounted) return;
-            CustomDialog().showFloatingSnackBar(
-              context,
-              "[${e["name"] ?? "알수없음"}] 생두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
-              isLongTime: true,
-            );
-          }
-        }
-      }
-      if (errorData.isNotEmpty) {
-        if (!mounted) return;
-        CustomDialog().showFloatingSnackBar(
-          context,
-          "${totalCount.length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n" + "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." + "재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
-          isLongTime: true,
-        );
-      } else {
-        if (!mounted) return;
-        CustomDialog().showFloatingSnackBar(
-          context,
-          "${totalCount.length} 건 성공\n[생두 재고] 데이터가 정상적으로 복구되었습니다.",
-          bgColor: Colors.green,
-        );
-        _dataManagementCtrl.backupDataTECtrl.clear();
-      }
+      recoveryGreenBeanStock(jsonData);
       return;
     } else if (key[0] == "원두 재고") {
       recoveryRoastingBeanStock(jsonData);
@@ -182,17 +71,123 @@ class _DataManagementMainState extends State<DataManagementMain> {
     }
   }
 
+  recoveryGreenBean(Map<String, dynamic> jsonData) async {
+    List errorData = [];
+    for (var e in jsonData["생두 목록"]) {
+      try {
+        List keys = e.keys.toList();
+        if (keys[0] != "id" || keys[1] != "name") throw Error();
+        Map<String, String> value = {"name": e["name"]};
+        int result = await GreenBeansSqfLite().insertGreenBean(value);
+
+        if (result != 1) {
+          errorData.add(e["name"] ?? "알수없음");
+        }
+      } catch (err) {
+        errorData.add(e["name"] ?? "알수없음");
+        print("green bean data recovery ERROR: $err");
+        if (!mounted) return;
+        CustomDialog().showFloatingSnackBar(
+          context,
+          "[${e["name"] ?? "알수없음"}] 생두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
+          isLongTime: true,
+        );
+      }
+    }
+    if (errorData.isNotEmpty) {
+      if (!mounted) return;
+      CustomDialog().showFloatingSnackBar(
+        context,
+        "${jsonData["생두 목록"].length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n${errorData.toString()}\n" +
+            "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." +
+            "중복 데이터인지 확인하시거나, 재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
+        isLongTime: true,
+      );
+    } else {
+      if (!mounted) return;
+      CustomDialog().showFloatingSnackBar(
+        context,
+        "${jsonData["생두 목록"].length} 건 성공\n[생두 목록] 데이터가 정상적으로 복구되었습니다.",
+        bgColor: Colors.green,
+      );
+      _dataManagementCtrl.backupDataTECtrl.clear();
+    }
+    return;
+  }
+
+  recoveryGreenBeanStock(Map<String, dynamic> jsonData) async {
+    List errorData = [];
+    List<bool> totalCount = [];
+    for (var e in jsonData["생두 재고"]) {
+      try {
+        List keys1 = e.keys.toList();
+        if (keys1[0] != "id" || keys1[1] != "name" || keys1[2] != "weight" || keys1[3] != "history") throw Error();
+        List history = jsonDecode(e["history"]);
+        for (var hisE in history) {
+          String jsonHistory = "";
+          List keys2 = hisE.keys.toList();
+          if (keys2[0] != "date" || keys2[1] != "company" || keys2[2] != "weight") throw Error();
+          jsonHistory = jsonEncode([
+            {
+              "date": hisE["date"],
+              "company": hisE["company"],
+              "weight": hisE["weight"],
+            },
+          ]);
+          Map<String, String> value = {
+            "name": e["name"],
+            "weight": hisE["weight"],
+            "history": jsonHistory,
+          };
+          var insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock(value);
+          totalCount.add(insertResult);
+          if (!insertResult) errorData.add(e["name"] ?? "알수 없음");
+        }
+      } catch (err) {
+        errorData.add(e["name"] ?? "알수없음");
+        print("green bean stock data recovery ERROR: $err");
+        if (!mounted) return;
+        CustomDialog().showFloatingSnackBar(
+          context,
+          "[${e["name"] ?? "알수없음"}] 생두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
+          isLongTime: true,
+        );
+      }
+    }
+    if (errorData.isNotEmpty) {
+      if (!mounted) return;
+      CustomDialog().showFloatingSnackBar(
+        context,
+        "${totalCount.length - errorData.length < 0 ? 0 : totalCount.length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n" +
+            "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." +
+            "재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
+        isLongTime: true,
+      );
+    } else {
+      if (!mounted) return;
+      CustomDialog().showFloatingSnackBar(
+        context,
+        "${totalCount.length} 건 성공\n[생두 재고] 데이터가 정상적으로 복구되었습니다.",
+        bgColor: Colors.green,
+      );
+      _dataManagementCtrl.backupDataTECtrl.clear();
+    }
+    return;
+  }
+
   recoveryRoastingBeanStock(Map<String, dynamic> jsonData) async {
     List errorData = [];
     List totalCount = [];
     for (var e in jsonData["원두 재고"]) {
-      print(e);
-      List history = jsonDecode(e["history"]);
-      for (var hisE in history) {
-        String jsonHistory = "";
-        Map<String, String> value = {};
-        print(hisE);
-        try {
+      try {
+        List keys1 = e.keys.toList();
+        if (keys1[0] != "id" || keys1[1] != "type" || keys1[2] != "name" || keys1[3] != "roasting_weight" || keys1[4] != "history") throw Error();
+        List history = jsonDecode(e["history"]);
+        for (var hisE in history) {
+          String jsonHistory = "";
+          List keys2 = hisE.keys.toList();
+          if (keys2[0] != "date" || keys2[1] != "roasting_weight") throw Error();
+          Map<String, String> value = {};
           if (e["type"] == "1") {
             jsonHistory = jsonEncode([
               {
@@ -225,17 +220,17 @@ class _DataManagementMainState extends State<DataManagementMain> {
           if (!insertResult) {
             errorData.add(e["name"] ?? "알수없음");
           }
-        } catch (err) {
-          totalCount.add(false);
-          errorData.add(e["name"] ?? "알수없음");
-          print("roasting bean stock data recovery ERROR: $err");
-          if (!mounted) return;
-          CustomDialog().showFloatingSnackBar(
-            context,
-            "[${e["name"] ?? "알수없음"}] 원두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
-            isLongTime: true,
-          );
         }
+      } catch (err) {
+        totalCount.add(false);
+        errorData.add(e["name"] ?? "알수없음");
+        print("roasting bean stock data recovery ERROR: $err");
+        if (!mounted) return;
+        CustomDialog().showFloatingSnackBar(
+          context,
+          "[${e["name"] ?? "알수없음"}] 원두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
+          isLongTime: true,
+        );
       }
     }
     if (errorData.isNotEmpty) {
@@ -249,7 +244,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
       if (!mounted) return;
       CustomDialog().showFloatingSnackBar(
         context,
-        "${totalCount.length} 건 성공\n[생두 재고] 데이터가 정상적으로 복구되었습니다.",
+        "${totalCount.length} 건 성공\n[원두 재고] 데이터가 정상적으로 복구되었습니다.",
         bgColor: Colors.green,
       );
       _dataManagementCtrl.backupDataTECtrl.clear();
@@ -260,6 +255,8 @@ class _DataManagementMainState extends State<DataManagementMain> {
     List errorData = [];
     for (var e in jsonData["판매 내역"]) {
       try {
+        List keys = e.keys.toList();
+        if (keys[0] != "id" || keys[1] != "type" || keys[2] != "name" || keys[3] != "sales_weight" || keys[4] != "company" || keys[5] != "date") throw Error();
         Map<String, String> value = {
           "name": e["name"],
           "type": e["type"],
