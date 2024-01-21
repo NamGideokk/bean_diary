@@ -171,17 +171,17 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 if (_warehousingGreenBeanCtrl.companyTECtrl.text.trim() == "") {
-                                  CustomDialog().showFloatingSnackBar(context, "입고처(업체명)를 입력해 주세요.");
+                                  CustomDialog().showSnackBar(context, "입고처(업체명)를 입력해 주세요.");
                                   _companyFN.requestFocus();
                                   return;
                                 }
                                 if (_warehousingGreenBeanCtrl.selectedBean == "" || _warehousingGreenBeanCtrl.selectedBean == null) {
-                                  CustomDialog().showFloatingSnackBar(context, "생두를 선택해 주세요.");
+                                  CustomDialog().showSnackBar(context, "생두를 선택해 주세요.");
                                   _nameFN.requestFocus();
                                   return;
                                 }
                                 if (_warehousingGreenBeanCtrl.weightTECtrl.text.trim() == "") {
-                                  CustomDialog().showFloatingSnackBar(context, "중량을 입력해 주세요.");
+                                  CustomDialog().showSnackBar(context, "중량을 입력해 주세요.");
                                   _weightFN.requestFocus();
                                   return;
                                 }
@@ -190,7 +190,11 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 _warehousingGreenBeanCtrl.weightTECtrl.text = result["replaceValue"];
 
                                 if (!result["bool"]) {
-                                  CustomDialog().showFloatingSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
+                                  CustomDialog().showSnackBar(
+                                    context,
+                                    "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
+                                    isError: true,
+                                  );
                                   _weightFN.requestFocus();
                                   return;
                                 }
@@ -214,7 +218,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 var insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock(value);
 
                                 if (!mounted) return;
-                                CustomDialog().showFloatingSnackBar(
+                                CustomDialog().showSnackBar(
                                   context,
                                   insertResult
                                       ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
@@ -223,7 +227,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                           "${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n" +
                                           "입고 등록이 완료되었습니다."
                                       : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
-                                  bgColor: insertResult ? Colors.green : Colors.red,
+                                  isError: insertResult ? false : true,
                                 );
 
                                 if (insertResult) allValueInit();
@@ -232,7 +236,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                               ),
                               child: Text(
-                                "입고",
+                                "입고 등록",
                                 style: TextStyle(
                                   fontSize: height / 50,
                                 ),

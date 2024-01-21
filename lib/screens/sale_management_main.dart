@@ -40,16 +40,16 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
 
   void onTapSalesButton() async {
     if (_roastingBeanSalesCtrl.companyTECtrl.text.trim() == "") {
-      CustomDialog().showFloatingSnackBar(context, "판매처(업체명)를 입력해 주세요.");
+      CustomDialog().showSnackBar(context, "판매처(업체명)를 입력해 주세요.");
       _roastingBeanSalesCtrl.companyFN.requestFocus();
       return;
     }
     if (_roastingBeanSalesCtrl.selectedBean == null) {
-      CustomDialog().showFloatingSnackBar(context, "판매할 원두를 선택해 주세요.");
+      CustomDialog().showSnackBar(context, "판매할 원두를 선택해 주세요.");
       return;
     }
     if (_roastingBeanSalesCtrl.weightTECtrl.text.trim() == "") {
-      CustomDialog().showFloatingSnackBar(context, "판매 중량을 입력해 주세요.");
+      CustomDialog().showSnackBar(context, "판매 중량을 입력해 주세요.");
       _roastingBeanSalesCtrl.weightFN.requestFocus();
       return;
     } else {
@@ -57,14 +57,14 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
       _roastingBeanSalesCtrl.weightTECtrl.text = result["replaceValue"];
 
       if (!result["bool"]) {
-        CustomDialog().showFloatingSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
+        CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
         _roastingBeanSalesCtrl.weightFN.requestFocus();
         return;
       } else {
         int beanTotalWeight = int.parse(_roastingBeanSalesCtrl.selectedBean.toString().split(" / ")[1].replaceAll(RegExp("[.,kg]"), ""));
         int salesWeight = int.parse(_roastingBeanSalesCtrl.weightTECtrl.text.replaceAll(".", ""));
         if (beanTotalWeight < salesWeight) {
-          CustomDialog().showFloatingSnackBar(context, "판매 중량이 재고량보다 클 수 없습니다.\n다시 입력해 주세요.");
+          CustomDialog().showSnackBar(context, "판매 중량이 재고량보다 클 수 없습니다.\n다시 입력해 주세요.");
           _roastingBeanSalesCtrl.weightFN.requestFocus();
           return;
         }
@@ -94,18 +94,18 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
       String successMsg =
           "${_customDatePickerCtrl.textEditingCtrl.text}\n$company\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(_roastingBeanSalesCtrl.weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(context, successMsg, bgColor: Colors.green);
+      CustomDialog().showSnackBar(context, successMsg);
       bool updateWeightResult = await RoastingBeanStockSqfLite().updateWeightRoastingBeanStock(value);
       if (!updateWeightResult) {
         if (!mounted) return;
-        CustomDialog().showFloatingSnackBar(context, "판매한 원두의 재고량 차감이 실패했습니다.");
+        CustomDialog().showSnackBar(context, "판매한 원두의 재고량 차감이 실패했습니다.");
       }
       _roastingBeanSalesCtrl.updateBeanListWeight(_roastingBeanSalesCtrl.selectedBean, sales_weight);
       allValueInit();
       return;
     } else {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(context, "판매 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.");
+      CustomDialog().showSnackBar(context, "판매 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.");
       FocusScope.of(context).requestFocus(FocusNode());
       return;
     }
@@ -215,7 +215,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                               ),
                               child: Text(
-                                "판매",
+                                "판매 등록",
                                 style: TextStyle(
                                   fontSize: height / 50,
                                 ),

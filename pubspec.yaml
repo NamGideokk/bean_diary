@@ -44,6 +44,7 @@ dependencies:
   bloc: ^8.1.2
   get: ^4.6.5
   package_info_plus: ^4.0.2
+  upgrader: ^9.0.0
 
 dev_dependencies:
   flutter_test:

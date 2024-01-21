@@ -20,6 +20,7 @@ class RoastingTypeWidget extends StatelessWidget {
           color: Colors.white,
           fontSize: height / 67,
           fontWeight: FontWeight.w500,
+          height: 0,
         ),
       ),
     );

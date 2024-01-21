@@ -94,7 +94,7 @@ class _GuideText extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Text(
-      "항목을 선택하면 $text 내역을 확인할 수 있습니다.",
+      "항목을 누르면 $text 내역을 확인할 수 있습니다.",
       style: TextStyle(
         fontSize: height / 70,
         color: Colors.black54,

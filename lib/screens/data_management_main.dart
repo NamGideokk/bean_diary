@@ -26,15 +26,14 @@ class _DataManagementMainState extends State<DataManagementMain> {
 
     if (result["bool"]) {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(
+      CustomDialog().showSnackBar(
         context,
         "[${result["title"]}]\n데이터가 복사되었습니다.",
-        bgColor: Colors.green,
       );
       return;
     } else {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(context, "[${result["title"]}]\n백업할 데이터가 없습니다.");
+      CustomDialog().showSnackBar(context, "[${result["title"]}]\n백업할 데이터가 없습니다.");
       return;
     }
   }
@@ -44,29 +43,36 @@ class _DataManagementMainState extends State<DataManagementMain> {
 
     if (backupData.trim().isEmpty) {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(context, "백업할 데이터를 넣어주세요.");
+      CustomDialog().showSnackBar(context, "백업할 데이터를 넣어주세요.");
       _dataManagementCtrl.backupDataFN.requestFocus();
       return;
     }
 
-    final jsonData = jsonDecode(backupData);
-    var key = jsonData.keys.toList();
+    try {
+      final jsonData = jsonDecode(backupData);
+      var key = jsonData.keys.toList();
 
-    if (key[0] == "생두 목록") {
-      recoveryGreenBean(jsonData);
-      return;
-    } else if (key[0] == "생두 재고") {
-      recoveryGreenBeanStock(jsonData);
-      return;
-    } else if (key[0] == "원두 재고") {
-      recoveryRoastingBeanStock(jsonData);
-      return;
-    } else if (key[0] == "판매 내역") {
-      recoverySalesHistory(jsonData);
-      return;
-    } else {
+      if (key[0] == "생두 목록") {
+        recoveryGreenBean(jsonData);
+        return;
+      } else if (key[0] == "생두 재고") {
+        recoveryGreenBeanStock(jsonData);
+        return;
+      } else if (key[0] == "원두 재고") {
+        recoveryRoastingBeanStock(jsonData);
+        return;
+      } else if (key[0] == "판매 내역") {
+        recoverySalesHistory(jsonData);
+        return;
+      } else {
+        if (!mounted) return;
+        CustomDialog().showSnackBar(context, "백업 데이터가 올바르지 않습니다.\n복구가 불가능합니다.");
+        return;
+      }
+    } catch (err) {
+      print("data recovery ERROR: $err");
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(context, "백업 데이터가 올바르지 않습니다.\n복구가 불가능합니다.");
+      CustomDialog().showSnackBar(context, "백업 데이터가 올바르지 않습니다.\n복구가 불가능합니다.");
       return;
     }
   }
@@ -87,7 +93,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
         errorData.add(e["name"] ?? "알수없음");
         print("green bean data recovery ERROR: $err");
         if (!mounted) return;
-        CustomDialog().showFloatingSnackBar(
+        CustomDialog().showSnackBar(
           context,
           "[${e["name"] ?? "알수없음"}] 생두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
           isLongTime: true,
@@ -96,7 +102,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
     }
     if (errorData.isNotEmpty) {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(
+      CustomDialog().showSnackBar(
         context,
         "${jsonData["생두 목록"].length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n${errorData.toString()}\n" +
             "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." +
@@ -105,10 +111,9 @@ class _DataManagementMainState extends State<DataManagementMain> {
       );
     } else {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(
+      CustomDialog().showSnackBar(
         context,
         "${jsonData["생두 목록"].length} 건 성공\n[생두 목록] 데이터가 정상적으로 복구되었습니다.",
-        bgColor: Colors.green,
       );
       _dataManagementCtrl.backupDataTECtrl.clear();
     }
@@ -147,7 +152,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
         errorData.add(e["name"] ?? "알수없음");
         print("green bean stock data recovery ERROR: $err");
         if (!mounted) return;
-        CustomDialog().showFloatingSnackBar(
+        CustomDialog().showSnackBar(
           context,
           "[${e["name"] ?? "알수없음"}] 생두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
           isLongTime: true,
@@ -156,7 +161,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
     }
     if (errorData.isNotEmpty) {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(
+      CustomDialog().showSnackBar(
         context,
         "${totalCount.length - errorData.length < 0 ? 0 : totalCount.length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n" +
             "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." +
@@ -165,10 +170,9 @@ class _DataManagementMainState extends State<DataManagementMain> {
       );
     } else {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(
+      CustomDialog().showSnackBar(
         context,
         "${totalCount.length} 건 성공\n[생두 재고] 데이터가 정상적으로 복구되었습니다.",
-        bgColor: Colors.green,
       );
       _dataManagementCtrl.backupDataTECtrl.clear();
     }
@@ -226,7 +230,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
         errorData.add(e["name"] ?? "알수없음");
         print("roasting bean stock data recovery ERROR: $err");
         if (!mounted) return;
-        CustomDialog().showFloatingSnackBar(
+        CustomDialog().showSnackBar(
           context,
           "[${e["name"] ?? "알수없음"}] 원두의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
           isLongTime: true,
@@ -235,17 +239,16 @@ class _DataManagementMainState extends State<DataManagementMain> {
     }
     if (errorData.isNotEmpty) {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(
+      CustomDialog().showSnackBar(
         context,
         "${totalCount.length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n" + "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." + "재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
         isLongTime: true,
       );
     } else {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(
+      CustomDialog().showSnackBar(
         context,
         "${totalCount.length} 건 성공\n[원두 재고] 데이터가 정상적으로 복구되었습니다.",
-        bgColor: Colors.green,
       );
       _dataManagementCtrl.backupDataTECtrl.clear();
     }
@@ -273,7 +276,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
         errorData.add("${e["name"] ?? "알수없음"}");
         print("sales history data recovery ERROR: $err");
         if (!mounted) return;
-        CustomDialog().showFloatingSnackBar(
+        CustomDialog().showSnackBar(
           context,
           "[${e["name"] ?? "알수없음"}] 판매 내역의 텍스트 데이터가 재가공되어 복구에 실패했습니다.",
           isLongTime: true,
@@ -282,17 +285,16 @@ class _DataManagementMainState extends State<DataManagementMain> {
     }
     if (errorData.isNotEmpty) {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(
+      CustomDialog().showSnackBar(
         context,
         "${jsonData["판매 내역"].length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n" + "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." + "재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
         isLongTime: true,
       );
     } else {
       if (!mounted) return;
-      CustomDialog().showFloatingSnackBar(
+      CustomDialog().showSnackBar(
         context,
         "${jsonData["판매 내역"].length} 건 성공\n[판매 내역] 데이터가 정상적으로 복구되었습니다.",
-        bgColor: Colors.green,
       );
       _dataManagementCtrl.backupDataTECtrl.clear();
     }

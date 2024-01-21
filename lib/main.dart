@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bean_diary/screens/data_management_main.dart';
 import 'package:bean_diary/screens/green_bean_warehousing_main.dart';
 import 'package:bean_diary/screens/roasting_management_main.dart';
@@ -6,11 +8,13 @@ import 'package:bean_diary/screens/sale_management_main.dart';
 import 'package:bean_diary/screens/stock_status_main.dart';
 import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
+import 'package:bean_diary/utility/custom_upgrade_message.dart';
 import 'package:bean_diary/widgets/drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:upgrader/upgrader.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -188,9 +192,8 @@ class _MyHomePageState extends State<MyHomePage> {
     getPackageInfo();
   }
 
-  Future getPackageInfo() async {
-    packageInfo = await PackageInfo.fromPlatform();
-  }
+  /// 패키지 정보 가져오기
+  Future getPackageInfo() async => packageInfo = await PackageInfo.fromPlatform();
 
   @override
   Widget build(BuildContext context) {
@@ -206,52 +209,59 @@ class _MyHomePageState extends State<MyHomePage> {
           return false;
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("원두 다이어리"),
-          leading: Builder(
-            builder: (context) => GestureDetector(
-              onTap: () => Scaffold.of(context).openDrawer(),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: Image.asset("assets/images/logo.png"),
+      child: UpgradeAlert(
+        showIgnore: false,
+        showLater: false,
+        upgrader: Upgrader(
+          messages: CustomUpgradeMessages(),
+        ),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("원두 다이어리"),
+            leading: Builder(
+              builder: (context) => GestureDetector(
+                onTap: () => Scaffold.of(context).openDrawer(),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Image.asset("assets/images/logo.png"),
+                ),
               ),
             ),
+            leadingWidth: 44,
           ),
-          leadingWidth: 44,
-        ),
-        drawer: const DrawerWidget(),
-        body: Container(
-          padding: const EdgeInsets.all(15.0),
-          height: height,
-          color: Colors.brown[700],
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: _menus.length,
-                  physics: const ClampingScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: width < 700 ? 2 : 3,
-                    childAspectRatio: 1.25,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
+          drawer: const DrawerWidget(),
+          body: Container(
+            padding: const EdgeInsets.all(15.0),
+            height: height,
+            color: Colors.brown[700],
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: _menus.length,
+                    physics: const ClampingScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: width < 700 ? 2 : 3,
+                      childAspectRatio: 1.25,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                    ),
+                    itemBuilder: (context, index) => _MenuButton(
+                      menus: _menus,
+                      index: index,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => _menus[index]["screen"],
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                  itemBuilder: (context, index) => _MenuButton(
-                    menus: _menus,
-                    index: index,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => _menus[index]["screen"],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

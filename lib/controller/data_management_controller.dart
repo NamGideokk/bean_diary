@@ -9,10 +9,10 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class DataManagementController extends GetxController {
-  RxList _greenBeans = [].obs;
-  RxList _greenBeanStock = [].obs;
-  RxList _roastingBeanStock = [].obs;
-  RxList _salesHistory = [].obs;
+  final RxList _greenBeans = [].obs;
+  final RxList _greenBeanStock = [].obs;
+  final RxList _roastingBeanStock = [].obs;
+  final RxList _salesHistory = [].obs;
 
   final backupDataTECtrl = TextEditingController();
   final backupDataFN = FocusNode();

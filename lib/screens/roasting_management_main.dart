@@ -317,7 +317,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               // 블렌드
                               if (_warehousingGreenBeanCtrl.roastingType == 2) {
                                 if (_warehousingGreenBeanCtrl.blendBeanList.isEmpty) {
-                                  CustomDialog().showFloatingSnackBar(context, "투입할 생두를 선택해 주세요.");
+                                  CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
                                   FocusScope.of(context).requestFocus(FocusNode());
                                   return;
                                 }
@@ -326,14 +326,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   var divide = _warehousingGreenBeanCtrl.blendBeanList[i].toString().split(" / ");
 
                                   if (e.text == "") {
-                                    CustomDialog().showFloatingSnackBar(context, "[${divide[0]}]\n생두의 투입량을 입력해 주세요.");
+                                    CustomDialog().showSnackBar(context, "[${divide[0]}]\n생두의 투입량을 입력해 주세요.");
                                     return;
                                   }
                                   var result = Utility().checkWeightRegEx(e.text.trim());
                                   e.text = result["replaceValue"];
 
                                   if (!result["bool"]) {
-                                    CustomDialog().showFloatingSnackBar(
+                                    CustomDialog().showSnackBar(
                                       context,
                                       "[${divide[0]}]\n생두의 중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
                                     );
@@ -342,14 +342,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
                                     int inputWeight = int.parse(e.text.trim().replaceAll(".", ""));
                                     if (totalWeight < inputWeight) {
-                                      CustomDialog().showFloatingSnackBar(context, "[${divide[0]}]\n생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
+                                      CustomDialog().showSnackBar(context, "[${divide[0]}]\n생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
                                       return;
                                     }
                                   }
                                 });
 
                                 if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
-                                  CustomDialog().showFloatingSnackBar(context, "배출량을 입력해 주세요.");
+                                  CustomDialog().showSnackBar(context, "배출량을 입력해 주세요.");
                                   FocusScope.of(context).requestFocus(FocusNode());
                                   return;
                                 } else {
@@ -357,7 +357,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
 
                                   if (!result["bool"]) {
-                                    CustomDialog().showFloatingSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
+                                    CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
                                     _roastingWeightFN.requestFocus();
                                     return;
                                   } else {
@@ -368,14 +368,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                       blendTotalWeight += int.parse(e.text.replaceAll(".", ""));
                                     });
                                     if (blendTotalWeight <= roastingWeight) {
-                                      CustomDialog().showFloatingSnackBar(context, "배출량이 총 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
+                                      CustomDialog().showSnackBar(context, "배출량이 총 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
                                       FocusScope.of(context).requestFocus(FocusNode());
                                       return;
                                     }
                                   }
                                 }
                                 if (_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim() == "") {
-                                  CustomDialog().showFloatingSnackBar(context, "블렌드명을 입력해 주세요.");
+                                  CustomDialog().showSnackBar(context, "블렌드명을 입력해 주세요.");
                                   _warehousingGreenBeanCtrl.blendNameFN.requestFocus();
                                   return;
                                 }
@@ -400,7 +400,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
 
                                 if (!mounted) return;
-                                CustomDialog().showFloatingSnackBar(
+                                CustomDialog().showSnackBar(
                                   context,
                                   insertResult
                                       ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
@@ -408,7 +408,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                           "${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n" +
                                           "로스팅 등록이 완료되었습니다."
                                       : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
-                                  bgColor: insertResult ? Colors.green : Colors.red,
+                                  isError: insertResult ? false : true,
                                 );
 
                                 if (insertResult) {
@@ -437,12 +437,12 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
 
                               // 1
                               if (_warehousingGreenBeanCtrl.selectedBean == null) {
-                                CustomDialog().showFloatingSnackBar(context, "투입할 생두를 선택해 주세요.");
+                                CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
                                 FocusScope.of(context).requestFocus(FocusNode());
                                 return;
                               }
                               if (_warehousingGreenBeanCtrl.weightTECtrl.text.trim() == "") {
-                                CustomDialog().showFloatingSnackBar(context, "투입량을 입력해 주세요.");
+                                CustomDialog().showSnackBar(context, "투입량을 입력해 주세요.");
                                 _weightFN.requestFocus();
                                 return;
                               } else {
@@ -450,7 +450,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 _warehousingGreenBeanCtrl.weightTECtrl.text = result["replaceValue"];
 
                                 if (!result["bool"]) {
-                                  CustomDialog().showFloatingSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
+                                  CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
                                   _weightFN.requestFocus();
                                   return;
                                 } else {
@@ -459,14 +459,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
                                   int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
                                   if (totalWeight < inputWeight) {
-                                    CustomDialog().showFloatingSnackBar(context, "투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
+                                    CustomDialog().showSnackBar(context, "투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
                                     _weightFN.requestFocus();
                                     return;
                                   }
                                 }
                               }
                               if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
-                                CustomDialog().showFloatingSnackBar(context, "배출량을 입력해 주세요.");
+                                CustomDialog().showSnackBar(context, "배출량을 입력해 주세요.");
                                 _roastingWeightFN.requestFocus();
                                 return;
                               } else {
@@ -474,7 +474,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
 
                                 if (!result["bool"]) {
-                                  CustomDialog().showFloatingSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
+                                  CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
                                   _roastingWeightFN.requestFocus();
                                   return;
                                 } else {
@@ -482,7 +482,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
                                   int roastingWeight = int.parse(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", ""));
                                   if (inputWeight <= roastingWeight) {
-                                    CustomDialog().showFloatingSnackBar(context, "배출량이 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
+                                    CustomDialog().showSnackBar(context, "배출량이 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
                                     _roastingWeightFN.requestFocus();
                                     return;
                                   }
@@ -509,7 +509,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
 
                               if (!mounted) return;
-                              CustomDialog().showFloatingSnackBar(
+                              CustomDialog().showSnackBar(
                                 context,
                                 insertResult
                                     ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
@@ -517,7 +517,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                         "${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n" +
                                         "로스팅 등록이 완료되었습니다."
                                     : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
-                                bgColor: insertResult ? Colors.green : Colors.red,
+                                isError: insertResult ? false : true,
                               );
 
                               if (insertResult) {
@@ -540,7 +540,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                             ),
                             child: Text(
-                              "로스팅",
+                              "로스팅 등록",
                               style: TextStyle(
                                 fontSize: height / 50,
                               ),
