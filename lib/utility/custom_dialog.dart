@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomDialog {
   customSnackBar(BuildContext context, String content, bool isError, bool isLongTime) {
@@ -90,5 +91,16 @@ class CustomDialog {
               ],
             ),
           );
+  }
+
+  /// 앱 종료 알림창
+  Future<bool> appTerminationAlert(BuildContext context) async {
+    bool confirm = await showAlertDialog(context, "앱 종료", "앱을 종료하시겠습니까?");
+    if (confirm) {
+      SystemNavigator.pop();
+      return true;
+    } else {
+      return false;
+    }
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:bean_diary/controller/stock_controller.dart';
+import 'package:bean_diary/controllers/stock_controller.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
@@ -17,11 +17,6 @@ class StockStatusMain extends StatefulWidget {
 
 class _StockStatusMainState extends State<StockStatusMain> {
   final _stockCtrl = Get.put(StockController());
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {

@@ -86,4 +86,13 @@ class Utility {
         name: "",
         decimalDigits: isWeight ? 1 : 0,
       ).format(double.parse(value));
+
+  /// 생두·원두 / 중량 각각 나누기
+  /// * int type = 1 : 이름 return
+  /// *     type = 2 : 중량 return
+  splitNameAndWeight(String value, int type) {
+    if (!value.contains(" / ")) return;
+    List splitValue = value.split(" / ");
+    return splitValue[type == 1 ? 0 : 1];
+  }
 }

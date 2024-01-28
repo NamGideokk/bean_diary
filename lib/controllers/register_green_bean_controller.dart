@@ -1,4 +1,4 @@
-import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';

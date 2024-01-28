@@ -1,5 +1,5 @@
-import 'package:bean_diary/controller/roasting_bean_sales_controller.dart';
-import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/controllers/roasting_bean_sales_controller.dart';
+import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

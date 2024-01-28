@@ -1,5 +1,5 @@
-import 'package:bean_diary/controller/sale_history_controller.dart';
-import 'package:bean_diary/controller/year_picker_controller.dart';
+import 'package:bean_diary/controllers/sale_history_controller.dart';
+import 'package:bean_diary/controllers/year_picker_controller.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/custom_year_picker.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';

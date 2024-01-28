@@ -1,4 +1,4 @@
-import 'package:bean_diary/controller/app_info_controller.dart';
+import 'package:bean_diary/controllers/app_info_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

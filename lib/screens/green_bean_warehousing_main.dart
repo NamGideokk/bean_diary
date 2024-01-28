@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:bean_diary/controller/custom_date_picker_controller.dart';
-import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
+import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/screens/register_green_bean.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/colors_list.dart';
@@ -10,6 +10,7 @@ import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/keyboard_dismiss.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,11 +30,6 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
   final _weightFN = FocusNode();
   final _scrollCtrl = ScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void allValueInit() {
     FocusScope.of(context).requestFocus(FocusNode());
     _customDatePickerCtrl.setDateToToday();
@@ -51,8 +47,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+    return KeyboardDismiss(
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -93,14 +88,12 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const RegisterGreenBean(),
-                                ),
-                              );
-                            },
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterGreenBean(),
+                              ),
+                            ),
                             child: const Text("생두 등록 / 관리"),
                           ),
                         ),

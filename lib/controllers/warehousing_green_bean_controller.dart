@@ -13,20 +13,19 @@ class WarehousingGreenBeanController extends GetxController {
   final blendNameTECtrl = TextEditingController();
   final blendNameFN = FocusNode();
 
-  RxString _day = "".obs;
-  RxString _company = "".obs;
-  RxList _beanList = <String?>[].obs;
+  final RxString _day = "".obs;
+  final RxString _company = "".obs;
+  final RxList _beanList = <String?>[].obs;
   final _selectedBean = Rxn<String>();
-  RxString _weight = "".obs;
-  RxString _roastingWeight = "".obs;
-  // RxInt _listType = 2.obs;
+  final RxString _weight = "".obs;
+  final RxString _roastingWeight = "".obs;
   final _listType = Rxn<int>();
-  RxInt _roastingType = 1.obs;
+  final RxInt _roastingType = 1.obs;
 
-  RxList<Map<String, dynamic>> _greenBeanStockList = <Map<String, dynamic>>[].obs;
-  RxList<Rxn<String>> _blendBeanList = <Rxn<String>>[].obs;
+  final RxList<Map<String, dynamic>> _greenBeanStockList = <Map<String, dynamic>>[].obs;
+  final RxList<Rxn<String>> _blendBeanList = <Rxn<String>>[].obs;
 
-  RxBool _isLoading = true.obs;
+  final RxBool _isLoading = true.obs;
 
   get company => _company.value;
   get beanList => _beanList;
@@ -41,21 +40,17 @@ class WarehousingGreenBeanController extends GetxController {
 
   get isLoading => _isLoading.value;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  setListType(int value) {
+  /// 목록 타입 값 설정하기 (생두/원두)
+  Future setListType(int value) async {
     _listType(value);
-    getBeanList();
+    await getBeanList();
   }
 
-  void setRoastingType(int value) {
-    _roastingType(value);
-  }
+  /// 로스팅 타입 값 설정하기 (싱글오리진/블렌드)
+  void setRoastingType(int value) => _roastingType(value);
 
-  getBeanList() async {
+  /// 생두/원두 목록 가져오기
+  Future getBeanList() async {
     _beanList.clear();
     switch (listType) {
       // 생두
@@ -95,12 +90,14 @@ class WarehousingGreenBeanController extends GetxController {
     }
   }
 
+  /// 생둥 목록 삭제하기
   void deleteBeanList(int index) {
     List copyList = <String?>[..._beanList];
     copyList.removeAt(index);
     _beanList(copyList);
   }
 
+  /// 생두 목록 재고량 업데이트하기
   void updateBeanListWeight(String name, String useWeight) {
     final beforeSelectedBean = _selectedBean;
     final divideName = name.split(" / ");
@@ -121,14 +118,13 @@ class WarehousingGreenBeanController extends GetxController {
     }
   }
 
-  void setCompany(String value) {
-    _company(value);
-  }
+  /// 업체명 할당하기
+  void setCompany(String value) => _company(value);
 
-  void setSelectBean(String value) {
-    _selectedBean(value);
-  }
+  /// 선택한 생두 값 할당하기
+  void setSelectBean(String value) => _selectedBean(value);
 
+  /// 로스팅 관리 > 블렌드 > 생두 목록 추가하기
   void addBlendBeanList(String value) {
     bool dupCheck = false;
     if (_blendBeanList.isNotEmpty) {
@@ -145,6 +141,7 @@ class WarehousingGreenBeanController extends GetxController {
     _blendBeanList.add(addElement);
   }
 
+  /// 로스팅 관리 > 블렌드 > 생두 목록 삭제하기
   void deleteBlendBeanList(int index) {
     _blendBeanList.removeAt(index);
     weightTECtrlList[index].dispose();
@@ -153,6 +150,7 @@ class WarehousingGreenBeanController extends GetxController {
     weightFNList.removeAt(index);
   }
 
+  /// 로스팅 관리 > 블렌드 > 생두 추가 시 컨트롤러, 포커스노드 추가하기
   void addWeightCtrlList() {
     final weightTECtrl = TextEditingController();
     final weightFN = FocusNode();
@@ -160,14 +158,10 @@ class WarehousingGreenBeanController extends GetxController {
     weightFNList.add(weightFN);
   }
 
+  /// 로스팅 관리 > 블렌드 정보 초기화하기
   void initBlendInfo() {
     _blendBeanList.clear();
     weightTECtrlList.clear();
     weightFNList.clear();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }

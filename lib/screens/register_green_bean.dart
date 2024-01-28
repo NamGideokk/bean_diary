@@ -1,6 +1,7 @@
-import 'package:bean_diary/controller/register_green_bean_controller.dart';
+import 'package:bean_diary/controllers/register_green_bean_controller.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/keyboard_dismiss.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,8 +24,7 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+    return KeyboardDismiss(
       child: Scaffold(
         appBar: AppBar(
           title: const Text("생두 등록 / 관리"),

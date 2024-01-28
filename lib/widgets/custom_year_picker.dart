@@ -1,5 +1,5 @@
-import 'package:bean_diary/controller/sale_history_controller.dart';
-import 'package:bean_diary/controller/year_picker_controller.dart';
+import 'package:bean_diary/controllers/sale_history_controller.dart';
+import 'package:bean_diary/controllers/year_picker_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,7 +20,7 @@ class CustomYearPicker extends StatelessWidget {
         child: YearPicker(
           currentDate: now,
           initialDate: now,
-          firstDate: DateTime(2000),
+          firstDate: DateTime(2010),
           lastDate: now,
           selectedDate: now,
           onChanged: (value) {

@@ -1,6 +1,6 @@
-import 'package:bean_diary/controller/custom_date_picker_controller.dart';
-import 'package:bean_diary/controller/roasting_bean_sales_controller.dart';
-import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
+import 'package:bean_diary/controllers/roasting_bean_sales_controller.dart';
+import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/colors_list.dart';
@@ -9,6 +9,7 @@ import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/keyboard_dismiss.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -122,8 +123,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+    return KeyboardDismiss(
       child: Scaffold(
         appBar: AppBar(
           title: const Text("판매 관리"),

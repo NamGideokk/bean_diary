@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:bean_diary/controller/custom_date_picker_controller.dart';
-import 'package:bean_diary/controller/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
+import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/colors_list.dart';
@@ -10,6 +10,7 @@ import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/keyboard_dismiss.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,8 +54,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+    return KeyboardDismiss(
       child: Scaffold(
         appBar: AppBar(
           title: const Text("로스팅 관리"),
@@ -118,65 +118,94 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                       const BeanSelectDropdownButton(listType: 2),
                       const SizedBox(height: 5),
                       if (_warehousingGreenBeanCtrl.roastingType == 2)
-                        ListView.builder(
+                        ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: _warehousingGreenBeanCtrl.blendBeanList.length,
-                          itemBuilder: (context, index) => Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                            margin: const EdgeInsets.only(bottom: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.brown[50],
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
+                          separatorBuilder: (context, index) => Divider(),
+                          itemBuilder: (context, index) => ListTile(
+                            title: Text(Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 1)),
+                            subtitle: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.ideographic,
                               children: [
+                                Text(Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 2)),
+                                const SizedBox(width: 15),
                                 Flexible(
-                                  flex: 5,
-                                  child: Text(
-                                    _warehousingGreenBeanCtrl.blendBeanList[index].toString(),
-                                    style: TextStyle(
-                                      fontSize: height / 54,
+                                  child: TextField(
+                                    controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
+                                    focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
+                                    textAlign: TextAlign.center,
+                                    textInputAction: TextInputAction.next,
+                                    decoration: const InputDecoration(
+                                      hintText: "투입 중량",
+                                      suffixText: "kg",
                                     ),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 3,
-                                  child: Row(
-                                    children: [
-                                      Flexible(
-                                        flex: 2,
-                                        child: TextField(
-                                          controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
-                                          focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
-                                          textAlign: TextAlign.center,
-                                          textInputAction: TextInputAction.next,
-                                          decoration: const InputDecoration(
-                                            hintText: "투입 중량",
-                                            suffixText: "kg",
-                                          ),
-                                          style: TextStyle(
-                                            fontSize: height / 52,
-                                          ),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          _warehousingGreenBeanCtrl.deleteBlendBeanList(index);
-                                        },
-                                        icon: Icon(
-                                          Icons.clear,
-                                          size: height / 50,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    ],
+                                    style: TextStyle(
+                                      fontSize: height / 52,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
+                          // itemBuilder: (context, index) => Container(
+                          //   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                          //   margin: const EdgeInsets.only(bottom: 5),
+                          //   decoration: BoxDecoration(
+                          //     color: Colors.brown[50],
+                          //     borderRadius: BorderRadius.circular(5),
+                          //   ),
+                          // child: Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     Flexible(
+                          //       flex: 5,
+                          //       child: Text(
+                          //         _warehousingGreenBeanCtrl.blendBeanList[index].toString(),
+                          //         style: TextStyle(
+                          //           fontSize: height / 54,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     Flexible(
+                          //       flex: 3,
+                          //       child: Row(
+                          //         children: [
+                          //           Flexible(
+                          //             flex: 2,
+                          //             child: TextField(
+                          //               controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
+                          //               focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
+                          //               textAlign: TextAlign.center,
+                          //               textInputAction: TextInputAction.next,
+                          //               decoration: const InputDecoration(
+                          //                 hintText: "투입 중량",
+                          //                 suffixText: "kg",
+                          //               ),
+                          //               style: TextStyle(
+                          //                 fontSize: height / 52,
+                          //               ),
+                          //             ),
+                          //           ),
+                          //           Focus(
+                          //             descendantsAreFocusable: false,
+                          //             child: IconButton(
+                          //               onPressed: () => _warehousingGreenBeanCtrl.deleteBlendBeanList(index),
+                          //               icon: Icon(
+                          //                 Icons.clear,
+                          //                 size: height / 50,
+                          //                 color: Colors.red,
+                          //               ),
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          // ),
                         ),
                       const SizedBox(height: 5),
                       _warehousingGreenBeanCtrl.roastingType == 1

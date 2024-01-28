@@ -1,12 +1,13 @@
 import 'dart:convert';
 
-import 'package:bean_diary/controller/data_management_controller.dart';
+import 'package:bean_diary/controllers/data_management_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/keyboard_dismiss.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -314,8 +315,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+    return KeyboardDismiss(
       child: Scaffold(
         appBar: AppBar(
           title: const Text("데이터 관리"),
