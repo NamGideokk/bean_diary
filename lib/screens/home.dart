@@ -49,6 +49,7 @@ class _HomeState extends State<Home> {
         showLater: false,
         upgrader: Upgrader(
           messages: CustomUpgradeMessages(),
+          durationUntilAlertAgain: const Duration(minutes: 30),
         ),
         child: Scaffold(
           backgroundColor: Colors.brown[700],
