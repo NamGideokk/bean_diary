@@ -42,8 +42,11 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return WillPopScope(
-      onWillPop: () => CustomDialog().appTerminationAlert(context),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (!didPop) CustomDialog().appTerminationAlert(context);
+      },
       child: UpgradeAlert(
         showIgnore: false,
         showLater: false,

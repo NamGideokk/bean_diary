@@ -95,8 +95,8 @@ class CustomDialog {
 
   /// 앱 종료 알림창
   Future<bool> appTerminationAlert(BuildContext context) async {
-    bool confirm = await showAlertDialog(context, "앱 종료", "앱을 종료하시겠습니까?");
-    if (confirm) {
+    bool? confirm = await showAlertDialog(context, "앱 종료", "앱을 종료하시겠습니까?");
+    if (confirm == true) {
       SystemNavigator.pop();
       return true;
     } else {
