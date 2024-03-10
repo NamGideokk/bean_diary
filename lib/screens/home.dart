@@ -58,6 +58,7 @@ class _HomeState extends State<Home> {
           backgroundColor: Colors.brown[700],
           appBar: AppBar(
             title: const Text("원두 다이어리"),
+            centerTitle: false,
             leading: Builder(
               builder: (context) => GestureDetector(
                 onTap: () => Scaffold.of(context).openDrawer(),
