@@ -18,13 +18,12 @@ class CustomDatePicker extends StatelessWidget {
             controller: customDatePickerCtrl.textEditingCtrl,
             readOnly: true,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: height / 52,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               prefixIcon: Icon(
                 CupertinoIcons.calendar,
-                size: height / 40,
+                size: height / 46,
                 color: Colors.brown,
               ),
             ),

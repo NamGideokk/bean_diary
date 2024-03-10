@@ -3,10 +3,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class AppInfoController extends GetxController {
   late PackageInfo packageInfo;
-  RxString _appName = "".obs;
-  RxString _packageName = "".obs;
-  RxString _version = "".obs;
-  RxString _buildNumber = "".obs;
+  final RxString _appName = "".obs;
+  final RxString _packageName = "".obs;
+  final RxString _version = "".obs;
+  final RxString _buildNumber = "".obs;
 
   get appName => _appName.value;
   get packageName => _packageName.value;

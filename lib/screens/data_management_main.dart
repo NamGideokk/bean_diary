@@ -373,6 +373,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
                         textAlign: TextAlign.center,
                         textInputAction: TextInputAction.go,
                         onSubmitted: dataRecovery,
+                        style: Theme.of(context).textTheme.bodyMedium,
                         decoration: InputDecoration(
                           hintText: "복사한 백업 데이터",
                           helperText: "복사된 텍스트 데이터를 그대로 붙여넣기 하시고, 한 번에 하나의 데이터만 넣어주세요.",
@@ -382,8 +383,12 @@ class _DataManagementMainState extends State<DataManagementMain> {
                           helperMaxLines: 3,
                           suffixIcon: IconButton(
                             onPressed: clearBackupDataText,
-                            icon: const Icon(Icons.clear_rounded),
+                            icon: Icon(
+                              Icons.clear_rounded,
+                              size: height / 50,
+                            ),
                           ),
+                          suffixIconConstraints: const BoxConstraints(),
                         ),
                       ),
                     ),

@@ -19,19 +19,31 @@ class CustomAppTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: const Color(0xff2f2722),
         foregroundColor: Colors.white,
+        centerTitle: true,
         titleTextStyle: TextStyle(
-          fontSize: height / 40,
+          fontSize: height / 46,
+        ),
+      ),
+      textTheme: TextTheme(
+        // TextField style
+        bodyMedium: TextStyle(
+          fontSize: height / 54,
+          color: Colors.black,
+          letterSpacing: 0,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         isDense: true,
-        contentPadding: const EdgeInsets.all(10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         errorStyle: TextStyle(
           fontSize: height / 60,
         ),
         hintStyle: TextStyle(
           color: Colors.grey,
           fontSize: height / 52,
+        ),
+        prefixStyle: TextStyle(
+          fontSize: height / 60,
         ),
         suffixStyle: TextStyle(
           fontSize: height / 60,

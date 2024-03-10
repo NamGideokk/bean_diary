@@ -146,6 +146,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                       textAlign: TextAlign.center,
                       controller: _roastingBeanSalesCtrl.companyTECtrl,
                       focusNode: _roastingBeanSalesCtrl.companyFN,
+                      style: Theme.of(context).textTheme.bodyMedium,
                       decoration: const InputDecoration(
                         hintText: "업체명",
                       ),
@@ -153,6 +154,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                     const SizedBox(height: 20),
                     const HeaderTitle(title: "판매 원두 정보", subTitle: "roasting bean sale information"),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         const Expanded(
                           flex: 4,
@@ -165,6 +167,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                             textAlign: TextAlign.center,
                             controller: _roastingBeanSalesCtrl.weightTECtrl,
                             focusNode: _roastingBeanSalesCtrl.weightFN,
+                            style: Theme.of(context).textTheme.bodyMedium,
                             decoration: const InputDecoration(
                               hintText: "판매 중량",
                               suffixText: "kg",

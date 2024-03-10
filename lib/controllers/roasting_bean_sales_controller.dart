@@ -11,7 +11,7 @@ class RoastingBeanSalesController extends GetxController {
   final weightFN = FocusNode();
 
   final RxList _beanList = <String?>[].obs;
-  RxList _beanMapDataList = [].obs;
+  final RxList _beanMapDataList = [].obs;
   final _selectedBean = Rxn<String>();
 
   get beanList => _beanList;
@@ -35,9 +35,7 @@ class RoastingBeanSalesController extends GetxController {
     }
   }
 
-  void setSelectBean(String value) {
-    _selectedBean(value);
-  }
+  void setSelectBean(String value) => _selectedBean(value);
 
   void updateBeanListWeight(String name, String useWeight) {
     final divideName = name.split(" / ");
@@ -50,10 +48,5 @@ class RoastingBeanSalesController extends GetxController {
     copyList[findElementIndex] = replaceString;
     _beanList(copyList);
     _selectedBean(replaceString);
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }

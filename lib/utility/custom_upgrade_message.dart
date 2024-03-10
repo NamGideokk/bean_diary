@@ -4,10 +4,11 @@ import 'package:upgrader/upgrader.dart';
 
 class CustomUpgradeMessages extends UpgraderMessages {
   @override
-  get title => "최신 업데이트";
+  get title => "최신 버전이 올라왔어요";
 
+  // {{appName}}
   @override
-  get body => "{{appName}} 새 버전이 업데이트되었습니다.\n최신 버전 - {{currentAppStoreVersion}}\n현재 버전 - {{currentInstalledVersion}}";
+  get body => "새 버전이 업데이트되었습니다.\n최신 버전 - {{currentAppStoreVersion}}\n현재 버전 - {{currentInstalledVersion}}";
 
   @override
   get prompt => Platform.isAndroid

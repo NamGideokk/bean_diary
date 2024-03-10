@@ -43,9 +43,7 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                   focusNode: _registerGreenBeanCtrl.greenBeanNameFN,
                   textInputAction: TextInputAction.go,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: height / 52,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                   decoration: InputDecoration(
                     hintText: "예) 케냐 AA",
                     errorText: _registerGreenBeanCtrl.showErrorText ? " 생두명을 입력해 주세요." : null,

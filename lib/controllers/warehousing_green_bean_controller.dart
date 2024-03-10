@@ -7,8 +7,8 @@ import 'package:get/get.dart';
 class WarehousingGreenBeanController extends GetxController {
   final companyTECtrl = TextEditingController();
   final weightTECtrl = TextEditingController();
-  final List weightTECtrlList = <TextEditingController>[];
-  final List weightFNList = <FocusNode>[];
+  final RxList _weightTECtrlList = <TextEditingController>[].obs;
+  final RxList _weightFNList = <FocusNode>[].obs;
   final roastingWeightTECtrl = TextEditingController();
   final blendNameTECtrl = TextEditingController();
   final blendNameFN = FocusNode();
@@ -37,6 +37,9 @@ class WarehousingGreenBeanController extends GetxController {
 
   get greenBeanStockList => _greenBeanStockList;
   get blendBeanList => _blendBeanList;
+
+  get weightTECtrlList => _weightTECtrlList;
+  get weightFNList => _weightFNList;
 
   get isLoading => _isLoading.value;
 
@@ -90,7 +93,7 @@ class WarehousingGreenBeanController extends GetxController {
     }
   }
 
-  /// 생둥 목록 삭제하기
+  /// 생두 목록 삭제하기
   void deleteBeanList(int index) {
     List copyList = <String?>[..._beanList];
     copyList.removeAt(index);
@@ -128,9 +131,7 @@ class WarehousingGreenBeanController extends GetxController {
   void addBlendBeanList(String value) {
     bool dupCheck = false;
     if (_blendBeanList.isNotEmpty) {
-      dupCheck = _blendBeanList.any((e) {
-        return (e == value);
-      });
+      dupCheck = _blendBeanList.any((e) => e.toString() == value);
     }
     if (dupCheck) {
       return;
@@ -163,5 +164,12 @@ class WarehousingGreenBeanController extends GetxController {
     _blendBeanList.clear();
     weightTECtrlList.clear();
     weightFNList.clear();
+  }
+
+  /// 로스팅 관리 > 블렌드 로스팅 : 원두 리스트 항목 삭제하기
+  void deleteBlendBeanListItem(int index) {
+    _blendBeanList.removeAt(index);
+    _weightFNList.removeAt(index);
+    _weightTECtrlList.removeAt(index);
   }
 }

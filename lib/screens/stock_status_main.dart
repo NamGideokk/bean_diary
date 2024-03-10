@@ -29,7 +29,6 @@ class _StockStatusMainState extends State<StockStatusMain> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("재고 현황"),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),

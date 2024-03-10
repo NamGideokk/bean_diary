@@ -122,16 +122,65 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: _warehousingGreenBeanCtrl.blendBeanList.length,
-                          separatorBuilder: (context, index) => Divider(),
+                          separatorBuilder: (context, index) => const SizedBox(height: 15),
                           itemBuilder: (context, index) => ListTile(
-                            title: Text(Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 1)),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: "${(index + 1).toString().padLeft(2, "0")}.  ",
+                                      style: TextStyle(
+                                        fontSize: height / 40,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 1),
+                                          style: TextStyle(
+                                            fontSize: height / 54,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                FocusScope(
+                                  canRequestFocus: false,
+                                  child: IconButton(
+                                    style: IconButton.styleFrom(
+                                      visualDensity: VisualDensity.compact,
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      shape: const CircleBorder(),
+                                    ),
+                                    onPressed: () => _warehousingGreenBeanCtrl.deleteBlendBeanListItem(index),
+                                    icon: Icon(
+                                      Icons.clear,
+                                      size: height / 40,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                             subtitle: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.baseline,
                               textBaseline: TextBaseline.ideographic,
                               children: [
-                                Text(Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 2)),
-                                const SizedBox(width: 15),
+                                Text(
+                                  Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 2),
+                                  style: TextStyle(
+                                    fontSize: height / 52,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.brown,
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
                                 Flexible(
                                   child: TextField(
                                     controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
@@ -141,71 +190,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     decoration: const InputDecoration(
                                       hintText: "투입 중량",
                                       suffixText: "kg",
+                                      prefixText: "투입",
                                     ),
-                                    style: TextStyle(
-                                      fontSize: height / 52,
-                                    ),
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          // itemBuilder: (context, index) => Container(
-                          //   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                          //   margin: const EdgeInsets.only(bottom: 5),
-                          //   decoration: BoxDecoration(
-                          //     color: Colors.brown[50],
-                          //     borderRadius: BorderRadius.circular(5),
-                          //   ),
-                          // child: Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     Flexible(
-                          //       flex: 5,
-                          //       child: Text(
-                          //         _warehousingGreenBeanCtrl.blendBeanList[index].toString(),
-                          //         style: TextStyle(
-                          //           fontSize: height / 54,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //     Flexible(
-                          //       flex: 3,
-                          //       child: Row(
-                          //         children: [
-                          //           Flexible(
-                          //             flex: 2,
-                          //             child: TextField(
-                          //               controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
-                          //               focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
-                          //               textAlign: TextAlign.center,
-                          //               textInputAction: TextInputAction.next,
-                          //               decoration: const InputDecoration(
-                          //                 hintText: "투입 중량",
-                          //                 suffixText: "kg",
-                          //               ),
-                          //               style: TextStyle(
-                          //                 fontSize: height / 52,
-                          //               ),
-                          //             ),
-                          //           ),
-                          //           Focus(
-                          //             descendantsAreFocusable: false,
-                          //             child: IconButton(
-                          //               onPressed: () => _warehousingGreenBeanCtrl.deleteBlendBeanList(index),
-                          //               icon: Icon(
-                          //                 Icons.clear,
-                          //                 size: height / 50,
-                          //                 color: Colors.red,
-                          //               ),
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          // ),
                         ),
                       const SizedBox(height: 5),
                       _warehousingGreenBeanCtrl.roastingType == 1
@@ -228,9 +220,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                       hintText: "투입 중량",
                                       suffixText: "kg",
                                     ),
-                                    style: TextStyle(
-                                      fontSize: height / 52,
-                                    ),
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                     onTap: () => Utility().moveScrolling(_scrollCtrl),
                                   ),
                                 ),
@@ -251,9 +241,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                       hintText: "로스팅 후 중량",
                                       suffixText: "kg",
                                     ),
-                                    style: TextStyle(
-                                      fontSize: height / 52,
-                                    ),
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                     onTap: () => Utility().moveScrolling(_scrollCtrl),
                                   ),
                                 ),
@@ -277,9 +265,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                       hintText: "로스팅 후 중량",
                                       suffixText: "kg",
                                     ),
-                                    style: TextStyle(
-                                      fontSize: height / 52,
-                                    ),
+                                    style: Theme.of(context).textTheme.bodyMedium,
                                     onTap: () => Utility().moveScrolling(_scrollCtrl),
                                   ),
                                 ),
@@ -303,9 +289,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 decoration: const InputDecoration(
                                   hintText: "블렌드명",
                                 ),
-                                style: TextStyle(
-                                  fontSize: height / 52,
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 onTap: () => Utility().moveScrolling(_scrollCtrl),
                               ),
                             ),

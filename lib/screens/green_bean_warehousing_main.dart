@@ -50,9 +50,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
     return KeyboardDismiss(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "생두 입고 관리",
-          ),
+          title: const Text("생두 입고 관리"),
           centerTitle: true,
         ),
         body: Stack(
@@ -79,9 +77,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                           decoration: const InputDecoration(
                             hintText: "업체명",
                           ),
-                          style: TextStyle(
-                            fontSize: height / 52,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         const SizedBox(height: 20),
                         const HeaderTitle(title: "생두 정보", subTitle: "green bean information"),
@@ -112,9 +108,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 textAlign: TextAlign.center,
                                 controller: _warehousingGreenBeanCtrl.weightTECtrl,
                                 focusNode: _weightFN,
-                                style: TextStyle(
-                                  fontSize: height / 52,
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 decoration: const InputDecoration(
                                   hintText: "입고 중량",
                                   suffixText: "kg",

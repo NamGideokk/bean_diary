@@ -3,8 +3,8 @@ import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:get/get.dart';
 
 class StockController extends GetxController {
-  RxList _greenBeanStockList = [].obs;
-  RxList _roastingBeanStockList = [].obs;
+  final RxList _greenBeanStockList = [].obs;
+  final RxList _roastingBeanStockList = [].obs;
 
   get greenBeanStockList => _greenBeanStockList;
   get roastingBeanStockList => _roastingBeanStockList;
@@ -24,10 +24,5 @@ class StockController extends GetxController {
   void getRoastingBeanStockList() async {
     final list = await RoastingBeanStockSqfLite().getRoastingBeanStock();
     if (list.isNotEmpty) _roastingBeanStockList(list);
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }

@@ -34,7 +34,7 @@ class HomeMenuButton extends StatelessWidget {
             menus[index]["title"],
             style: TextStyle(
               color: Colors.brown[900],
-              fontSize: height / 40,
+              fontSize: height / 44,
               fontWeight: FontWeight.w500,
             ),
           ),

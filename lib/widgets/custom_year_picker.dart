@@ -19,7 +19,6 @@ class CustomYearPicker extends StatelessWidget {
       child: SafeArea(
         child: YearPicker(
           currentDate: now,
-          initialDate: now,
           firstDate: DateTime(2010),
           lastDate: now,
           selectedDate: now,
