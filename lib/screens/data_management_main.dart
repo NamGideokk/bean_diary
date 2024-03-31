@@ -382,6 +382,10 @@ class _DataManagementMainState extends State<DataManagementMain> {
                           ),
                           helperMaxLines: 3,
                           suffixIcon: IconButton(
+                            style: IconButton.styleFrom(
+                              visualDensity: VisualDensity.compact,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
                             onPressed: clearBackupDataText,
                             icon: Icon(
                               Icons.clear_rounded,

@@ -21,11 +21,15 @@ class CustomDatePicker extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium,
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
-              prefixIcon: Icon(
-                CupertinoIcons.calendar,
-                size: height / 46,
-                color: Colors.brown,
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: Icon(
+                  CupertinoIcons.calendar,
+                  size: height / 46,
+                  color: Colors.brown,
+                ),
               ),
+              prefixIconConstraints: const BoxConstraints(),
             ),
           ),
         ),

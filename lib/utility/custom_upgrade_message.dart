@@ -4,7 +4,7 @@ import 'package:upgrader/upgrader.dart';
 
 class CustomUpgradeMessages extends UpgraderMessages {
   @override
-  get title => "최신 버전이 올라왔어요";
+  get title => "최신 버전이 있어요!";
 
   // {{appName}}
   @override
