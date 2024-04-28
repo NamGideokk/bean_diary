@@ -18,9 +18,8 @@ class HomeMenuButton extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(10),
         ),
-        padding: const EdgeInsets.all(15),
         elevation: 5,
         shadowColor: Colors.brown[900],
         backgroundColor: Colors.brown[50],
@@ -30,13 +29,28 @@ class HomeMenuButton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            menus[index]["title"],
-            style: TextStyle(
-              color: Colors.brown[900],
-              fontSize: height / 44,
-              fontWeight: FontWeight.w500,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Text(
+                  menus[index]["title"],
+                  style: TextStyle(
+                    color: Colors.brown[900],
+                    fontSize: height / 44,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              Text(
+                menus[index]["subTitle"],
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: height / 64,
+                ),
+              ),
+            ],
           ),
           Align(
             alignment: Alignment.bottomRight,

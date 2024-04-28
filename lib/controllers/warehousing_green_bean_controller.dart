@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
+import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +16,11 @@ class WarehousingGreenBeanController extends GetxController {
   final roastingWeightTECtrl = TextEditingController();
   final blendNameTECtrl = TextEditingController();
   final blendNameFN = FocusNode();
+
+  // 생두 입고 관리
+  final companyFN = FocusNode();
+  final greenBeanFN = FocusNode();
+  final weightFN = FocusNode();
 
   final RxString _day = "".obs;
   final RxString _company = "".obs;
@@ -42,6 +51,14 @@ class WarehousingGreenBeanController extends GetxController {
   get weightFNList => _weightFNList;
 
   get isLoading => _isLoading.value;
+
+  @override
+  void onClose() {
+    super.onClose();
+    companyFN.dispose();
+    greenBeanFN.dispose();
+    weightFN.dispose();
+  }
 
   /// 목록 타입 값 설정하기 (생두/원두)
   Future setListType(int value) async {
@@ -126,6 +143,81 @@ class WarehousingGreenBeanController extends GetxController {
 
   /// 선택한 생두 값 할당하기
   void setSelectBean(String value) => _selectedBean(value);
+
+  /// 생두 입고 입력 정보 초기화하기
+  void setInitGreenBeanWarehousingInfo() {
+    final customDatePickerCtrl = Get.find<CustomDatePickerController>();
+    customDatePickerCtrl.setDateToToday();
+    companyTECtrl.clear();
+    weightTECtrl.clear();
+  }
+
+  /// 생두 입고 등록하기
+  Future registerWarehousingGreenBean(BuildContext context) async {
+    if (companyTECtrl.text.trim() == "") {
+      CustomDialog().showSnackBar(context, "입고처(업체명)를 입력해 주세요.");
+      companyFN.requestFocus();
+      return;
+    }
+    if (selectedBean == "" || selectedBean == null) {
+      CustomDialog().showSnackBar(context, "생두를 선택해 주세요.");
+      greenBeanFN.requestFocus();
+      return;
+    }
+    if (weightTECtrl.text.trim() == "") {
+      CustomDialog().showSnackBar(context, "중량을 입력해 주세요.");
+      weightFN.requestFocus();
+      return;
+    }
+
+    var result = Utility().checkWeightRegEx(weightTECtrl.text.trim());
+    weightTECtrl.text = result["replaceValue"];
+
+    if (!result["bool"]) {
+      CustomDialog().showSnackBar(
+        context,
+        "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
+        isError: true,
+      );
+      weightFN.requestFocus();
+      return;
+    }
+
+    final customDatePickerCtrl = Get.find<CustomDatePickerController>();
+
+    String date = customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
+    String weight = weightTECtrl.text.replaceAll(".", "");
+    String history = jsonEncode([
+      {
+        "date": date,
+        "company": companyTECtrl.text.trim(),
+        "weight": weight,
+      },
+    ]);
+
+    Map<String, String> value = {
+      "name": selectedBean,
+      "weight": weight,
+      "history": history,
+    };
+
+    var insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock(value);
+
+    if (!context.mounted) return;
+    CustomDialog().showSnackBar(
+      context,
+      insertResult
+          ? "${customDatePickerCtrl.textEditingCtrl.text}\n${companyTECtrl.text.trim()}\n$selectedBean\n${weightTECtrl.text}kg\n\n입고 등록이 완료되었습니다."
+          : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
+      isError: insertResult ? false : true,
+    );
+
+    if (insertResult) {
+      weightTECtrl.clear();
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      currentFocus.unfocus();
+    }
+  }
 
   /// 로스팅 관리 > 블렌드 > 생두 목록 추가하기
   void addBlendBeanList(String value) {

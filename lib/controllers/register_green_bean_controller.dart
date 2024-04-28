@@ -57,6 +57,8 @@ class RegisterGreenBeanController extends GetxController {
         return;
       } else if (result == 1) {
         greenBeanNameTECtrl.clear();
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        currentFocus.unfocus();
         await getGreenBeanList();
         await _warehousingGreenBeanCtrl.getBeanList();
         return;

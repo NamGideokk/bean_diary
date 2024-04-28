@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomDialog {
-  customSnackBar(BuildContext context, String content, bool isError, bool isLongTime) {
+  customSnackBar(
+    BuildContext context,
+    String content,
+    bool isError,
+    bool isLongTime,
+  ) {
     final height = MediaQuery.of(context).size.height;
     return SnackBar(
       backgroundColor: isError ? const Color(0xffD24545) : Colors.brown,
@@ -14,7 +19,7 @@ class CustomDialog {
           top: Radius.circular(15),
         ),
       ),
-      duration: Duration(seconds: isLongTime ? 7 : 3),
+      duration: Duration(seconds: isLongTime ? 10 : 5),
       content: Text(
         content,
         style: TextStyle(

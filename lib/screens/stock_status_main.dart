@@ -38,22 +38,21 @@ class _StockStatusMainState extends State<StockStatusMain> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const HeaderTitle(title: "생두 재고", subTitle: "green bean stock"),
-                if (_stockCtrl.greenBeanStockList.isEmpty)
-                  const EmptyWidget(content: "생두 재고가 없습니다.")
-                else
-                  Column(
-                    children: [
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _stockCtrl.greenBeanStockList.length,
-                        separatorBuilder: (context, index) => const Divider(),
-                        itemBuilder: (context, index) => _GreenBeanTile(stockList: _stockCtrl.greenBeanStockList, index: index),
+                _stockCtrl.greenBeanStockList.isEmpty
+                    ? const EmptyWidget(content: "생두 재고가 없습니다.")
+                    : Column(
+                        children: [
+                          ListView.separated(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: _stockCtrl.greenBeanStockList.length,
+                            separatorBuilder: (context, index) => const Divider(),
+                            itemBuilder: (context, index) => _GreenBeanTile(stockList: _stockCtrl.greenBeanStockList, index: index),
+                          ),
+                          const SizedBox(height: 5),
+                          const _GuideText(text: "입고"),
+                        ],
                       ),
-                      const SizedBox(height: 5),
-                      const _GuideText(text: "입고"),
-                    ],
-                  ),
                 const SizedBox(height: 30),
                 const HeaderTitle(title: "원두 재고", subTitle: "roasting bean stock"),
                 _stockCtrl.roastingBeanStockList.isEmpty
@@ -61,8 +60,8 @@ class _StockStatusMainState extends State<StockStatusMain> {
                     : Column(
                         children: [
                           ListView.separated(
-                            shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
                             itemCount: _stockCtrl.roastingBeanStockList.length,
                             separatorBuilder: (context, index) => const Divider(),
                             itemBuilder: (context, index) => _RoastingBeanTile(stockList: _stockCtrl.roastingBeanStockList, index: index),
@@ -100,7 +99,11 @@ class _GuideText extends StatelessWidget {
 class _GreenBeanTile extends StatelessWidget {
   final List stockList;
   final int index;
-  const _GreenBeanTile({Key? key, required this.stockList, required this.index}) : super(key: key);
+  const _GreenBeanTile({
+    Key? key,
+    required this.stockList,
+    required this.index,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -146,44 +149,48 @@ class _GreenBeanTile extends StatelessWidget {
       children: [
         jsonDecode(stockList[index]["history"]).length > 0
             ? ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                itemCount: jsonDecode(stockList[index]["history"]).length,
                 shrinkWrap: true,
+                itemCount: jsonDecode(stockList[index]["history"]).length,
                 itemBuilder: (context, i) {
                   final history = Utility().sortingDate(jsonDecode(stockList[index]["history"]));
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: width / 4,
-                        child: Text(
-                          Utility().dateFormattingYYMMDD(history[i]["date"]),
-                          style: TextStyle(
-                            fontSize: height / 56,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: width / 4,
                           child: Text(
-                            history[i]["company"],
-                            textAlign: TextAlign.left,
+                            Utility().dateFormattingYYMMDD(history[i]["date"]),
                             style: TextStyle(
                               fontSize: height / 56,
+                              fontWeight: FontWeight.w300,
                             ),
                           ),
                         ),
-                      ),
-                      Text(
-                        "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["weight"])))}kg",
-                        style: TextStyle(
-                          fontSize: height / 56,
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text(
+                              history[i]["company"],
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: height / 56,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        Text(
+                          "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["weight"])))}kg",
+                          style: TextStyle(
+                            fontSize: height / 56,
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
               )
@@ -278,35 +285,39 @@ class _RoastingBeanTile extends StatelessWidget {
       children: [
         jsonDecode(stockList[index]["history"]).length > 0
             ? ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                itemCount: jsonDecode(stockList[index]["history"]).length,
                 shrinkWrap: true,
+                itemCount: jsonDecode(stockList[index]["history"]).length,
                 itemBuilder: (context, i) {
                   final history = Utility().sortingDate(jsonDecode(stockList[index]["history"]));
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: width / 4,
-                        child: Text(
-                          Utility().dateFormattingYYMMDD(history[i]["date"]),
-                          style: TextStyle(
-                            fontSize: height / 56,
-                            fontWeight: FontWeight.w300,
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: width / 4,
+                          child: Text(
+                            Utility().dateFormattingYYMMDD(history[i]["date"]),
+                            style: TextStyle(
+                              fontSize: height / 56,
+                              fontWeight: FontWeight.w300,
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["roasting_weight"])))}kg",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            fontSize: height / 56,
+                        Expanded(
+                          child: Text(
+                            "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["roasting_weight"])))}kg",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: height / 56,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 },
               )

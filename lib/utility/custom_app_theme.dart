@@ -108,8 +108,7 @@ class CustomAppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          minimumSize: const Size(0, 0),
-          visualDensity: VisualDensity.comfortable,
+          visualDensity: VisualDensity.compact,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
       ),
