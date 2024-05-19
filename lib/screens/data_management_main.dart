@@ -315,96 +315,94 @@ class _DataManagementMainState extends State<DataManagementMain> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return KeyboardDismiss(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("데이터 관리"),
-          centerTitle: true,
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(10),
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const HeaderTitle(title: "데이터 백업", subTitle: "data backup"),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Column(
-                      children: [
-                        _BackupButton(
-                          title: "생두 목록 백업",
-                          onPressed: () => getBackupData(0),
-                        ),
-                        const SizedBox(height: 10),
-                        _BackupButton(
-                          title: "생두 재고 백업",
-                          onPressed: () => getBackupData(1),
-                        ),
-                        const SizedBox(height: 10),
-                        _BackupButton(
-                          title: "원두 재고 백업",
-                          onPressed: () => getBackupData(2),
-                        ),
-                        const SizedBox(height: 10),
-                        _BackupButton(
-                          title: "판매 내역 백업",
-                          onPressed: () => getBackupData(3),
-                        ),
-                      ],
-                    ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("데이터 관리"),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(10),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HeaderTitle(title: "데이터 백업", subTitle: "data backup"),
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Column(
+                    children: [
+                      _BackupButton(
+                        title: "생두 목록 백업",
+                        onPressed: () => getBackupData(0),
+                      ),
+                      const SizedBox(height: 10),
+                      _BackupButton(
+                        title: "생두 재고 백업",
+                        onPressed: () => getBackupData(1),
+                      ),
+                      const SizedBox(height: 10),
+                      _BackupButton(
+                        title: "원두 재고 백업",
+                        onPressed: () => getBackupData(2),
+                      ),
+                      const SizedBox(height: 10),
+                      _BackupButton(
+                        title: "판매 내역 백업",
+                        onPressed: () => getBackupData(3),
+                      ),
+                    ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: UsageAlertWidget(isWeightGuide: false),
-                ),
-                const HeaderTitle(title: "데이터 복구", subTitle: "data recovery"),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.ideographic,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _dataManagementCtrl.backupDataTECtrl,
-                        focusNode: _dataManagementCtrl.backupDataFN,
-                        textAlign: TextAlign.center,
-                        textInputAction: TextInputAction.go,
-                        onSubmitted: dataRecovery,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        decoration: InputDecoration(
-                          hintText: "복사한 백업 데이터",
-                          helperText: "복사된 텍스트 데이터를 그대로 붙여넣기 하시고, 한 번에 하나의 데이터만 넣어주세요.",
-                          helperStyle: TextStyle(
-                            fontSize: height / 60,
-                          ),
-                          helperMaxLines: 3,
-                          suffixIcon: IconButton(
-                            style: IconButton.styleFrom(
-                              visualDensity: VisualDensity.compact,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            onPressed: clearBackupDataText,
-                            icon: Icon(
-                              Icons.clear_rounded,
-                              size: height / 50,
-                            ),
-                          ),
-                          suffixIconConstraints: const BoxConstraints(),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: UsageAlertWidget(isWeightGuide: false),
+              ),
+              const HeaderTitle(title: "데이터 복구", subTitle: "data recovery"),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.ideographic,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _dataManagementCtrl.backupDataTECtrl,
+                      focusNode: _dataManagementCtrl.backupDataFN,
+                      textAlign: TextAlign.center,
+                      textInputAction: TextInputAction.go,
+                      onSubmitted: dataRecovery,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      decoration: InputDecoration(
+                        hintText: "복사한 백업 데이터",
+                        helperText: "복사된 텍스트 데이터를 그대로 붙여넣기 하시고, 한 번에 하나의 데이터만 넣어주세요.",
+                        helperStyle: TextStyle(
+                          fontSize: height / 60,
                         ),
+                        helperMaxLines: 3,
+                        suffixIcon: IconButton(
+                          style: IconButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          onPressed: clearBackupDataText,
+                          icon: Icon(
+                            Icons.clear_rounded,
+                            size: height / 50,
+                          ),
+                        ),
+                        suffixIconConstraints: const BoxConstraints(),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: () => dataRecovery(""),
-                      child: const Text("복구"),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () => dataRecovery(""),
+                    child: const Text("복구"),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

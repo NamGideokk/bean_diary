@@ -123,117 +123,116 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return KeyboardDismiss(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("판매 관리"),
-          centerTitle: true,
-        ),
-        body: Stack(
-          children: [
-            SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(10),
-                controller: _scrollCtrl,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const HeaderTitle(title: "판매 일자", subTitle: "sale day"),
-                    const CustomDatePicker(),
-                    const SizedBox(height: 20),
-                    const HeaderTitle(title: "판매처", subTitle: "company name"),
-                    TextField(
-                      textAlign: TextAlign.center,
-                      controller: _roastingBeanSalesCtrl.companyTECtrl,
-                      focusNode: _roastingBeanSalesCtrl.companyFN,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      decoration: const InputDecoration(
-                        hintText: "업체명",
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("판매 관리"),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(10),
+              controller: _scrollCtrl,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const HeaderTitle(title: "판매 일자", subTitle: "sale day"),
+                  const CustomDatePicker(),
+                  const SizedBox(height: 20),
+                  const HeaderTitle(title: "판매처", subTitle: "company name"),
+                  TextField(
+                    textAlign: TextAlign.center,
+                    controller: _roastingBeanSalesCtrl.companyTECtrl,
+                    focusNode: _roastingBeanSalesCtrl.companyFN,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    decoration: const InputDecoration(
+                      hintText: "업체명",
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const HeaderTitle(title: "판매 원두 정보", subTitle: "roasting bean sale information"),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Expanded(
+                        flex: 4,
+                        child: BeanSelectDropdownButton(listType: 1),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    const HeaderTitle(title: "판매 원두 정보", subTitle: "roasting bean sale information"),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Expanded(
-                          flex: 4,
-                          child: BeanSelectDropdownButton(listType: 1),
-                        ),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          flex: 2,
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            controller: _roastingBeanSalesCtrl.weightTECtrl,
-                            focusNode: _roastingBeanSalesCtrl.weightFN,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            decoration: const InputDecoration(
-                              hintText: "판매 중량",
-                              suffixText: "kg",
-                            ),
-                            onTap: () => Utility().moveScrolling(_scrollCtrl),
+                      const SizedBox(width: 10),
+                      Flexible(
+                        flex: 2,
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          controller: _roastingBeanSalesCtrl.weightTECtrl,
+                          focusNode: _roastingBeanSalesCtrl.weightFN,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "판매 중량",
+                            suffixText: "kg",
                           ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const UsageAlertWidget(),
-                    SizedBox(height: height / 9),
-                  ],
-                ),
+                          onTap: () => Utility().moveScrolling(_scrollCtrl),
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  const UsageAlertWidget(),
+                  SizedBox(height: height / 9),
+                ],
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                color: ColorsList().bgColor,
-                padding: const EdgeInsets.all(10),
-                child: SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          OutlinedButton(
-                            onPressed: () async {
-                              bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
-                              if (confirm) allValueInit();
-                            },
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              color: ColorsList().bgColor,
+              padding: const EdgeInsets.all(10),
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        OutlinedButton(
+                          onPressed: () async {
+                            bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
+                            if (confirm) allValueInit();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                          ),
+                          child: Text(
+                            "초기화",
+                            style: TextStyle(
+                              fontSize: height / 50,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: onTapSalesButton,
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                             ),
                             child: Text(
-                              "초기화",
+                              "판매 등록",
                               style: TextStyle(
                                 fontSize: height / 50,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: onTapSalesButton,
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                              ),
-                              child: Text(
-                                "판매 등록",
-                                style: TextStyle(
-                                  fontSize: height / 50,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
