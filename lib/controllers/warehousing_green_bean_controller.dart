@@ -170,7 +170,7 @@ class WarehousingGreenBeanController extends GetxController {
       return;
     }
 
-    var result = Utility().checkWeightRegEx(weightTECtrl.text.trim());
+    final Map<String, dynamic> result = Utility().checkWeightRegEx(weightTECtrl.text.trim());
     weightTECtrl.text = result["replaceValue"];
 
     if (!result["bool"]) {
@@ -185,37 +185,48 @@ class WarehousingGreenBeanController extends GetxController {
 
     final customDatePickerCtrl = Get.find<CustomDatePickerController>();
 
-    String date = customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
-    String weight = weightTECtrl.text.replaceAll(".", "");
-    String history = jsonEncode([
-      {
-        "date": date,
-        "company": companyTECtrl.text.trim(),
-        "weight": weight,
-      },
-    ]);
-
-    Map<String, String> value = {
-      "name": selectedBean,
-      "weight": weight,
-      "history": history,
-    };
-
-    var insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock(value);
-
-    if (!context.mounted) return;
-    CustomDialog().showSnackBar(
+    final bool? confirm = await CustomDialog().showAlertDialog(
       context,
-      insertResult
-          ? "${customDatePickerCtrl.textEditingCtrl.text}\n${companyTECtrl.text.trim()}\n$selectedBean\n${weightTECtrl.text}kg\n\n입고 등록이 완료되었습니다."
-          : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
-      isError: insertResult ? false : true,
+      "입고 등록",
+      "입고일: ${customDatePickerCtrl.textEditingCtrl.text}\n입고처: ${companyTECtrl.text.trim()}\n생두: $selectedBean\n입고량: ${weightTECtrl.text}kg\n\n입력하신 정보로 입고를 등록합니다.",
+      acceptTitle: "등록하기",
     );
 
-    if (insertResult) {
-      weightTECtrl.clear();
-      FocusScopeNode currentFocus = FocusScope.of(context);
-      currentFocus.unfocus();
+    if (confirm != true) {
+      return;
+    } else {
+      String date = customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
+      String weight = weightTECtrl.text.replaceAll(".", "");
+      String history = jsonEncode([
+        {
+          "date": date,
+          "company": companyTECtrl.text.trim(),
+          "weight": weight,
+        },
+      ]);
+
+      Map<String, String> value = {
+        "name": selectedBean,
+        "weight": weight,
+        "history": history,
+      };
+
+      final insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock(value);
+
+      if (!context.mounted) return;
+      CustomDialog().showSnackBar(
+        context,
+        insertResult
+            ? "${customDatePickerCtrl.textEditingCtrl.text}\n${companyTECtrl.text.trim()}\n$selectedBean\n${weightTECtrl.text}kg\n\n입고 등록이 완료되었습니다."
+            : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
+        isError: insertResult ? false : true,
+      );
+
+      if (insertResult) {
+        weightTECtrl.clear();
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        currentFocus.unfocus();
+      }
     }
   }
 

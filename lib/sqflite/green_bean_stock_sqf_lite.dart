@@ -53,7 +53,6 @@ class GreenBeanStockSqfLite {
           "SELECT weight, history FROM $tableName WHERE name = ?",
           [value["name"]],
         );
-        print("🆘 VALUE: $value");
         if (findWeight.isNotEmpty) {
           int beforeWeight = findWeight[0]["weight"];
           List decodeHistory = jsonDecode(findWeight[0]["history"]);
