@@ -1,15 +1,12 @@
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/controllers/roasting_bean_sales_controller.dart';
 import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
-import 'package:bean_diary/sqfLite/roasting_bean_sales_sqf_lite.dart';
-import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
-import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
+import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
-import 'package:bean_diary/widgets/keyboard_dismiss.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,91 +23,6 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
   final CustomDatePickerController _customDatePickerCtrl = Get.put(CustomDatePickerController());
   final RoastingBeanSalesController _roastingBeanSalesCtrl = Get.put(RoastingBeanSalesController());
   final _scrollCtrl = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void allValueInit() async {
-    FocusScope.of(context).requestFocus(FocusNode());
-    _customDatePickerCtrl.setDateToToday();
-    _roastingBeanSalesCtrl.companyTECtrl.clear();
-    _roastingBeanSalesCtrl.weightTECtrl.clear();
-  }
-
-  void onTapSalesButton() async {
-    if (_roastingBeanSalesCtrl.companyTECtrl.text.trim() == "") {
-      CustomDialog().showSnackBar(context, "판매처(업체명)를 입력해 주세요.");
-      _roastingBeanSalesCtrl.companyFN.requestFocus();
-      return;
-    }
-    if (_roastingBeanSalesCtrl.selectedBean == null) {
-      CustomDialog().showSnackBar(context, "판매할 원두를 선택해 주세요.");
-      return;
-    }
-    if (_roastingBeanSalesCtrl.weightTECtrl.text.trim() == "") {
-      CustomDialog().showSnackBar(context, "판매 중량을 입력해 주세요.");
-      _roastingBeanSalesCtrl.weightFN.requestFocus();
-      return;
-    } else {
-      var result = Utility().checkWeightRegEx(_roastingBeanSalesCtrl.weightTECtrl.text.trim());
-      _roastingBeanSalesCtrl.weightTECtrl.text = result["replaceValue"];
-
-      if (!result["bool"]) {
-        CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
-        _roastingBeanSalesCtrl.weightFN.requestFocus();
-        return;
-      } else {
-        int beanTotalWeight = int.parse(_roastingBeanSalesCtrl.selectedBean.toString().split(" / ")[1].replaceAll(RegExp("[.,kg]"), ""));
-        int salesWeight = int.parse(_roastingBeanSalesCtrl.weightTECtrl.text.replaceAll(".", ""));
-        if (beanTotalWeight < salesWeight) {
-          CustomDialog().showSnackBar(context, "판매 중량이 재고량보다 클 수 없습니다.\n다시 입력해 주세요.");
-          _roastingBeanSalesCtrl.weightFN.requestFocus();
-          return;
-        }
-      }
-    }
-
-    String name = _roastingBeanSalesCtrl.selectedBean.toString().split(" / ")[0];
-    String type = "1";
-    _roastingBeanSalesCtrl.beanMapDataList.forEach((e) {
-      if (name == e["name"]) type = e["type"].toString();
-    });
-    String sales_weight = _roastingBeanSalesCtrl.weightTECtrl.text.trim().replaceAll(".", "");
-    String company = _roastingBeanSalesCtrl.companyTECtrl.text.trim();
-    String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
-
-    // 등록할 데이터
-    Map<String, String> value = {
-      "name": name,
-      "type": type,
-      "sales_weight": sales_weight,
-      "company": company,
-      "date": date,
-    };
-    bool result = await RoastingBeanSalesSqfLite().insertRoastingBeanSales(value);
-
-    if (result) {
-      String successMsg =
-          "${_customDatePickerCtrl.textEditingCtrl.text}\n$company\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(_roastingBeanSalesCtrl.weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
-      if (!mounted) return;
-      CustomDialog().showSnackBar(context, successMsg);
-      bool updateWeightResult = await RoastingBeanStockSqfLite().updateWeightRoastingBeanStock(value);
-      if (!updateWeightResult) {
-        if (!mounted) return;
-        CustomDialog().showSnackBar(context, "판매한 원두의 재고량 차감이 실패했습니다.");
-      }
-      _roastingBeanSalesCtrl.updateBeanListWeight(_roastingBeanSalesCtrl.selectedBean, sales_weight);
-      allValueInit();
-      return;
-    } else {
-      if (!mounted) return;
-      CustomDialog().showSnackBar(context, "판매 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.");
-      FocusScope.of(context).requestFocus(FocusNode());
-      return;
-    }
-  }
 
   @override
   void dispose() {
@@ -173,6 +85,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                             suffixText: "kg",
                           ),
                           onTap: () => Utility().moveScrolling(_scrollCtrl),
+                          onSubmitted: (value) => _roastingBeanSalesCtrl.onTapSalesButton(context),
                         ),
                       )
                     ],
@@ -186,49 +99,57 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
-              color: ColorsList().bgColor,
-              padding: const EdgeInsets.all(10),
-              child: SafeArea(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
+            child: SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const BottomButtonBorderContainer(),
+                  MediaQuery(
+                    data: MediaQueryData(
+                      textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
+                    ),
+                    child: Row(
                       children: [
-                        OutlinedButton(
-                          onPressed: () async {
-                            bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
-                            if (confirm) allValueInit();
+                        GestureDetector(
+                          onTap: () async {
+                            bool? confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
+                            if (confirm == true) _roastingBeanSalesCtrl.allValueInit();
                           },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                          ),
-                          child: Text(
-                            "초기화",
-                            style: TextStyle(
-                              fontSize: height / 50,
+                          child: Container(
+                            color: Colors.brown[100],
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            child: Text(
+                              " 초기화 ",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: height / 50,
+                                color: Colors.black54,
+                              ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
                         Expanded(
-                          child: ElevatedButton(
-                            onPressed: onTapSalesButton,
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                            ),
-                            child: Text(
-                              "판매 등록",
-                              style: TextStyle(
-                                fontSize: height / 50,
+                          child: GestureDetector(
+                            onTap: () => _roastingBeanSalesCtrl.onTapSalesButton(context),
+                            child: Container(
+                              color: Colors.brown,
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              child: Text(
+                                "판매 등록",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: height / 50,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

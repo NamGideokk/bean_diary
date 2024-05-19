@@ -101,14 +101,26 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                   Row(
                     children: [
                       TextButton(
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size(0, 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        ),
                         onPressed: () => _saleHistoryCtrl.setChangeFilterValue("전체"),
                         child: _FilterText(title: "전체", filterValue: _saleHistoryCtrl.filterValue),
                       ),
                       TextButton(
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size(0, 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        ),
                         onPressed: () => _saleHistoryCtrl.setChangeFilterValue("싱글오리진"),
                         child: _FilterText(title: "싱글오리진", filterValue: _saleHistoryCtrl.filterValue),
                       ),
                       TextButton(
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size(0, 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        ),
                         onPressed: () => _saleHistoryCtrl.setChangeFilterValue("블렌드"),
                         child: _FilterText(title: "블렌드", filterValue: _saleHistoryCtrl.filterValue),
                       ),
@@ -116,10 +128,10 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                   ),
                 ],
               ),
-              const Divider(height: 8, color: Colors.black12),
+              const Divider(height: 0, color: Colors.black12),
               _saleHistoryCtrl.totalList.length > 0
                   ? Padding(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -131,8 +143,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                             children: [
                               TextButton(
                                 style: TextButton.styleFrom(
-                                  visualDensity: VisualDensity.compact,
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  minimumSize: const Size(0, 0),
                                   padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 3),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5),
@@ -285,7 +296,7 @@ class _FilterText extends StatelessWidget {
       title,
       style: TextStyle(
         fontWeight: filterValue == title ? FontWeight.bold : FontWeight.w300,
-        fontSize: filterValue == title ? height / 56 : height / 60,
+        fontSize: height / 56,
       ),
     );
   }
