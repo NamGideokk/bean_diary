@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
     },
     {
       "title": "로스팅 관리",
-      "subTitle": "입고한 생두를 로스팅하고 관리하세요",
+      "subTitle": "입고한 생두를 로스팅하고 등록하세요",
       "img": "assets/images/roaster.png",
       "screen": const RoastingManagementMain(),
     },
