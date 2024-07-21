@@ -4,13 +4,12 @@ import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
-import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
+import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
-import 'package:bean_diary/widgets/keyboard_dismiss.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -42,6 +41,9 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
     _warehousingGreenBeanCtrl.weightTECtrl.clear();
     _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
     _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
+
+    // 블렌드 초기화
+    _warehousingGreenBeanCtrl.initBlendInfo();
   }
 
   @override
@@ -81,7 +83,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                             value: 1,
                             groupValue: _warehousingGreenBeanCtrl.roastingType,
                             selected: _warehousingGreenBeanCtrl.roastingType == 1 ? true : false,
-                            visualDensity: VisualDensity.compact,
+                            contentPadding: EdgeInsets.zero,
+                            dense: true,
                             onChanged: (value) {
                               _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
                             },
@@ -98,7 +101,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                             value: 2,
                             groupValue: _warehousingGreenBeanCtrl.roastingType,
                             selected: _warehousingGreenBeanCtrl.roastingType == 2 ? true : false,
-                            visualDensity: VisualDensity.compact,
+                            contentPadding: EdgeInsets.zero,
+                            dense: true,
                             onChanged: (value) {
                               _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
                             },
@@ -305,266 +309,281 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Container(
-                color: ColorsList().bgColor,
-                padding: const EdgeInsets.all(10),
-                child: SafeArea(
-                  child: Row(
-                    children: [
-                      OutlinedButton(
-                        onPressed: () async {
-                          bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
-                          if (confirm) allValueInit();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        ),
-                        child: Text(
-                          "초기화",
-                          style: TextStyle(
-                            fontSize: height / 50,
-                          ),
-                        ),
+              child: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const BottomButtonBorderContainer(),
+                    MediaQuery(
+                      data: MediaQueryData(
+                        textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            // 블렌드
-                            if (_warehousingGreenBeanCtrl.roastingType == 2) {
-                              if (_warehousingGreenBeanCtrl.blendBeanList.isEmpty) {
-                                CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
-                                FocusScope.of(context).requestFocus(FocusNode());
-                                return;
-                              }
-                              // 여기서부터 블렌드 n개 체크하기
-                              _warehousingGreenBeanCtrl.weightTECtrlList.asMap().forEach((i, e) {
-                                var divide = _warehousingGreenBeanCtrl.blendBeanList[i].toString().split(" / ");
-
-                                if (e.text == "") {
-                                  CustomDialog().showSnackBar(context, "[${divide[0]}]\n생두의 투입량을 입력해 주세요.");
-                                  return;
-                                }
-                                var result = Utility().checkWeightRegEx(e.text.trim());
-                                e.text = result["replaceValue"];
-
-                                if (!result["bool"]) {
-                                  CustomDialog().showSnackBar(
-                                    context,
-                                    "[${divide[0]}]\n생두의 중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
-                                  );
-                                  return;
-                                } else {
-                                  int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
-                                  int inputWeight = int.parse(e.text.trim().replaceAll(".", ""));
-                                  if (totalWeight < inputWeight) {
-                                    CustomDialog().showSnackBar(context, "[${divide[0]}]\n생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
-                                    return;
-                                  }
-                                }
-                              });
-
-                              if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
-                                CustomDialog().showSnackBar(context, "배출량을 입력해 주세요.");
-                                FocusScope.of(context).requestFocus(FocusNode());
-                                return;
-                              } else {
-                                var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim());
-                                _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
-
-                                if (!result["bool"]) {
-                                  CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
-                                  _roastingWeightFN.requestFocus();
-                                  return;
-                                } else {
-                                  // 배출량과 블렌드 투입 총량 비교 부분
-                                  int blendTotalWeight = 0;
-                                  int roastingWeight = int.parse(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", ""));
-                                  _warehousingGreenBeanCtrl.weightTECtrlList.forEach((e) {
-                                    blendTotalWeight += int.parse(e.text.replaceAll(".", ""));
-                                  });
-                                  if (blendTotalWeight <= roastingWeight) {
-                                    CustomDialog().showSnackBar(context, "배출량이 총 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
+                              if (confirm) allValueInit();
+                            },
+                            child: Container(
+                              color: Colors.brown[100],
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              child: Text(
+                                " 초기화 ",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: height / 50,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                // 블렌드
+                                if (_warehousingGreenBeanCtrl.roastingType == 2) {
+                                  if (_warehousingGreenBeanCtrl.blendBeanList.isEmpty) {
+                                    CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
                                     FocusScope.of(context).requestFocus(FocusNode());
                                     return;
                                   }
+                                  // 여기서부터 블렌드 n개 체크하기
+                                  _warehousingGreenBeanCtrl.weightTECtrlList.asMap().forEach((i, e) {
+                                    var divide = _warehousingGreenBeanCtrl.blendBeanList[i].toString().split(" / ");
+
+                                    if (e.text == "") {
+                                      CustomDialog().showSnackBar(context, "[${divide[0]}]\n생두의 투입량을 입력해 주세요.");
+                                      return;
+                                    }
+                                    var result = Utility().checkWeightRegEx(e.text.trim());
+                                    e.text = result["replaceValue"];
+
+                                    if (!result["bool"]) {
+                                      CustomDialog().showSnackBar(
+                                        context,
+                                        "[${divide[0]}]\n생두의 중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
+                                      );
+                                      return;
+                                    } else {
+                                      int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
+                                      int inputWeight = int.parse(e.text.trim().replaceAll(".", ""));
+                                      if (totalWeight < inputWeight) {
+                                        CustomDialog().showSnackBar(context, "[${divide[0]}]\n생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
+                                        return;
+                                      }
+                                    }
+                                  });
+
+                                  if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
+                                    CustomDialog().showSnackBar(context, "배출량을 입력해 주세요.");
+                                    FocusScope.of(context).requestFocus(FocusNode());
+                                    return;
+                                  } else {
+                                    var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim());
+                                    _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
+
+                                    if (!result["bool"]) {
+                                      CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
+                                      _roastingWeightFN.requestFocus();
+                                      return;
+                                    } else {
+                                      // 배출량과 블렌드 투입 총량 비교 부분
+                                      int blendTotalWeight = 0;
+                                      int roastingWeight = int.parse(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", ""));
+                                      _warehousingGreenBeanCtrl.weightTECtrlList.forEach((e) {
+                                        blendTotalWeight += int.parse(e.text.replaceAll(".", ""));
+                                      });
+                                      if (blendTotalWeight <= roastingWeight) {
+                                        CustomDialog().showSnackBar(context, "배출량이 총 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
+                                        FocusScope.of(context).requestFocus(FocusNode());
+                                        return;
+                                      }
+                                    }
+                                  }
+                                  if (_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim() == "") {
+                                    CustomDialog().showSnackBar(context, "블렌드명을 입력해 주세요.");
+                                    _warehousingGreenBeanCtrl.blendNameFN.requestFocus();
+                                    return;
+                                  }
+
+                                  String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
+                                  String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", "");
+                                  String history = jsonEncode([
+                                    {
+                                      "date": date,
+                                      "roasting_weight": roastingWeight,
+                                    },
+                                  ]);
+
+                                  // type, name, roasting_weight, history
+                                  Map<String, String> value = {
+                                    "type": _warehousingGreenBeanCtrl.roastingType.toString(),
+                                    "name":
+                                        _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
+                                    "roasting_weight": roastingWeight,
+                                    "history": history,
+                                  };
+
+                                  bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
+
+                                  if (!mounted) return;
+                                  CustomDialog().showSnackBar(
+                                    context,
+                                    insertResult
+                                        ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
+                                            "블렌드 - ${_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n" +
+                                            "${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n" +
+                                            "로스팅 등록이 완료되었습니다."
+                                        : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
+                                    isError: insertResult ? false : true,
+                                  );
+
+                                  if (insertResult) {
+                                    // 드롭다운버튼 생두 무게 리프레쉬
+                                    _warehousingGreenBeanCtrl.blendBeanList.asMap().forEach((i, e) {
+                                      String useWeight = _warehousingGreenBeanCtrl.weightTECtrlList[i].text.replaceAll(".", "");
+                                      Map<String, String> updateValue = {
+                                        "type": _warehousingGreenBeanCtrl.roastingType.toString(),
+                                        "name": e.toString().split(" / ")[0],
+                                        "weight": useWeight,
+                                        "date": date,
+                                      };
+                                      GreenBeanStockSqfLite().updateWeightGreenBeanStock(updateValue);
+                                      _warehousingGreenBeanCtrl.updateBeanListWeight(e.toString(), useWeight);
+                                    });
+                                    _warehousingGreenBeanCtrl.weightTECtrl.clear();
+                                    _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
+                                    _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
+                                    _customDatePickerCtrl.setDateToToday();
+                                    _warehousingGreenBeanCtrl.initBlendInfo();
+                                  }
+
+                                  FocusScope.of(context).requestFocus(FocusNode());
+                                  return;
                                 }
-                              }
-                              if (_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim() == "") {
-                                CustomDialog().showSnackBar(context, "블렌드명을 입력해 주세요.");
-                                _warehousingGreenBeanCtrl.blendNameFN.requestFocus();
-                                return;
-                              }
 
-                              String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
-                              String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", "");
-                              String history = jsonEncode([
-                                {
-                                  "date": date,
+                                // 1
+                                if (_warehousingGreenBeanCtrl.selectedBean == null) {
+                                  CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
+                                  FocusScope.of(context).requestFocus(FocusNode());
+                                  return;
+                                }
+                                if (_warehousingGreenBeanCtrl.weightTECtrl.text.trim() == "") {
+                                  CustomDialog().showSnackBar(context, "투입량을 입력해 주세요.");
+                                  _weightFN.requestFocus();
+                                  return;
+                                } else {
+                                  var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.weightTECtrl.text.trim());
+                                  _warehousingGreenBeanCtrl.weightTECtrl.text = result["replaceValue"];
+
+                                  if (!result["bool"]) {
+                                    CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
+                                    _weightFN.requestFocus();
+                                    return;
+                                  } else {
+                                    // 투입량이랑 보유량이랑 비교하는 로직 부분
+                                    var divide = _warehousingGreenBeanCtrl.selectedBean.split(" / ");
+                                    int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
+                                    int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
+                                    if (totalWeight < inputWeight) {
+                                      CustomDialog().showSnackBar(context, "투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
+                                      _weightFN.requestFocus();
+                                      return;
+                                    }
+                                  }
+                                }
+                                if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
+                                  CustomDialog().showSnackBar(context, "배출량을 입력해 주세요.");
+                                  _roastingWeightFN.requestFocus();
+                                  return;
+                                } else {
+                                  var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim());
+                                  _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
+
+                                  if (!result["bool"]) {
+                                    CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
+                                    _roastingWeightFN.requestFocus();
+                                    return;
+                                  } else {
+                                    // 로스팅 후 총량이 투입량보다 낮은지 확인하는 로직 부분
+                                    int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
+                                    int roastingWeight = int.parse(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", ""));
+                                    if (inputWeight <= roastingWeight) {
+                                      CustomDialog().showSnackBar(context, "배출량이 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
+                                      _roastingWeightFN.requestFocus();
+                                      return;
+                                    }
+                                  }
+                                }
+
+                                String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
+                                String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", "");
+                                String history = jsonEncode([
+                                  {
+                                    "date": date,
+                                    "roasting_weight": roastingWeight,
+                                  },
+                                ]);
+
+                                // type, name, roasting_weight, history
+                                Map<String, String> value = {
+                                  "type": _warehousingGreenBeanCtrl.roastingType.toString(),
+                                  "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
                                   "roasting_weight": roastingWeight,
-                                },
-                              ]);
+                                  "history": history,
+                                };
 
-                              // type, name, roasting_weight, history
-                              Map<String, String> value = {
-                                "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
-                                "roasting_weight": roastingWeight,
-                                "history": history,
-                              };
+                                bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
 
-                              bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
+                                if (!mounted) return;
+                                CustomDialog().showSnackBar(
+                                  context,
+                                  insertResult
+                                      ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
+                                          "싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n" +
+                                          "${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n" +
+                                          "로스팅 등록이 완료되었습니다."
+                                      : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
+                                  isError: insertResult ? false : true,
+                                );
 
-                              if (!mounted) return;
-                              CustomDialog().showSnackBar(
-                                context,
-                                insertResult
-                                    ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
-                                        "블렌드 - ${_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n" +
-                                        "${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n" +
-                                        "로스팅 등록이 완료되었습니다."
-                                    : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
-                                isError: insertResult ? false : true,
-                              );
-
-                              if (insertResult) {
-                                // 드롭다운버튼 생두 무게 리프레쉬
-                                _warehousingGreenBeanCtrl.blendBeanList.asMap().forEach((i, e) {
-                                  String useWeight = _warehousingGreenBeanCtrl.weightTECtrlList[i].text.replaceAll(".", "");
+                                if (insertResult) {
+                                  String useWeight = _warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", "");
                                   Map<String, String> updateValue = {
                                     "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                    "name": e.toString().split(" / ")[0],
+                                    "name":
+                                        _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
                                     "weight": useWeight,
                                     "date": date,
                                   };
                                   GreenBeanStockSqfLite().updateWeightGreenBeanStock(updateValue);
-                                  _warehousingGreenBeanCtrl.updateBeanListWeight(e.toString(), useWeight);
-                                });
-                                _warehousingGreenBeanCtrl.weightTECtrl.clear();
-                                _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
-                                _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
-                                _customDatePickerCtrl.setDateToToday();
-                                _warehousingGreenBeanCtrl.initBlendInfo();
-                              }
-
-                              FocusScope.of(context).requestFocus(FocusNode());
-                              return;
-                            }
-
-                            // 1
-                            if (_warehousingGreenBeanCtrl.selectedBean == null) {
-                              CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
-                              FocusScope.of(context).requestFocus(FocusNode());
-                              return;
-                            }
-                            if (_warehousingGreenBeanCtrl.weightTECtrl.text.trim() == "") {
-                              CustomDialog().showSnackBar(context, "투입량을 입력해 주세요.");
-                              _weightFN.requestFocus();
-                              return;
-                            } else {
-                              var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.weightTECtrl.text.trim());
-                              _warehousingGreenBeanCtrl.weightTECtrl.text = result["replaceValue"];
-
-                              if (!result["bool"]) {
-                                CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
-                                _weightFN.requestFocus();
-                                return;
-                              } else {
-                                // 투입량이랑 보유량이랑 비교하는 로직 부분
-                                var divide = _warehousingGreenBeanCtrl.selectedBean.split(" / ");
-                                int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
-                                int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
-                                if (totalWeight < inputWeight) {
-                                  CustomDialog().showSnackBar(context, "투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
-                                  _weightFN.requestFocus();
-                                  return;
+                                  _warehousingGreenBeanCtrl.updateBeanListWeight(_warehousingGreenBeanCtrl.selectedBean, useWeight);
+                                  _warehousingGreenBeanCtrl.weightTECtrl.clear();
+                                  _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
+                                  _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
+                                  _customDatePickerCtrl.setDateToToday();
                                 }
-                              }
-                            }
-                            if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
-                              CustomDialog().showSnackBar(context, "배출량을 입력해 주세요.");
-                              _roastingWeightFN.requestFocus();
-                              return;
-                            } else {
-                              var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim());
-                              _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
-
-                              if (!result["bool"]) {
-                                CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
-                                _roastingWeightFN.requestFocus();
-                                return;
-                              } else {
-                                // 로스팅 후 총량이 투입량보다 낮은지 확인하는 로직 부분
-                                int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
-                                int roastingWeight = int.parse(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", ""));
-                                if (inputWeight <= roastingWeight) {
-                                  CustomDialog().showSnackBar(context, "배출량이 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
-                                  _roastingWeightFN.requestFocus();
-                                  return;
-                                }
-                              }
-                            }
-
-                            String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
-                            String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", "");
-                            String history = jsonEncode([
-                              {
-                                "date": date,
-                                "roasting_weight": roastingWeight,
                               },
-                            ]);
-
-                            // type, name, roasting_weight, history
-                            Map<String, String> value = {
-                              "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                              "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
-                              "roasting_weight": roastingWeight,
-                              "history": history,
-                            };
-
-                            bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
-
-                            if (!mounted) return;
-                            CustomDialog().showSnackBar(
-                              context,
-                              insertResult
-                                  ? "${_customDatePickerCtrl.textEditingCtrl.text}\n" +
-                                      "싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n" +
-                                      "${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n" +
-                                      "로스팅 등록이 완료되었습니다."
-                                  : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
-                              isError: insertResult ? false : true,
-                            );
-
-                            if (insertResult) {
-                              String useWeight = _warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", "");
-                              Map<String, String> updateValue = {
-                                "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
-                                "weight": useWeight,
-                                "date": date,
-                              };
-                              GreenBeanStockSqfLite().updateWeightGreenBeanStock(updateValue);
-                              _warehousingGreenBeanCtrl.updateBeanListWeight(_warehousingGreenBeanCtrl.selectedBean, useWeight);
-                              _warehousingGreenBeanCtrl.weightTECtrl.clear();
-                              _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
-                              _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
-                              _customDatePickerCtrl.setDateToToday();
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                          ),
-                          child: Text(
-                            "로스팅 등록",
-                            style: TextStyle(
-                              fontSize: height / 50,
+                              child: Container(
+                                color: Colors.brown,
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                child: Text(
+                                  "로스팅 등록",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: height / 50,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
