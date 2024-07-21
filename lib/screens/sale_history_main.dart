@@ -296,6 +296,7 @@ class _FilterText extends StatelessWidget {
       title,
       style: TextStyle(
         fontWeight: filterValue == title ? FontWeight.bold : FontWeight.w300,
+        color: filterValue == title ? null : Colors.black54,
         fontSize: height / 56,
       ),
     );
