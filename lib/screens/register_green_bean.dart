@@ -81,7 +81,7 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                               itemCount: _registerGreenBeanCtrl.greenBeanList.length,
                               padding: EdgeInsets.fromLTRB(5, 0, 5, height / 9),
                               physics: const BouncingScrollPhysics(),
-                              separatorBuilder: (context, index) => const Divider(height: 5),
+                              separatorBuilder: (context, index) => const Divider(height: 10),
                               itemBuilder: (context, index) {
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

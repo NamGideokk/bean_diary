@@ -425,6 +425,24 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     "history": history,
                                   };
 
+                                  String beans = "";
+                                  for (int i = 0; i < _warehousingGreenBeanCtrl.blendBeanList.length; i++) {
+                                    String copyItem = _warehousingGreenBeanCtrl.blendBeanList[i].toString();
+                                    if (i == 0) {
+                                      beans = "생두 01: ${copyItem.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrlList[i].text}kg";
+                                    } else {
+                                      beans = "$beans\n생두 ${(i + 1).toString().padLeft(2, "0")}: ${copyItem.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrlList[i].text}kg";
+                                    }
+                                  }
+
+                                  bool? finalConfirm = await CustomDialog().showAlertDialog(
+                                    context,
+                                    "로스팅 등록",
+                                    "블렌드\n\n입고일: ${_customDatePickerCtrl.textEditingCtrl.text}\n$beans\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n블렌드명: ${_warehousingGreenBeanCtrl.blendNameTECtrl.text}\n\n입력하신 정보로 로스팅을 등록합니다.",
+                                    acceptTitle: "등록하기",
+                                  );
+                                  if (finalConfirm != true) return;
+
                                   bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
 
                                   if (!mounted) return;
@@ -455,7 +473,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     _warehousingGreenBeanCtrl.weightTECtrl.clear();
                                     _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
                                     _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
-                                    _customDatePickerCtrl.setDateToToday();
                                     _warehousingGreenBeanCtrl.initBlendInfo();
                                   }
 
@@ -534,6 +551,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   "history": history,
                                 };
 
+                                bool? finalConfirm = await CustomDialog().showAlertDialog(
+                                  context,
+                                  "로스팅 등록",
+                                  "싱글오리진\n\n입고일: ${_customDatePickerCtrl.textEditingCtrl.text}\n생두: ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
+                                  acceptTitle: "등록하기",
+                                );
+                                if (finalConfirm != true) return;
+
                                 bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
 
                                 if (!mounted) return;
@@ -562,7 +587,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   _warehousingGreenBeanCtrl.weightTECtrl.clear();
                                   _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
                                   _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
-                                  _customDatePickerCtrl.setDateToToday();
                                 }
                               },
                               child: Container(
