@@ -93,7 +93,7 @@ class RoastingBeanSalesController extends GetxController {
     final bool? confirm = await CustomDialog().showAlertDialog(
       context,
       "판매 등록",
-      "입고일: ${customDatePickerCtrl.textEditingCtrl.text}\n입고처: $company\n원두: $name\n판매량: ${weightTECtrl.text}kg\n\n입력하신 정보로 판매를 등록합니다.",
+      "판매일: ${customDatePickerCtrl.textEditingCtrl.text}\n판매처: $company\n원두: $name\n판매량: ${weightTECtrl.text}kg\n\n입력하신 정보로 판매를 등록합니다.",
       acceptTitle: "등록하기",
     );
 

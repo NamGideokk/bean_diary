@@ -438,7 +438,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   bool? finalConfirm = await CustomDialog().showAlertDialog(
                                     context,
                                     "로스팅 등록",
-                                    "블렌드\n\n입고일: ${_customDatePickerCtrl.textEditingCtrl.text}\n$beans\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n블렌드명: ${_warehousingGreenBeanCtrl.blendNameTECtrl.text}\n\n입력하신 정보로 로스팅을 등록합니다.",
+                                    "블렌드\n\n로스팅일: ${_customDatePickerCtrl.textEditingCtrl.text}\n$beans\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n블렌드명: ${_warehousingGreenBeanCtrl.blendNameTECtrl.text}\n\n입력하신 정보로 로스팅을 등록합니다.",
                                     acceptTitle: "등록하기",
                                   );
                                   if (finalConfirm != true) return;
@@ -554,7 +554,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 bool? finalConfirm = await CustomDialog().showAlertDialog(
                                   context,
                                   "로스팅 등록",
-                                  "싱글오리진\n\n입고일: ${_customDatePickerCtrl.textEditingCtrl.text}\n생두: ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
+                                  "싱글오리진\n\n로스팅일: ${_customDatePickerCtrl.textEditingCtrl.text}\n생두: ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
                                   acceptTitle: "등록하기",
                                 );
                                 if (finalConfirm != true) return;
