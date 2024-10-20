@@ -41,6 +41,7 @@ class _BeanSelectDropdownButtonState extends State<BeanSelectDropdownButton> {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.textScalerOf(context).scale(1);
     final height = MediaQuery.of(context).size.height;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
@@ -56,6 +57,7 @@ class _BeanSelectDropdownButtonState extends State<BeanSelectDropdownButton> {
         () => DropdownButton(
           isExpanded: true,
           focusNode: _beanSelectFN,
+          itemHeight: kBottomNavigationBarHeight * textScaleFactor,
           disabledHint: Text(
             widget.listType == 0 || widget.listType == 2 ? "생두를 등록해 주세요" : "로스팅된 원두가 없습니다",
             style: TextStyle(
