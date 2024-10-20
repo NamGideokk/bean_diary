@@ -7,7 +7,6 @@ import 'package:bean_diary/sqfLite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/header_title.dart';
-import 'package:bean_diary/widgets/keyboard_dismiss.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -105,9 +104,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
       if (!mounted) return;
       CustomDialog().showSnackBar(
         context,
-        "${jsonData["생두 목록"].length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n${errorData.toString()}\n" +
-            "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." +
-            "중복 데이터인지 확인하시거나, 재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
+        "${jsonData["생두 목록"].length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n${errorData.toString()}\n${errorData.length} 건의 데이터를 복구하는데 실패했습니다.중복 데이터인지 확인하시거나, 재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
         isLongTime: true,
       );
     } else {
@@ -164,9 +161,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
       if (!mounted) return;
       CustomDialog().showSnackBar(
         context,
-        "${totalCount.length - errorData.length < 0 ? 0 : totalCount.length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n" +
-            "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." +
-            "재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
+        "${totalCount.length - errorData.length < 0 ? 0 : totalCount.length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n${errorData.length} 건의 데이터를 복구하는데 실패했습니다.재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
         isLongTime: true,
       );
     } else {
@@ -242,7 +237,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
       if (!mounted) return;
       CustomDialog().showSnackBar(
         context,
-        "${totalCount.length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n" + "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." + "재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
+        "${totalCount.length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n${errorData.length} 건의 데이터를 복구하는데 실패했습니다.재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
         isLongTime: true,
       );
     } else {
@@ -288,7 +283,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
       if (!mounted) return;
       CustomDialog().showSnackBar(
         context,
-        "${jsonData["판매 내역"].length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n" + "${errorData.length} 건의 데이터를 복구하는데 실패했습니다." + "재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
+        "${jsonData["판매 내역"].length - errorData.length} 건 성공 / ${errorData.length} 건 실패\n${errorData.length} 건의 데이터를 복구하는데 실패했습니다.재가공하지 않은 텍스트 데이터로 다시 시도해 주세요.",
         isLongTime: true,
       );
     } else {

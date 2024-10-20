@@ -104,14 +104,14 @@ class RoastingBeanSalesController extends GetxController {
       beanMapDataList.forEach((e) {
         if (name == e["name"]) type = e["type"].toString();
       });
-      String sales_weight = weightTECtrl.text.trim().replaceAll(".", "");
+      String salesWeight = weightTECtrl.text.trim().replaceAll(".", "");
       String date = customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
 
       // 등록할 데이터
       Map<String, String> value = {
         "name": name,
         "type": type,
-        "sales_weight": sales_weight,
+        "sales_weight": salesWeight,
         "company": company,
         "date": date,
       };
@@ -126,7 +126,7 @@ class RoastingBeanSalesController extends GetxController {
           if (!context.mounted) return;
           CustomDialog().showSnackBar(context, "판매한 원두의 재고량 차감이 실패했습니다.");
         } else {
-          updateBeanListWeight(selectedBean, sales_weight);
+          updateBeanListWeight(selectedBean, salesWeight);
           weightTECtrl.clear();
         }
         return;

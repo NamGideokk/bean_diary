@@ -33,6 +33,7 @@ class HeaderTitle extends StatelessWidget {
               ),
           ],
         ),
+        textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 2.0),
       ),
     );
   }

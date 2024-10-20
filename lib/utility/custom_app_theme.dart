@@ -14,7 +14,7 @@ class CustomAppTheme {
       //   onPrimary: Colors.white,
       // ),
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown).copyWith(
-        background: ColorsList().bgColor,
+        surface: ColorsList().bgColor,
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: const Color(0xff2f2722),
@@ -156,7 +156,7 @@ class CustomAppTheme {
     return ThemeData(
       brightness: Brightness.dark,
       colorScheme: const ColorScheme.dark(
-        background: Colors.black,
+        surface: Colors.black,
         primary: Colors.brown,
         onPrimary: Colors.white,
       ),
