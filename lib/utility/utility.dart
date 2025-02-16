@@ -41,8 +41,6 @@ class Utility {
     int iTotalWeight = int.parse(totalWeight.replaceAll(".", ""));
     int iInputWeight = int.parse(inputWeight.replaceAll("", ""));
 
-    print("T :: $iTotalWeight \n I :: $iInputWeight");
-
     return false;
   }
 
@@ -60,10 +58,14 @@ class Utility {
     List copyList = [...list];
     for (var e in copyList) {
       List divide = e["date"].toString().split("-");
+      String year = divide[0].toString();
       String month = divide[1].toString().padLeft(2, "0");
       String day = divide[2].toString().padLeft(2, "0");
+      e["date"] = "$year-$month-$day";
     }
-    copyList.sort((a, b) => a["date"].compareTo(b["date"]));
+    copyList.sort((a, b) {
+      return DateTime.parse(b["date"]).compareTo(DateTime.parse(a["date"]));
+    });
     return copyList;
   }
 
