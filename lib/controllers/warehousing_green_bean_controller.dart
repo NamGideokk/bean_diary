@@ -22,7 +22,6 @@ class WarehousingGreenBeanController extends GetxController {
   final greenBeanFN = FocusNode();
   final weightFN = FocusNode();
 
-  final RxString _day = "".obs;
   final RxString _company = "".obs;
   final RxList _beanList = <String?>[].obs;
   final _selectedBean = Rxn<String>();
@@ -119,7 +118,7 @@ class WarehousingGreenBeanController extends GetxController {
 
   /// 생두 목록 재고량 업데이트하기
   void updateBeanListWeight(String name, String useWeight) {
-    final beforeSelectedBean = _selectedBean;
+    final beforeSelectedBean = _selectedBean.value;
     final divideName = name.split(" / ");
     int weight = int.parse(divideName[1].replaceAll(RegExp("[.,kg]"), ""));
     int iUseWeight = int.parse(useWeight);

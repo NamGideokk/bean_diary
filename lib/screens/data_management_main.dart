@@ -70,7 +70,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
         return;
       }
     } catch (err) {
-      print("data recovery ERROR: $err");
+      debugPrint("data recovery ERROR: $err");
       if (!mounted) return;
       CustomDialog().showSnackBar(context, "백업 데이터가 올바르지 않습니다.\n복구가 불가능합니다.");
       return;
@@ -91,7 +91,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
         }
       } catch (err) {
         errorData.add(e["name"] ?? "알수없음");
-        print("green bean data recovery ERROR: $err");
+        debugPrint("green bean data recovery ERROR: $err");
         if (!mounted) return;
         CustomDialog().showSnackBar(
           context,
@@ -148,7 +148,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
         }
       } catch (err) {
         errorData.add(e["name"] ?? "알수없음");
-        print("green bean stock data recovery ERROR: $err");
+        debugPrint("green bean stock data recovery ERROR: $err");
         if (!mounted) return;
         CustomDialog().showSnackBar(
           context,
@@ -224,7 +224,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
       } catch (err) {
         totalCount.add(false);
         errorData.add(e["name"] ?? "알수없음");
-        print("roasting bean stock data recovery ERROR: $err");
+        debugPrint("roasting bean stock data recovery ERROR: $err");
         if (!mounted) return;
         CustomDialog().showSnackBar(
           context,
@@ -270,7 +270,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
         }
       } catch (err) {
         errorData.add("${e["name"] ?? "알수없음"}");
-        print("sales history data recovery ERROR: $err");
+        debugPrint("sales history data recovery ERROR: $err");
         if (!mounted) return;
         CustomDialog().showSnackBar(
           context,
