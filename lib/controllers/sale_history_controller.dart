@@ -28,18 +28,22 @@ class SaleHistoryController extends GetxController {
 
   void getSaleHistory() async {
     List list = await RoastingBeanSalesSqfLite().getRoastingBeanSales();
+    List sortingList;
     if (list.isNotEmpty) {
-      list = Utility().sortingDate(list);
-      for (var item in list) {
+      sortingList = Utility().sortingDate(list);
+      for (var item in sortingList) {
         if (item["type"] == "1") {
           _singleList.add(item);
         } else {
           _blendList.add(item);
         }
       }
-      _totalList(list);
+      _totalList(sortingList);
       _showList([..._totalList]);
       calcYearTotalSalesWeight(DateTime.now().year);
+    } else {
+      _totalList.clear();
+      _showList.clear();
     }
   }
 

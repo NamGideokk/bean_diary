@@ -55,7 +55,8 @@ class Utility {
 
   /// 날짜순 정렬
   List sortingDate(List list) {
-    List copyList = [...list];
+    List copyList = list.map((e) => Map.from(e)).toList();
+
     for (var e in copyList) {
       List divide = e["date"].toString().split("-");
       String year = divide[0].toString();
