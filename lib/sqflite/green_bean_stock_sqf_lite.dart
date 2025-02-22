@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -25,7 +26,7 @@ class GreenBeanStockSqfLite {
       }
       return db;
     } catch (e) {
-      print("😑 OPEN $tableName DB ERROR: $e");
+      debugPrint("😑 OPEN $tableName DB ERROR: $e");
       return null;
     }
   }
@@ -40,7 +41,7 @@ class GreenBeanStockSqfLite {
         return [];
       }
     } catch (e) {
-      print("😑 GET GREEN BEAN STOCK ERROR: $e");
+      debugPrint("😑 GET GREEN BEAN STOCK ERROR: $e");
       return [];
     }
   }
@@ -74,7 +75,7 @@ class GreenBeanStockSqfLite {
         return false;
       }
     } catch (e) {
-      print("😑 INSERT GREEN BEAN STOCK ERROR: $e");
+      debugPrint("😑 INSERT GREEN BEAN STOCK ERROR: $e");
       return false;
     }
   }
@@ -105,7 +106,7 @@ class GreenBeanStockSqfLite {
         return false;
       }
     } catch (e) {
-      print("😑 UPDATE WEIGHT GREEN BEAN STOCK ERROR: $e");
+      debugPrint("😑 UPDATE WEIGHT GREEN BEAN STOCK ERROR: $e");
       return false;
     }
   }

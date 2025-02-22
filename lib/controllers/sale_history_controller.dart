@@ -1,6 +1,8 @@
+import 'package:bean_diary/screens/sale_history_filter_bottom_sheet.dart';
 import 'package:bean_diary/sqflite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SaleHistoryController extends GetxController {
@@ -8,17 +10,29 @@ class SaleHistoryController extends GetxController {
   final RxList _totalList = [].obs;
   final RxList _singleList = [].obs;
   final RxList _blendList = [].obs;
+  final RxList _sellerList = [].obs;
 
   final RxString _filterValue = "전체".obs;
   final RxInt _totalWeightForYear = 0.obs;
+
+  final RxString _sortByDate = "desc".obs;
+  final RxString _sortByRoastingType = "".obs;
+  final RxString _sortBySeller = "".obs;
+  final RxInt _sortCount = 0.obs;
 
   get showList => _showList;
   get totalList => _totalList;
   get singleList => _singleList;
   get blendList => _blendList;
+  get sellerList => _sellerList;
 
   get filterValue => _filterValue.value;
   get totalWeightForYear => _totalWeightForYear.value;
+
+  get sortByDate => _sortByDate.value;
+  get sortByRoastingType => _sortByRoastingType.value;
+  get sortBySeller => _sortBySeller.value;
+  get sortCount => _sortCount.value;
 
   @override
   void onInit() {
@@ -39,7 +53,7 @@ class SaleHistoryController extends GetxController {
         }
       }
       _totalList(sortingList);
-      _showList([..._totalList]);
+      _showList(totalList);
       calcYearTotalSalesWeight(DateTime.now().year);
     } else {
       _totalList.clear();
@@ -47,26 +61,16 @@ class SaleHistoryController extends GetxController {
     }
   }
 
-  void setChangeFilterValue(String value) {
-    _filterValue(value);
-    switch (value) {
-      case "전체":
-        _showList(_totalList);
-        return;
-      case "싱글오리진":
-        _showList(_singleList);
-        return;
-      case "블렌드":
-        _showList(_blendList);
-        return;
-      default:
-        _showList(_totalList);
+  Future<void> openFilterBottomSheet(BuildContext context) async {
+    await getSellerList();
+    if (context.mounted) {
+      return await showModalBottomSheet(
+        context: context,
+        showDragHandle: true,
+        backgroundColor: Colors.white,
+        builder: (context) => const SaleHistoryFilterBottomSheet(),
+      );
     }
-  }
-
-  void setReverseDate() {
-    List revList = _showList.reversed.toList();
-    _showList(revList);
   }
 
   void calcYearTotalSalesWeight(int year) {
@@ -87,5 +91,66 @@ class SaleHistoryController extends GetxController {
         curve: Curves.easeInOut,
       );
     }
+  }
+
+  /// 25-02-22
+  ///
+  /// 판매 내역 필터 > 판매처 목록 불러오기
+  Future getSellerList() async {
+    final result = await RoastingBeanSalesSqfLite().getRoastingBeanSales();
+    List list = [];
+    if (result.isNotEmpty) {
+      Set removeDuplicateSellerList = {};
+      for (final seller in result) {
+        removeDuplicateSellerList.add(seller["company"]);
+      }
+      list.addAll(removeDuplicateSellerList);
+      list.sort((a, b) => a.compareTo(b));
+      _sellerList(list);
+    } else {
+      _sellerList.clear();
+    }
+  }
+
+  /// 25-02-22
+  ///
+  /// 판매 내역 필터 > 판매처 선택하기
+  void selectSellerSort(String value) {
+    if (sortBySeller != value) {
+      _sortBySeller(value);
+    }
+  }
+
+  /// 25-02-22
+  ///
+  /// 정렬하기
+  void sort(String date, String roastingType, String seller) {
+    List list = [];
+    int sortCnt = 0;
+
+    _sortByDate(date);
+    if (date == "desc") {
+      list = List.from(totalList);
+    } else {
+      list = List.from(totalList).reversed.toList();
+    }
+
+    _sortByRoastingType(roastingType);
+    if (roastingType == "싱글오리진") {
+      list.removeWhere((element) => element["type"] == "2");
+      sortCnt++;
+    } else if (roastingType == "블렌드") {
+      list.removeWhere((element) => element["type"] == "1");
+      sortCnt++;
+    }
+
+    _sortBySeller(seller);
+    if (seller != "") {
+      list.removeWhere((element) => element["company"] != seller);
+      sortCnt++;
+    }
+
+    _showList(list);
+    _sortCount(sortCnt);
   }
 }

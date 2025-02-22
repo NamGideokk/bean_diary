@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -23,7 +24,7 @@ class RoastingBeanSalesSqfLite {
       }
       return db;
     } catch (e) {
-      print("😑 OPEN $tableName DB ERROR: $e");
+      debugPrint("😑 OPEN $tableName DB ERROR: $e");
       return null;
     }
   }
@@ -38,7 +39,7 @@ class RoastingBeanSalesSqfLite {
         return [];
       }
     } catch (e) {
-      print("😑 GET ROASTING BEAN SALES ERROR: $e");
+      debugPrint("😑 GET ROASTING BEAN SALES ERROR: $e");
       return [];
     }
   }
@@ -57,7 +58,7 @@ class RoastingBeanSalesSqfLite {
         return false;
       }
     } catch (e) {
-      print("😑 INSERT ROASTING BEAN SALES ERROR: $e");
+      debugPrint("😑 INSERT ROASTING BEAN SALES ERROR: $e");
       return false;
     }
   }

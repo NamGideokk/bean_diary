@@ -31,6 +31,12 @@ class CustomAppTheme {
           color: Colors.black,
           letterSpacing: 0,
         ),
+        // Smalleast text
+        bodySmall: TextStyle(
+          fontSize: height / 70,
+          color: Colors.black,
+          letterSpacing: 0,
+        ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         isDense: true,

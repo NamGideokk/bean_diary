@@ -84,7 +84,7 @@ class Utility {
   }
 
   /// 숫자 단위 표시
-  String numberFormat(String value, {isWeight = true}) => NumberFormat.simpleCurrency(
+  String numberFormat(String value, {bool isWeight = true}) => NumberFormat.simpleCurrency(
         locale: "ko-KR",
         name: "",
         decimalDigits: isWeight ? 1 : 0,
