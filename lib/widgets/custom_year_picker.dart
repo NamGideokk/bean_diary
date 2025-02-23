@@ -24,7 +24,7 @@ class CustomYearPicker extends StatelessWidget {
           selectedDate: now,
           onChanged: (value) {
             yearPickerCtrl.setSelectedYear(value.year);
-            saleHistoryCtrl.calcYearTotalSalesWeight(value.year);
+            // saleHistoryCtrl.calcYearTotalSalesWeight(value.year); //ngd
             Navigator.pop(context);
           },
         ),

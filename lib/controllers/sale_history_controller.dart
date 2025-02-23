@@ -1,7 +1,6 @@
 import 'package:bean_diary/screens/sale_history_filter_bottom_sheet.dart';
 import 'package:bean_diary/sqflite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/utility/utility.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,8 +11,9 @@ class SaleHistoryController extends GetxController {
   final RxList _blendList = [].obs;
   final RxList _sellerList = [].obs;
 
-  final RxString _filterValue = "전체".obs;
-  final RxInt _totalWeightForYear = 0.obs;
+  final RxInt _totalSales = 0.obs;
+  final RxInt _thisYearSales = 0.obs;
+  final RxDouble _salesContainerHeight = 0.0.obs;
 
   final RxString _sortByDate = "desc".obs;
   final RxString _sortByRoastingType = "".obs;
@@ -26,8 +26,9 @@ class SaleHistoryController extends GetxController {
   get blendList => _blendList;
   get sellerList => _sellerList;
 
-  get filterValue => _filterValue.value;
-  get totalWeightForYear => _totalWeightForYear.value;
+  get totalSales => _totalSales.value;
+  get thisYearSales => _thisYearSales.value;
+  get salesContainerHeight => _salesContainerHeight.value;
 
   get sortByDate => _sortByDate.value;
   get sortByRoastingType => _sortByRoastingType.value;
@@ -54,10 +55,12 @@ class SaleHistoryController extends GetxController {
       }
       _totalList(sortingList);
       _showList(totalList);
-      calcYearTotalSalesWeight(DateTime.now().year);
+      calcSalesContainer();
     } else {
       _totalList.clear();
       _showList.clear();
+      _totalSales(0);
+      _thisYearSales(0);
     }
   }
 
@@ -73,14 +76,20 @@ class SaleHistoryController extends GetxController {
     }
   }
 
-  void calcYearTotalSalesWeight(int year) {
-    int totalWeight = 0;
+  /// 25-02-23 리팩토링
+  ///
+  /// 상단 판매량 구하기 (누적, 올해)
+  void calcSalesContainer() {
+    int total = 0;
+    int thisYear = 0;
     for (var e in _totalList) {
-      if (e["date"].toString().substring(0, 4) == year.toString()) {
-        totalWeight += int.parse(e["sales_weight"].toString());
+      total += e["sales_weight"] as int;
+      if (e["date"].toString().substring(0, 4) == DateTime.now().year.toString()) {
+        thisYear += e["sales_weight"] as int;
       }
     }
-    _totalWeightForYear(totalWeight);
+    _totalSales(total);
+    _thisYearSales(thisYear);
   }
 
   void scrollToTop(ScrollController ctrl) {
@@ -153,4 +162,9 @@ class SaleHistoryController extends GetxController {
     _showList(list);
     _sortCount(sortCnt);
   }
+
+  /// 25-02-23
+  ///
+  /// 판매 내역 > 상단 판매량 컨테이너 높이 구하기
+  void getSalesContainerHeight(double value) => _salesContainerHeight(value);
 }

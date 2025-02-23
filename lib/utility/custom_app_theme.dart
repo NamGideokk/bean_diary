@@ -25,13 +25,20 @@ class CustomAppTheme {
         ),
       ),
       textTheme: TextTheme(
+        // Bold title style
+        bodyLarge: TextStyle(
+          fontSize: height / 44,
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0,
+        ),
         // TextField style
         bodyMedium: TextStyle(
           fontSize: height / 54,
           color: Colors.black,
           letterSpacing: 0,
         ),
-        // Smalleast text
+        // Smalleast text style
         bodySmall: TextStyle(
           fontSize: height / 70,
           color: Colors.black,

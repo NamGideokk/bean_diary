@@ -67,73 +67,137 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
             ),
           ],
         ),
-        body: Container(
+        body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const HeaderTitle(title: "판매 내역", subTitle: "sale history"),
-              _saleHistoryCtrl.totalList.length > 0
-                  ? Padding(
-                      padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.ideographic,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
+              IntrinsicHeight(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: MediaQuery(
+                    data: MediaQueryData(
+                      textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
                             children: [
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  minimumSize: const Size(0, 0),
-                                  padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 3),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                    showDragHandle: true,
-                                    backgroundColor: Colors.white,
-                                    context: context,
-                                    builder: (context) => const CustomYearPicker(),
-                                  );
-                                },
-                                child: Text(
-                                  _yearPickerController.selectedYear,
-                                  style: TextStyle(
-                                    fontSize: height / 40,
-                                  ),
-                                ),
+                              Text(
+                                "누적",
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      height: 1,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                               Text(
-                                "년 총 판매량",
-                                style: TextStyle(
-                                  fontSize: height / 60,
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w300,
-                                  letterSpacing: -0.3,
-                                ),
+                                "판매량",
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
+                              ),
+                              Text(
+                                "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSales)}kg",
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
                               ),
                             ],
                           ),
-                          Expanded(
-                            child: Text(
-                              _saleHistoryCtrl.totalWeightForYear != 0 ? "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalWeightForYear))}kg" : "판매 내역이 없습니다",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: _saleHistoryCtrl.totalWeightForYear != 0 ? height / 46 : height / 60,
-                                fontWeight: _saleHistoryCtrl.totalWeightForYear != 0 ? FontWeight.w600 : FontWeight.w300,
-                                color: _saleHistoryCtrl.totalWeightForYear != 0 ? Colors.black : Colors.black54,
+                        ),
+                        const VerticalDivider(
+                          width: 50,
+                          thickness: 1,
+                          indent: 5,
+                          endIndent: 5,
+                          color: Colors.black12,
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Text(
+                                "올해",
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      height: 1,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
-                            ),
+                              Text(
+                                "판매량",
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
+                              ),
+                              Text(
+                                "${Utility().parseToDoubleWeight(_saleHistoryCtrl.thisYearSales)}kg",
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )
-                  : const SizedBox(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // _saleHistoryCtrl.totalList.length > 0
+              //     ? Padding(
+              //         padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //           crossAxisAlignment: CrossAxisAlignment.baseline,
+              //           textBaseline: TextBaseline.ideographic,
+              //           children: [
+              //             Row(
+              //               crossAxisAlignment: CrossAxisAlignment.baseline,
+              //               textBaseline: TextBaseline.ideographic,
+              //               children: [
+              //                 TextButton(
+              //                   style: TextButton.styleFrom(
+              //                     minimumSize: const Size(0, 0),
+              //                     padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 3),
+              //                     shape: RoundedRectangleBorder(
+              //                       borderRadius: BorderRadius.circular(5),
+              //                     ),
+              //                   ),
+              //                   onPressed: () {
+              //                     showModalBottomSheet(
+              //                       showDragHandle: true,
+              //                       backgroundColor: Colors.white,
+              //                       context: context,
+              //                       builder: (context) => const CustomYearPicker(),
+              //                     );
+              //                   },
+              //                   child: Text(
+              //                     _yearPickerController.selectedYear,
+              //                     style: TextStyle(
+              //                       fontSize: height / 40,
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 Text(
+              //                   "년 총 판매량",
+              //                   style: TextStyle(
+              //                     fontSize: height / 60,
+              //                     color: Colors.black87,
+              //                     fontWeight: FontWeight.w300,
+              //                     letterSpacing: -0.3,
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //             Expanded(
+              //               child: Text(
+              //                 _saleHistoryCtrl.totalWeightForYear != 0 ? "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalWeightForYear))}kg" : "판매 내역이 없습니다",
+              //                 textAlign: TextAlign.right,
+              //                 style: TextStyle(
+              //                   fontSize: _saleHistoryCtrl.totalWeightForYear != 0 ? height / 46 : height / 60,
+              //                   fontWeight: _saleHistoryCtrl.totalWeightForYear != 0 ? FontWeight.w600 : FontWeight.w300,
+              //                   color: _saleHistoryCtrl.totalWeightForYear != 0 ? Colors.black : Colors.black54,
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       )
+              //     : const SizedBox(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
                 child: Row(
