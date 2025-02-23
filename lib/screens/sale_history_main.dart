@@ -221,8 +221,8 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                   ),
                                 ),
                                 child: Text(
-                                  _saleHistoryCtrl.sortByYear,
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  "${_saleHistoryCtrl.sortByYear}년",
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
                             ),
@@ -230,15 +230,15 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                               visible: _saleHistoryCtrl.sortByRoastingType != "",
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.brown[200],
-                                  borderRadius: const BorderRadius.vertical(
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFc9bfbb),
+                                  borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(10),
                                   ),
                                 ),
                                 child: Text(
                                   _saleHistoryCtrl.sortByRoastingType,
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
                             ),
@@ -246,15 +246,15 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                               visible: _saleHistoryCtrl.sortBySeller != "",
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.brown[300],
-                                  borderRadius: const BorderRadius.vertical(
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFbcb2ae),
+                                  borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(10),
                                   ),
                                 ),
                                 child: Text(
                                   _saleHistoryCtrl.sortBySeller,
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
                             ),

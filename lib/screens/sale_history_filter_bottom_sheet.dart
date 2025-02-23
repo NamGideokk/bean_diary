@@ -47,100 +47,111 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                     // 연도별 Chip
                     Visibility(
                       visible: _saleHistoryCtrl.sortByYear != "",
-                      child: IntrinsicWidth(
-                        child: ActionChip(
-                          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
-                          visualDensity: VisualDensity.compact,
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          backgroundColor: Colors.brown[50],
-                          shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
-                          onPressed: () => _saleHistoryCtrl.sort(
-                            _saleHistoryCtrl.sortByDate,
-                            "",
-                            _saleHistoryCtrl.sortByRoastingType,
-                            _saleHistoryCtrl.sortBySeller,
-                          ),
-                          label: Row(
-                            children: [
-                              Text(
-                                "${_saleHistoryCtrl.sortByYear} ",
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 1),
-                              ),
-                              Icon(
-                                Icons.clear_outlined,
-                                size: height / 60,
-                                color: Colors.brown,
-                                applyTextScaling: true,
-                              ),
-                            ],
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right:
+                                (_saleHistoryCtrl.sortByRoastingType != "" && _saleHistoryCtrl.sortBySeller == "") || (_saleHistoryCtrl.sortByRoastingType == "" && _saleHistoryCtrl.sortBySeller != "")
+                                    ? 5
+                                    : 0),
+                        child: IntrinsicWidth(
+                          child: ActionChip(
+                            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+                            visualDensity: VisualDensity.compact,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            backgroundColor: Colors.brown[50],
+                            shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
+                            onPressed: () => _saleHistoryCtrl.sort(
+                              _saleHistoryCtrl.sortByDate,
+                              "",
+                              _saleHistoryCtrl.sortByRoastingType,
+                              _saleHistoryCtrl.sortBySeller,
+                            ),
+                            label: Row(
+                              children: [
+                                Text(
+                                  "${_saleHistoryCtrl.sortByYear} ",
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 1),
+                                ),
+                                Icon(
+                                  Icons.clear_outlined,
+                                  size: height / 60,
+                                  color: Colors.brown,
+                                  applyTextScaling: true,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 5),
                     // 로스팅타입별 Chip
                     Visibility(
                       visible: _saleHistoryCtrl.sortByRoastingType != "",
-                      child: IntrinsicWidth(
-                        child: ActionChip(
-                          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
-                          visualDensity: VisualDensity.compact,
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          backgroundColor: Colors.brown[50],
-                          shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
-                          onPressed: () => _saleHistoryCtrl.sort(
-                            _saleHistoryCtrl.sortByDate,
-                            _saleHistoryCtrl.sortByYear,
-                            "",
-                            _saleHistoryCtrl.sortBySeller,
-                          ),
-                          label: Row(
-                            children: [
-                              Text(
-                                "${_saleHistoryCtrl.sortByRoastingType} ",
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 1),
-                              ),
-                              Icon(
-                                Icons.clear_outlined,
-                                size: height / 60,
-                                color: Colors.brown,
-                                applyTextScaling: true,
-                              ),
-                            ],
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: _saleHistoryCtrl.sortByYear != "" && _saleHistoryCtrl.sortBySeller != "" ? 5 : 0),
+                        child: IntrinsicWidth(
+                          child: ActionChip(
+                            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+                            visualDensity: VisualDensity.compact,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            backgroundColor: Colors.brown[50],
+                            shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
+                            onPressed: () => _saleHistoryCtrl.sort(
+                              _saleHistoryCtrl.sortByDate,
+                              _saleHistoryCtrl.sortByYear,
+                              "",
+                              _saleHistoryCtrl.sortBySeller,
+                            ),
+                            label: Row(
+                              children: [
+                                Text(
+                                  "${_saleHistoryCtrl.sortByRoastingType} ",
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 1),
+                                ),
+                                Icon(
+                                  Icons.clear_outlined,
+                                  size: height / 60,
+                                  color: Colors.brown,
+                                  applyTextScaling: true,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 5),
                     // 판매처별 Chip
                     Visibility(
                       visible: _saleHistoryCtrl.sortBySeller != "",
-                      child: IntrinsicWidth(
-                        child: ActionChip(
-                          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
-                          visualDensity: VisualDensity.compact,
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          backgroundColor: Colors.brown[50],
-                          shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
-                          onPressed: () => _saleHistoryCtrl.sort(
-                            _saleHistoryCtrl.sortByDate,
-                            _saleHistoryCtrl.sortByYear,
-                            _saleHistoryCtrl.sortByRoastingType,
-                            "",
-                          ),
-                          label: Row(
-                            children: [
-                              Text(
-                                "${_saleHistoryCtrl.sortBySeller} ",
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 0),
-                              ),
-                              Icon(
-                                Icons.clear_outlined,
-                                size: height / 60,
-                                color: Colors.brown,
-                                applyTextScaling: true,
-                              ),
-                            ],
+                      child: Padding(
+                        padding: EdgeInsets.only(left: _saleHistoryCtrl.sortByYear == "" && _saleHistoryCtrl.sortByRoastingType != "" ? 5 : 0),
+                        child: IntrinsicWidth(
+                          child: ActionChip(
+                            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+                            visualDensity: VisualDensity.compact,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            backgroundColor: Colors.brown[50],
+                            shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
+                            onPressed: () => _saleHistoryCtrl.sort(
+                              _saleHistoryCtrl.sortByDate,
+                              _saleHistoryCtrl.sortByYear,
+                              _saleHistoryCtrl.sortByRoastingType,
+                              "",
+                            ),
+                            label: Row(
+                              children: [
+                                Text(
+                                  "${_saleHistoryCtrl.sortBySeller} ",
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 0),
+                                ),
+                                Icon(
+                                  Icons.clear_outlined,
+                                  size: height / 60,
+                                  color: Colors.brown,
+                                  applyTextScaling: true,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
