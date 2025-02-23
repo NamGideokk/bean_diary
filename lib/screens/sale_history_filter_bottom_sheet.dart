@@ -17,7 +17,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 3, vsync: this);
+    _tabCtrl = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -44,6 +44,41 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
+                    // 연도별 Chip
+                    Visibility(
+                      visible: _saleHistoryCtrl.sortByYear != "",
+                      child: IntrinsicWidth(
+                        child: ActionChip(
+                          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+                          visualDensity: VisualDensity.compact,
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          backgroundColor: Colors.brown[50],
+                          shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
+                          onPressed: () => _saleHistoryCtrl.sort(
+                            _saleHistoryCtrl.sortByDate,
+                            "",
+                            _saleHistoryCtrl.sortByRoastingType,
+                            _saleHistoryCtrl.sortBySeller,
+                          ),
+                          label: Row(
+                            children: [
+                              Text(
+                                "${_saleHistoryCtrl.sortByYear} ",
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 1),
+                              ),
+                              Icon(
+                                Icons.clear_outlined,
+                                size: height / 60,
+                                color: Colors.brown,
+                                applyTextScaling: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    // 로스팅타입별 Chip
                     Visibility(
                       visible: _saleHistoryCtrl.sortByRoastingType != "",
                       child: IntrinsicWidth(
@@ -55,6 +90,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                           shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
                           onPressed: () => _saleHistoryCtrl.sort(
                             _saleHistoryCtrl.sortByDate,
+                            _saleHistoryCtrl.sortByYear,
                             "",
                             _saleHistoryCtrl.sortBySeller,
                           ),
@@ -76,6 +112,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                       ),
                     ),
                     const SizedBox(width: 5),
+                    // 판매처별 Chip
                     Visibility(
                       visible: _saleHistoryCtrl.sortBySeller != "",
                       child: IntrinsicWidth(
@@ -87,6 +124,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                           shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
                           onPressed: () => _saleHistoryCtrl.sort(
                             _saleHistoryCtrl.sortByDate,
+                            _saleHistoryCtrl.sortByYear,
                             _saleHistoryCtrl.sortByRoastingType,
                             "",
                           ),
@@ -123,6 +161,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                 labelPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 tabs: const [
                   Text("날짜순"),
+                  Text("연도별"),
                   Text("로스팅타입별"),
                   Text("판매처별"),
                 ],
@@ -148,6 +187,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                               groupValue: "desc",
                               onChanged: (value) => _saleHistoryCtrl.sort(
                                 "desc",
+                                _saleHistoryCtrl.sortByYear,
                                 _saleHistoryCtrl.sortByRoastingType,
                                 _saleHistoryCtrl.sortBySeller,
                               ),
@@ -165,6 +205,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                               groupValue: "asc",
                               onChanged: (value) => _saleHistoryCtrl.sort(
                                 "asc",
+                                _saleHistoryCtrl.sortByYear,
                                 _saleHistoryCtrl.sortByRoastingType,
                                 _saleHistoryCtrl.sortBySeller,
                               ),
@@ -174,6 +215,33 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                    ),
+                    // 연도별 view
+                    ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                      itemCount: _saleHistoryCtrl.yearsList.length,
+                      itemBuilder: (context, index) => ListTileTheme(
+                        horizontalTitleGap: 5,
+                        child: RadioListTile.adaptive(
+                          dense: true,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          visualDensity: VisualDensity.comfortable,
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          value: _saleHistoryCtrl.sortByYear,
+                          groupValue: _saleHistoryCtrl.yearsList[index],
+                          onChanged: (value) => _saleHistoryCtrl.sort(
+                            _saleHistoryCtrl.sortByDate,
+                            _saleHistoryCtrl.yearsList[index],
+                            _saleHistoryCtrl.sortByRoastingType,
+                            _saleHistoryCtrl.sortBySeller,
+                          ),
+                          title: Text(
+                            _saleHistoryCtrl.yearsList[index],
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ),
                       ),
                     ),
@@ -193,6 +261,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                               groupValue: "싱글오리진",
                               onChanged: (value) => _saleHistoryCtrl.sort(
                                 _saleHistoryCtrl.sortByDate,
+                                _saleHistoryCtrl.sortByYear,
                                 "싱글오리진",
                                 _saleHistoryCtrl.sortBySeller,
                               ),
@@ -210,6 +279,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                               groupValue: "블렌드",
                               onChanged: (value) => _saleHistoryCtrl.sort(
                                 _saleHistoryCtrl.sortByDate,
+                                _saleHistoryCtrl.sortByYear,
                                 "블렌드",
                                 _saleHistoryCtrl.sortBySeller,
                               ),
@@ -238,6 +308,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                           groupValue: _saleHistoryCtrl.sellerList[index],
                           onChanged: (value) => _saleHistoryCtrl.sort(
                             _saleHistoryCtrl.sortByDate,
+                            _saleHistoryCtrl.sortByYear,
                             _saleHistoryCtrl.sortByRoastingType,
                             _saleHistoryCtrl.sellerList[index],
                           ),

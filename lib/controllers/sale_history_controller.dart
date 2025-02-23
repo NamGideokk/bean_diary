@@ -9,6 +9,7 @@ class SaleHistoryController extends GetxController {
   final RxList _totalList = [].obs;
   final RxList _singleList = [].obs;
   final RxList _blendList = [].obs;
+  final RxList _yearsList = [].obs;
   final RxList _sellerList = [].obs;
 
   final RxInt _totalSales = 0.obs;
@@ -16,6 +17,7 @@ class SaleHistoryController extends GetxController {
   final RxDouble _salesContainerHeight = 0.0.obs;
 
   final RxString _sortByDate = "desc".obs;
+  final RxString _sortByYear = "".obs;
   final RxString _sortByRoastingType = "".obs;
   final RxString _sortBySeller = "".obs;
   final RxInt _sortCount = 0.obs;
@@ -24,6 +26,7 @@ class SaleHistoryController extends GetxController {
   get totalList => _totalList;
   get singleList => _singleList;
   get blendList => _blendList;
+  get yearsList => _yearsList;
   get sellerList => _sellerList;
 
   get totalSales => _totalSales.value;
@@ -31,6 +34,7 @@ class SaleHistoryController extends GetxController {
   get salesContainerHeight => _salesContainerHeight.value;
 
   get sortByDate => _sortByDate.value;
+  get sortByYear => _sortByYear.value;
   get sortByRoastingType => _sortByRoastingType.value;
   get sortBySeller => _sortBySeller.value;
   get sortCount => _sortCount.value;
@@ -65,6 +69,7 @@ class SaleHistoryController extends GetxController {
   }
 
   Future<void> openFilterBottomSheet(BuildContext context) async {
+    await getYearsList();
     await getSellerList();
     if (context.mounted) {
       return await showModalBottomSheet(
@@ -102,15 +107,33 @@ class SaleHistoryController extends GetxController {
     }
   }
 
+  /// 25-02-23
+  ///
+  /// 판매 내역 필터 > 연도별 목록 불러오기
+  Future getYearsList() async {
+    List list = [];
+    if (totalList.isNotEmpty) {
+      Set removeDuplicateYearsList = {};
+      for (final year in totalList) {
+        List splitDate = year["date"].split("-");
+        removeDuplicateYearsList.add(splitDate[0]);
+      }
+      list.addAll(removeDuplicateYearsList);
+      list.sort((a, b) => a.compareTo(b));
+      _yearsList(list);
+    } else {
+      _yearsList.clear();
+    }
+  }
+
   /// 25-02-22
   ///
   /// 판매 내역 필터 > 판매처 목록 불러오기
   Future getSellerList() async {
-    final result = await RoastingBeanSalesSqfLite().getRoastingBeanSales();
     List list = [];
-    if (result.isNotEmpty) {
+    if (totalList.isNotEmpty) {
       Set removeDuplicateSellerList = {};
-      for (final seller in result) {
+      for (final seller in totalList) {
         removeDuplicateSellerList.add(seller["company"]);
       }
       list.addAll(removeDuplicateSellerList);
@@ -133,7 +156,7 @@ class SaleHistoryController extends GetxController {
   /// 25-02-22
   ///
   /// 정렬하기
-  void sort(String date, String roastingType, String seller) {
+  void sort(String date, String year, String roastingType, String seller) {
     List list = [];
     int sortCnt = 0;
 
@@ -142,6 +165,15 @@ class SaleHistoryController extends GetxController {
       list = List.from(totalList);
     } else {
       list = List.from(totalList).reversed.toList();
+    }
+
+    _sortByYear(year);
+    if (year != "") {
+      list.removeWhere((element) {
+        List splitDate = element["date"].split("-");
+        return splitDate[0] != year;
+      });
+      sortCnt++;
     }
 
     _sortByRoastingType(roastingType);

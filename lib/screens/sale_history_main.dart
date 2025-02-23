@@ -211,11 +211,27 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Visibility(
-                              visible: _saleHistoryCtrl.sortByRoastingType != "",
+                              visible: _saleHistoryCtrl.sortByYear != "",
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                 decoration: BoxDecoration(
                                   color: Colors.brown[100],
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  _saleHistoryCtrl.sortByYear,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                            ),
+                            Visibility(
+                              visible: _saleHistoryCtrl.sortByRoastingType != "",
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.brown[200],
                                   borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(10),
                                   ),
@@ -231,7 +247,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                 decoration: BoxDecoration(
-                                  color: Colors.brown[200],
+                                  color: Colors.brown[300],
                                   borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(10),
                                   ),
