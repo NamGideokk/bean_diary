@@ -43,32 +43,30 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
           title: const Text("판매 내역"),
           centerTitle: true,
         ),
-        floatingActionButton: _saleHistoryCtrl.totalList.length > 0
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Badge(
-                    label: Text(
-                      "${_saleHistoryCtrl.sortCount}",
-                      textScaler: TextScaler.noScaling,
-                    ),
-                    isLabelVisible: _saleHistoryCtrl.sortCount > 0 ? true : false,
-                    child: FloatingActionButton.small(
-                      backgroundColor: Colors.brown.withOpacity(0.85),
-                      foregroundColor: Colors.white,
-                      heroTag: "filter",
-                      tooltip: "판매 내역 필터",
-                      elevation: 3,
-                      onPressed: () => _saleHistoryCtrl.openFilterBottomSheet(context),
-                      child: Icon(
-                        CupertinoIcons.slider_horizontal_3,
-                        size: height / 40,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            : const SizedBox(),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Badge(
+              label: Text(
+                "${_saleHistoryCtrl.sortCount}",
+                textScaler: TextScaler.noScaling,
+              ),
+              isLabelVisible: _saleHistoryCtrl.sortCount > 0 ? true : false,
+              child: FloatingActionButton.small(
+                backgroundColor: Colors.brown.withOpacity(0.85),
+                foregroundColor: Colors.white,
+                heroTag: "filter",
+                tooltip: "판매 내역 필터",
+                elevation: 3,
+                onPressed: () => _saleHistoryCtrl.openFilterBottomSheet(context),
+                child: Icon(
+                  CupertinoIcons.slider_horizontal_3,
+                  size: height / 40,
+                ),
+              ),
+            ),
+          ],
+        ),
         body: Container(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
           child: Column(
@@ -188,7 +186,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 3),
                       child: Text(
-                        "${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건",
+                        "총 ${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건",
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
                       ),
                     ),
@@ -302,7 +300,13 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                         ),
                       ),
                     )
-                  : const EmptyWidget(content: "원두 판매 내역이 없습니다."),
+                  : Container(
+                      decoration: BoxDecoration(
+                        color: Colors.brown[50],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const EmptyWidget(content: "원두 판매 내역이 없습니다."),
+                    ),
             ],
           ),
         ),
