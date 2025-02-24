@@ -84,24 +84,42 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
-                          child: Column(
-                            children: [
-                              Text(
-                                "누적",
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                      height: 1,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                              Text(
-                                "판매량",
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
-                              ),
-                              Text(
-                                "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSales)}kg",
-                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
-                              ),
-                            ],
+                          child: Tooltip(
+                            triggerMode: TooltipTriggerMode.tap,
+                            showDuration: const Duration(seconds: 3),
+                            decoration: BoxDecoration(
+                              color: Colors.brown,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            message: _saleHistoryCtrl.totalSalesMsg,
+                            child: Column(
+                              children: [
+                                Badge(
+                                  backgroundColor: Colors.transparent,
+                                  offset: const Offset(12, -8),
+                                  label: Icon(
+                                    CupertinoIcons.info_circle,
+                                    color: Colors.black38,
+                                    size: height / 55,
+                                  ),
+                                  child: Text(
+                                    "누적",
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                          height: 1,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                ),
+                                Text(
+                                  "판매량",
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
+                                ),
+                                Text(
+                                  "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSales)}kg",
+                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const VerticalDivider(

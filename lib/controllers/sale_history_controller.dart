@@ -14,7 +14,7 @@ class SaleHistoryController extends GetxController {
 
   final RxInt _totalSales = 0.obs;
   final RxInt _thisYearSales = 0.obs;
-  final RxDouble _salesContainerHeight = 0.0.obs;
+  final RxString _totalSalesMsg = "".obs;
 
   final RxString _sortByDate = "desc".obs;
   final RxString _sortByYear = "".obs;
@@ -31,7 +31,7 @@ class SaleHistoryController extends GetxController {
 
   get totalSales => _totalSales.value;
   get thisYearSales => _thisYearSales.value;
-  get salesContainerHeight => _salesContainerHeight.value;
+  get totalSalesMsg => _totalSalesMsg.value;
 
   get sortByDate => _sortByDate.value;
   get sortByYear => _sortByYear.value;
@@ -66,6 +66,7 @@ class SaleHistoryController extends GetxController {
       _totalSales(0);
       _thisYearSales(0);
     }
+    setTotalSalesMsg();
   }
 
   Future<void> openFilterBottomSheet(BuildContext context) async {
@@ -195,8 +196,20 @@ class SaleHistoryController extends GetxController {
     _sortCount(sortCnt);
   }
 
-  /// 25-02-23
+  /// 24-02-24 ngd
   ///
-  /// 판매 내역 > 상단 판매량 컨테이너 높이 구하기
-  void getSalesContainerHeight(double value) => _salesContainerHeight(value);
+  /// 상단 누적 판매량 툴팁 메시지 할당하기
+  void setTotalSalesMsg() {
+    if (totalList.isEmpty) {
+      _totalSalesMsg("판매 내역이 없습니다.");
+    } else {
+      String sYear = totalList[totalList.length - 1]["date"].split("-")[0];
+      String eYear = totalList[0]["date"].split("-")[0];
+      if (totalList.length == 1 || sYear == eYear) {
+        _totalSalesMsg("$sYear년 누적 판매량입니다.");
+      } else {
+        _totalSalesMsg("$sYear - $eYear년 동안의 누적 판매량입니다.");
+      }
+    }
+  }
 }
