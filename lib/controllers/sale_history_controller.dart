@@ -3,6 +3,7 @@ import 'package:bean_diary/sqflite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class SaleHistoryController extends GetxController {
   final RxList _showList = [].obs;
@@ -22,6 +23,14 @@ class SaleHistoryController extends GetxController {
   final RxString _sortBySeller = "".obs;
   final RxInt _sortCount = 0.obs;
 
+  // 판매 내역 통계 변수
+  final RxString _salesPeriod = "".obs; // 판매기간
+  final RxList _showSellerList = [].obs; // showList 판매처수
+  final RxInt _totalSalesInShowList = 0.obs; // showList 총판매량
+  final RxInt _minSales = 0.obs; // 최소판매량
+  final RxInt _maxSales = 0.obs; // 최대판매량
+  final RxList _monthlySales = [].obs;
+
   get showList => _showList;
   get totalList => _totalList;
   get singleList => _singleList;
@@ -38,6 +47,13 @@ class SaleHistoryController extends GetxController {
   get sortByRoastingType => _sortByRoastingType.value;
   get sortBySeller => _sortBySeller.value;
   get sortCount => _sortCount.value;
+
+  get salesPeriod => _salesPeriod.value;
+  get showSellerList => _showSellerList;
+  get totalSalesInShowList => _totalSalesInShowList.value;
+  get minSales => _minSales.value;
+  get maxSales => _maxSales.value;
+  get monthlySales => _monthlySales;
 
   @override
   void onInit() {
@@ -66,6 +82,7 @@ class SaleHistoryController extends GetxController {
       _totalSales(0);
       _thisYearSales(0);
     }
+    debugPrint(totalList);
     setTotalSalesMsg();
   }
 
@@ -196,7 +213,7 @@ class SaleHistoryController extends GetxController {
     _sortCount(sortCnt);
   }
 
-  /// 24-02-24 ngd
+  /// 25-02-24
   ///
   /// 상단 누적 판매량 툴팁 메시지 할당하기
   void setTotalSalesMsg() {
@@ -209,6 +226,85 @@ class SaleHistoryController extends GetxController {
         _totalSalesMsg("$sYear년 누적 판매량입니다.");
       } else {
         _totalSalesMsg("$sYear - $eYear년 동안의 누적 판매량입니다.");
+      }
+    }
+  }
+
+  /// 25-05-26
+  ///
+  /// 판매 내역 통계 계산하기
+  void calcSalesStatistics() {
+    // 판매기간
+    if (showList.isEmpty) {
+      _salesPeriod("");
+    } else if (showList.length == 1) {
+      _salesPeriod(showList.first["date"]);
+    } else {
+      DateTime date1 = DateTime.parse(showList.first["date"]);
+      DateTime date2 = DateTime.parse(showList.last["date"]);
+      bool checkDate = date1.isBefore(date2);
+      DateFormat dFormat = DateFormat("yyyy-MM-dd");
+
+      _salesPeriod(checkDate ? "${dFormat.format(date1)} ~ ${dFormat.format(date2)}" : "${dFormat.format(date2)} ~ ${dFormat.format(date1)}");
+    }
+
+    // 판매처수
+    if (showList.isEmpty) {
+      _showSellerList.clear();
+    } else {
+      List list = [];
+      Set removeDuplicateSellerList = {};
+      for (final seller in showList) {
+        removeDuplicateSellerList.add(seller["company"]);
+      }
+      list.addAll(removeDuplicateSellerList);
+      list.sort((a, b) => a.compareTo(b));
+      _showSellerList(list);
+    }
+
+    // 총판매량, 최소판매량, 최대판매량
+    if (showList.isEmpty) {
+      _totalSalesInShowList(0);
+    } else {
+      int total = 0;
+      List list = [];
+      for (final e in showList) {
+        total += e["sales_weight"] as int;
+        list.add(e["sales_weight"] as int);
+      }
+      list.sort();
+      _totalSalesInShowList(total);
+      _minSales(list.first);
+      _maxSales(list.last);
+    }
+
+    // 월별판매량
+    _monthlySales.clear();
+    if (showList.isEmpty) {
+    } else {
+      Set set = {};
+      List monthList = [];
+      // List copyShowList = showList.map((e) => Map.from(e)).toList();
+      DateFormat dFormat = DateFormat("yyyy-MM");
+      for (final e in showList) {
+        set.add(dFormat.format(DateTime.parse(e["date"])));
+      }
+      monthList = set.toList();
+      monthList.sort();
+
+      for (final e in monthList) {
+        _monthlySales.add({
+          "date": e.toString(),
+          "sales": 0,
+        });
+      }
+      for (final e in showList) {
+        String parseDate = dFormat.format(DateTime.parse(e["date"]));
+        for (final obj in monthlySales) {
+          if (parseDate == obj["date"]) {
+            obj["sales"] += e["sales_weight"] as int;
+          }
+        }
       }
     }
   }

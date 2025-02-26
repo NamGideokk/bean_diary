@@ -1,5 +1,6 @@
 import 'package:bean_diary/controllers/sale_history_controller.dart';
 import 'package:bean_diary/controllers/year_picker_controller.dart';
+import 'package:bean_diary/screens/sale_history_information_main.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/custom_year_picker.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
@@ -46,6 +47,26 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            FloatingActionButton.small(
+              backgroundColor: Colors.brown.withOpacity(0.85),
+              foregroundColor: Colors.white,
+              heroTag: "chart",
+              tooltip: "판매 내역 통계",
+              elevation: 3,
+              onPressed: () async => showModalBottomSheet(
+                context: context,
+                enableDrag: false,
+                useSafeArea: true,
+                isScrollControlled: true,
+                clipBehavior: Clip.hardEdge,
+                backgroundColor: Colors.white,
+                builder: (context) => const SaleHistoryInformationMain(),
+              ),
+              child: Icon(
+                CupertinoIcons.chart_pie_fill,
+                size: height / 40,
+              ),
+            ),
             Badge(
               label: Text(
                 "${_saleHistoryCtrl.sortCount}",
@@ -87,8 +108,9 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                           child: Tooltip(
                             triggerMode: TooltipTriggerMode.tap,
                             showDuration: const Duration(seconds: 3),
+                            textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
                             decoration: BoxDecoration(
-                              color: Colors.brown,
+                              color: Colors.brown.withOpacity(0.9),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             message: _saleHistoryCtrl.totalSalesMsg,
@@ -96,7 +118,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                               children: [
                                 Badge(
                                   backgroundColor: Colors.transparent,
-                                  offset: const Offset(12, -8),
+                                  offset: const Offset(13, -9),
                                   label: Icon(
                                     CupertinoIcons.info_circle,
                                     color: Colors.black38,
