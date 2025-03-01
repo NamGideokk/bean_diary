@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class SaleHistoryController extends GetxController {
+  final RxBool _isLoading = false.obs;
+
   final RxList _showList = [].obs;
   final RxList _totalList = [].obs;
   final RxList _singleList = [].obs;
@@ -29,7 +31,12 @@ class SaleHistoryController extends GetxController {
   final RxInt _totalSalesInShowList = 0.obs; // showList 총판매량
   final RxInt _minSales = 0.obs; // 최소판매량
   final RxInt _maxSales = 0.obs; // 최대판매량
-  final RxList _monthlySales = [].obs;
+  final RxList _monthlySales = [].obs; // 월별판매량
+  final RxList _chartBySeller = [].obs; // 차트용 판매처별 판매량 리스트
+  final RxInt _showChartInfo = 0.obs; // 0: 표출X, 1 ~: index - 1로 표출
+  final RxDouble _showChartInfoOpacity = 0.0.obs;
+
+  get isLoading => _isLoading.value;
 
   get showList => _showList;
   get totalList => _totalList;
@@ -54,6 +61,9 @@ class SaleHistoryController extends GetxController {
   get minSales => _minSales.value;
   get maxSales => _maxSales.value;
   get monthlySales => _monthlySales;
+  get chartBySeller => _chartBySeller;
+  get showChartInfo => _showChartInfo.value;
+  get showChartInfoOpacity => _showChartInfoOpacity.value;
 
   @override
   void onInit() {
@@ -62,6 +72,7 @@ class SaleHistoryController extends GetxController {
   }
 
   void getSaleHistory() async {
+    _isLoading(true);
     List list = await RoastingBeanSalesSqfLite().getRoastingBeanSales();
     List sortingList;
     if (list.isNotEmpty) {
@@ -82,8 +93,8 @@ class SaleHistoryController extends GetxController {
       _totalSales(0);
       _thisYearSales(0);
     }
-    debugPrint(totalList);
     setTotalSalesMsg();
+    _isLoading(false);
   }
 
   Future<void> openFilterBottomSheet(BuildContext context) async {
@@ -307,5 +318,75 @@ class SaleHistoryController extends GetxController {
         }
       }
     }
+  }
+
+  /// 25-02-26
+  ///
+  /// 판매 내역 통계 > 판매처별 차트 계산하기
+  void calcChartBySeller() {
+    List list = showSellerList
+        .map((e) => {
+              "seller": e,
+              "sales": 0,
+              "ratio": 0.0,
+              "chartValue": 0.0,
+            })
+        .toList();
+
+    for (final e in list) {
+      for (final obj in showList) {
+        if (e["seller"] == obj["company"]) {
+          e["sales"] += obj["sales_weight"];
+        }
+      }
+    }
+
+    list.sort((a, b) => b["sales"].compareTo(a["sales"]));
+
+    for (int i = 0; i < list.length; i++) {
+      list[i]["ratio"] = double.parse((list[i]["sales"] / totalSalesInShowList).toStringAsFixed(2));
+
+      if (i == 0) {
+        list[i]["chartValue"] = list[i]["ratio"];
+      } else if (i == list.length - 1) {
+        // 소수점 이하 계산 정확도 손실로 마지막 값은 보정
+        list[i]["ratio"] = double.parse((1.0 - list[i - 1]["chartValue"]).toStringAsFixed(2));
+        list[i]["chartValue"] = 1.0;
+      } else {
+        list[i]["chartValue"] = double.parse((list[i - 1]["chartValue"] + list[i]["ratio"]).toStringAsFixed(2));
+      }
+    }
+    _chartBySeller(list);
+  }
+
+  /// 25-03-01
+  ///
+  /// 차트 길이에 맞게 유동적으로 색상 분배하기
+  Color getDynamicBrownColor(int index, int chartLength) {
+    if (chartLength == 1) return Colors.brown;
+
+    double ratio = index / (chartLength - 1);
+    return Color.lerp(Colors.brown[900], Colors.brown[50], ratio)!;
+  }
+
+  /// 25-02-27
+  ///
+  /// 차트 항목 탭 시 정보 보여주기
+  Future<void> onTapShowChartInfo(int index) async {
+    if (index + 1 == showChartInfo) {
+      _showChartInfo(0);
+      _showChartInfoOpacity(0.0);
+    } else {
+      _showChartInfo(index + 1);
+      _showChartInfoOpacity(1);
+    }
+  }
+
+  /// 25-03-01
+  ///
+  /// 차트 항목 정보 보이지 않기
+  void resetShowChartInfo() {
+    _showChartInfo(0);
+    _showChartInfoOpacity(0.0);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:bean_diary/controllers/sale_history_controller.dart';
 import 'package:bean_diary/controllers/year_picker_controller.dart';
 import 'package:bean_diary/screens/sale_history_information_main.dart';
+import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/custom_year_picker.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
@@ -53,15 +54,17 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
               heroTag: "chart",
               tooltip: "판매 내역 통계",
               elevation: 3,
-              onPressed: () async => showModalBottomSheet(
-                context: context,
-                enableDrag: false,
-                useSafeArea: true,
-                isScrollControlled: true,
-                clipBehavior: Clip.hardEdge,
-                backgroundColor: Colors.white,
-                builder: (context) => const SaleHistoryInformationMain(),
-              ),
+              onPressed: () async => _saleHistoryCtrl.showList.isEmpty
+                  ? () {}
+                  : showModalBottomSheet(
+                      context: context,
+                      enableDrag: false,
+                      useSafeArea: true,
+                      isScrollControlled: true,
+                      clipBehavior: Clip.hardEdge,
+                      backgroundColor: Colors.white,
+                      builder: (context) => const SaleHistoryInformationMain(),
+                    ),
               child: Icon(
                 CupertinoIcons.chart_pie_fill,
                 size: height / 40,
@@ -88,348 +91,364 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
             ),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const HeaderTitle(title: "판매 내역", subTitle: "sale history"),
-              IntrinsicHeight(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: MediaQuery(
-                    data: MediaQueryData(
-                      textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
+        body: _saleHistoryCtrl.isLoading
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/logo.png",
+                      height: height / 14,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Tooltip(
-                            triggerMode: TooltipTriggerMode.tap,
-                            showDuration: const Duration(seconds: 3),
-                            textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
-                            decoration: BoxDecoration(
-                              color: Colors.brown.withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            message: _saleHistoryCtrl.totalSalesMsg,
-                            child: Column(
-                              children: [
-                                Badge(
-                                  backgroundColor: Colors.transparent,
-                                  offset: const Offset(13, -9),
-                                  label: Icon(
-                                    CupertinoIcons.info_circle,
-                                    color: Colors.black38,
-                                    size: height / 55,
-                                  ),
-                                  child: Text(
-                                    "누적",
-                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                          height: 1,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                ),
-                                Text(
-                                  "판매량",
-                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
-                                ),
-                                Text(
-                                  "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSales)}kg",
-                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
-                                ),
-                              ],
-                            ),
+                    Text(
+                      "불러오는 중...",
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const HeaderTitle(title: "판매 내역", subTitle: "sale history"),
+                    IntrinsicHeight(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        child: MediaQuery(
+                          data: MediaQueryData(
+                            textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
                           ),
-                        ),
-                        const VerticalDivider(
-                          width: 50,
-                          thickness: 1,
-                          indent: 5,
-                          endIndent: 5,
-                          color: Colors.black12,
-                        ),
-                        Expanded(
-                          child: Column(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                "올해",
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                      height: 1,
-                                      fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Tooltip(
+                                  triggerMode: TooltipTriggerMode.tap,
+                                  showDuration: const Duration(seconds: 3),
+                                  textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
+                                  decoration: BoxDecoration(
+                                    color: Colors.brown.withOpacity(0.9),
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  message: _saleHistoryCtrl.totalSalesMsg,
+                                  child: Column(
+                                    children: [
+                                      Badge(
+                                        backgroundColor: Colors.transparent,
+                                        offset: const Offset(13, -9),
+                                        label: Icon(
+                                          CupertinoIcons.info_circle,
+                                          color: Colors.black38,
+                                          size: height / 55,
+                                        ),
+                                        child: Text(
+                                          "누적",
+                                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                                height: 1,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
+                                      ),
+                                      Text(
+                                        "판매량",
+                                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
+                                      ),
+                                      Text(
+                                        "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSales)}kg",
+                                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const VerticalDivider(
+                                width: 50,
+                                thickness: 1,
+                                indent: 5,
+                                endIndent: 5,
+                                color: Colors.black12,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "올해",
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                            height: 1,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                     ),
-                              ),
-                              Text(
-                                "판매량",
-                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
-                              ),
-                              Text(
-                                "${Utility().parseToDoubleWeight(_saleHistoryCtrl.thisYearSales)}kg",
-                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
+                                    Text(
+                                      "판매량",
+                                      style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
+                                    ),
+                                    Text(
+                                      "${Utility().parseToDoubleWeight(_saleHistoryCtrl.thisYearSales)}kg",
+                                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              // _saleHistoryCtrl.totalList.length > 0
-              //     ? Padding(
-              //         padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
-              //         child: Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           crossAxisAlignment: CrossAxisAlignment.baseline,
-              //           textBaseline: TextBaseline.ideographic,
-              //           children: [
-              //             Row(
-              //               crossAxisAlignment: CrossAxisAlignment.baseline,
-              //               textBaseline: TextBaseline.ideographic,
-              //               children: [
-              //                 TextButton(
-              //                   style: TextButton.styleFrom(
-              //                     minimumSize: const Size(0, 0),
-              //                     padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 3),
-              //                     shape: RoundedRectangleBorder(
-              //                       borderRadius: BorderRadius.circular(5),
-              //                     ),
-              //                   ),
-              //                   onPressed: () {
-              //                     showModalBottomSheet(
-              //                       showDragHandle: true,
-              //                       backgroundColor: Colors.white,
-              //                       context: context,
-              //                       builder: (context) => const CustomYearPicker(),
-              //                     );
-              //                   },
-              //                   child: Text(
-              //                     _yearPickerController.selectedYear,
-              //                     style: TextStyle(
-              //                       fontSize: height / 40,
-              //                     ),
-              //                   ),
-              //                 ),
-              //                 Text(
-              //                   "년 총 판매량",
-              //                   style: TextStyle(
-              //                     fontSize: height / 60,
-              //                     color: Colors.black87,
-              //                     fontWeight: FontWeight.w300,
-              //                     letterSpacing: -0.3,
-              //                   ),
-              //                 ),
-              //               ],
-              //             ),
-              //             Expanded(
-              //               child: Text(
-              //                 _saleHistoryCtrl.totalWeightForYear != 0 ? "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalWeightForYear))}kg" : "판매 내역이 없습니다",
-              //                 textAlign: TextAlign.right,
-              //                 style: TextStyle(
-              //                   fontSize: _saleHistoryCtrl.totalWeightForYear != 0 ? height / 46 : height / 60,
-              //                   fontWeight: _saleHistoryCtrl.totalWeightForYear != 0 ? FontWeight.w600 : FontWeight.w300,
-              //                   color: _saleHistoryCtrl.totalWeightForYear != 0 ? Colors.black : Colors.black54,
-              //                 ),
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       )
-              //     : const SizedBox(),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.zero,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Visibility(
-                              visible: _saleHistoryCtrl.sortByYear != "",
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.brown[100],
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  "${_saleHistoryCtrl.sortByYear}년",
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                              ),
-                            ),
-                            Visibility(
-                              visible: _saleHistoryCtrl.sortByRoastingType != "",
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFc9bfbb),
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  _saleHistoryCtrl.sortByRoastingType,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                              ),
-                            ),
-                            Visibility(
-                              visible: _saleHistoryCtrl.sortBySeller != "",
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFbcb2ae),
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  _saleHistoryCtrl.sortBySeller,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
-                    const SizedBox(width: 15),
+                    // _saleHistoryCtrl.totalList.length > 0
+                    //     ? Padding(
+                    //         padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+                    //         child: Row(
+                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //           crossAxisAlignment: CrossAxisAlignment.baseline,
+                    //           textBaseline: TextBaseline.ideographic,
+                    //           children: [
+                    //             Row(
+                    //               crossAxisAlignment: CrossAxisAlignment.baseline,
+                    //               textBaseline: TextBaseline.ideographic,
+                    //               children: [
+                    //                 TextButton(
+                    //                   style: TextButton.styleFrom(
+                    //                     minimumSize: const Size(0, 0),
+                    //                     padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 3),
+                    //                     shape: RoundedRectangleBorder(
+                    //                       borderRadius: BorderRadius.circular(5),
+                    //                     ),
+                    //                   ),
+                    //                   onPressed: () {
+                    //                     showModalBottomSheet(
+                    //                       showDragHandle: true,
+                    //                       backgroundColor: Colors.white,
+                    //                       context: context,
+                    //                       builder: (context) => const CustomYearPicker(),
+                    //                     );
+                    //                   },
+                    //                   child: Text(
+                    //                     _yearPickerController.selectedYear,
+                    //                     style: TextStyle(
+                    //                       fontSize: height / 40,
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //                 Text(
+                    //                   "년 총 판매량",
+                    //                   style: TextStyle(
+                    //                     fontSize: height / 60,
+                    //                     color: Colors.black87,
+                    //                     fontWeight: FontWeight.w300,
+                    //                     letterSpacing: -0.3,
+                    //                   ),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //             Expanded(
+                    //               child: Text(
+                    //                 _saleHistoryCtrl.totalWeightForYear != 0 ? "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalWeightForYear))}kg" : "판매 내역이 없습니다",
+                    //                 textAlign: TextAlign.right,
+                    //                 style: TextStyle(
+                    //                   fontSize: _saleHistoryCtrl.totalWeightForYear != 0 ? height / 46 : height / 60,
+                    //                   fontWeight: _saleHistoryCtrl.totalWeightForYear != 0 ? FontWeight.w600 : FontWeight.w300,
+                    //                   color: _saleHistoryCtrl.totalWeightForYear != 0 ? Colors.black : Colors.black54,
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       )
+                    //     : const SizedBox(),
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 3),
-                      child: Text(
-                        "총 ${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건",
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
+                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.zero,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Visibility(
+                                    visible: _saleHistoryCtrl.sortByYear != "",
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.brown[100],
+                                        borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(10),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "${_saleHistoryCtrl.sortByYear}년",
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: _saleHistoryCtrl.sortByRoastingType != "",
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFFc9bfbb),
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(10),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        _saleHistoryCtrl.sortByRoastingType,
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: _saleHistoryCtrl.sortBySeller != "",
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFFbcb2ae),
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(10),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        _saleHistoryCtrl.sortBySeller,
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 3),
+                            child: Text(
+                              "총 ${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건",
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              _saleHistoryCtrl.showList.isNotEmpty
-                  ? Expanded(
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.only(bottom: height / 8.5),
-                        controller: _scrollCtrl,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: _saleHistoryCtrl.showList.length,
-                              separatorBuilder: (context, index) => const Divider(),
-                              itemBuilder: (context, index) => Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(index == 0 ? 8 : 0),
-                                    bottom: Radius.circular(index == _saleHistoryCtrl.showList.length - 1 ? 8 : 0),
-                                  ),
-                                ),
-                                child: ListTile(
-                                  title: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                                    textBaseline: TextBaseline.ideographic,
-                                    children: [
-                                      Text(
-                                        Utility().dateFormattingYYMMDD(_saleHistoryCtrl.showList[index]["date"]),
-                                        style: TextStyle(
-                                          fontSize: height / 54,
-                                          color: Colors.brown[700],
+                    _saleHistoryCtrl.showList.isNotEmpty
+                        ? Expanded(
+                            child: SingleChildScrollView(
+                              padding: EdgeInsets.only(bottom: height / 8.5),
+                              controller: _scrollCtrl,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListView.separated(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: _saleHistoryCtrl.showList.length,
+                                    separatorBuilder: (context, index) => const Divider(),
+                                    itemBuilder: (context, index) => Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(index == 0 ? 8 : 0),
+                                          bottom: Radius.circular(index == _saleHistoryCtrl.showList.length - 1 ? 8 : 0),
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Text(
-                                          _saleHistoryCtrl.showList[index]["company"],
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                            color: Colors.brown[700],
-                                            fontSize: height / 54,
-                                            fontWeight: FontWeight.w500,
-                                          ),
+                                      child: ListTile(
+                                        title: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                                          textBaseline: TextBaseline.ideographic,
+                                          children: [
+                                            Text(
+                                              Utility().dateFormattingYYMMDD(_saleHistoryCtrl.showList[index]["date"]),
+                                              style: TextStyle(
+                                                fontSize: height / 54,
+                                                color: Colors.brown[700],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Text(
+                                                _saleHistoryCtrl.showList[index]["company"],
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(
+                                                  color: Colors.brown[700],
+                                                  fontSize: height / 54,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(top: 5),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                        subtitle: Padding(
+                                          padding: const EdgeInsets.only(top: 5),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.end,
                                             children: [
-                                              RoastingTypeWidget(type: _saleHistoryCtrl.showList[index]["type"].toString()),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    RoastingTypeWidget(type: _saleHistoryCtrl.showList[index]["type"].toString()),
+                                                    Text(
+                                                      _saleHistoryCtrl.showList[index]["name"],
+                                                      style: TextStyle(
+                                                        color: Colors.black87,
+                                                        fontSize: height / 54,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
                                               Text(
-                                                _saleHistoryCtrl.showList[index]["name"],
+                                                "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.showList[index]["sales_weight"]))}kg",
                                                 style: TextStyle(
                                                   color: Colors.black87,
-                                                  fontSize: height / 54,
+                                                  fontSize: height / 48,
+                                                  fontWeight: FontWeight.w500,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.showList[index]["sales_weight"]))}kg",
-                                          style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: height / 48,
-                                            fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: _saleHistoryCtrl.showList.length >= 10,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: IconButton(
+                                        style: IconButton.styleFrom(
+                                          backgroundColor: Theme.of(context).cardTheme.color,
+                                          foregroundColor: Colors.brown,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
                                         ),
-                                      ],
+                                        onPressed: () => _saleHistoryCtrl.scrollToTop(_scrollCtrl),
+                                        icon: Icon(
+                                          Icons.vertical_align_top_rounded,
+                                          size: height / 40,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                            Visibility(
-                              visible: _saleHistoryCtrl.showList.length >= 10,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: IconButton(
-                                  style: IconButton.styleFrom(
-                                    backgroundColor: Theme.of(context).cardTheme.color,
-                                    foregroundColor: Colors.brown,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  onPressed: () => _saleHistoryCtrl.scrollToTop(_scrollCtrl),
-                                  icon: Icon(
-                                    Icons.vertical_align_top_rounded,
-                                    size: height / 40,
-                                  ),
-                                ),
-                              ),
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                              color: Colors.brown[50],
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : Container(
-                      decoration: BoxDecoration(
-                        color: Colors.brown[50],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const EmptyWidget(content: "원두 판매 내역이 없습니다."),
-                    ),
-            ],
-          ),
-        ),
+                            child: const EmptyWidget(content: "원두 판매 내역이 없습니다."),
+                          ),
+                  ],
+                ),
+              ),
       ),
     );
   }

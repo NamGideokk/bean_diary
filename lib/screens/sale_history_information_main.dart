@@ -1,4 +1,5 @@
 import 'package:bean_diary/controllers/sale_history_controller.dart';
+import 'package:bean_diary/screens/sale_history/sale_history_information_chart.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/label_content_row.dart';
@@ -110,18 +111,7 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
                 ),
               ),
             ),
-            Center(
-              child: Container(
-                margin: const EdgeInsets.all(60),
-                width: height / 5,
-                height: height / 5,
-                child: CircularProgressIndicator(
-                  strokeWidth: 40,
-                  value: 0.7,
-                  color: Colors.brown,
-                ),
-              ),
-            ),
+            SaleHistoryInformationChart(),
             LabelContentRow(label: "판매기간", content: _saleHistoryCtrl.salesPeriod),
             LabelContentRow(label: "판매건수", content: "${_saleHistoryCtrl.showList.length}건"),
             LabelContentRow(
