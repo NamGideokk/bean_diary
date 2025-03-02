@@ -344,16 +344,12 @@ class SaleHistoryController extends GetxController {
     list.sort((a, b) => b["sales"].compareTo(a["sales"]));
 
     for (int i = 0; i < list.length; i++) {
-      list[i]["ratio"] = double.parse((list[i]["sales"] / totalSalesInShowList).toStringAsFixed(2));
+      list[i]["ratio"] = list[i]["sales"] / totalSalesInShowList;
 
       if (i == 0) {
         list[i]["chartValue"] = list[i]["ratio"];
-      } else if (i == list.length - 1) {
-        // 소수점 이하 계산 정확도 손실로 마지막 값은 보정
-        list[i]["ratio"] = double.parse((1.0 - list[i - 1]["chartValue"]).toStringAsFixed(2));
-        list[i]["chartValue"] = 1.0;
       } else {
-        list[i]["chartValue"] = double.parse((list[i - 1]["chartValue"] + list[i]["ratio"]).toStringAsFixed(2));
+        list[i]["chartValue"] = list[i - 1]["chartValue"] + list[i]["ratio"];
       }
     }
     _chartBySeller(list);

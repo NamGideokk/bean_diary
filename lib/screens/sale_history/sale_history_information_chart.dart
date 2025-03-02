@@ -50,20 +50,31 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                       SizedBox(
                         height: height / 5,
                         width: height / 5,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 40,
-                          color: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == i
-                              ? Colors.orange
-                              : _saleHistoryCtrl.getDynamicBrownColor(i, _saleHistoryCtrl.chartBySeller.length),
-                          value: _saleHistoryCtrl.chartBySeller[i]["chartValue"],
+                        child: TweenAnimationBuilder<Color?>(
+                          duration: const Duration(milliseconds: 200),
+                          tween: ColorTween(
+                            begin: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == i
+                                ? Colors.orange
+                                : _saleHistoryCtrl.getDynamicBrownColor(i, _saleHistoryCtrl.chartBySeller.length),
+                            end: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == i
+                                ? Colors.orange
+                                : _saleHistoryCtrl.getDynamicBrownColor(i, _saleHistoryCtrl.chartBySeller.length),
+                          ),
+                          builder: (context, color, child) {
+                            return CircularProgressIndicator(
+                              strokeWidth: 40,
+                              color: color,
+                              value: _saleHistoryCtrl.chartBySeller[i]["chartValue"],
+                            );
+                          },
                         ),
                       ),
                     GestureDetector(
                       onTap: () => _saleHistoryCtrl.showChartInfo == 0 ? {} : _saleHistoryCtrl.resetShowChartInfo(),
                       child: AnimatedOpacity(
-                        duration: Duration(milliseconds: 400),
+                        duration: const Duration(milliseconds: 500),
                         opacity: _saleHistoryCtrl.showChartInfoOpacity,
-                        curve: Curves.easeInCirc,
+                        curve: Curves.easeInOut,
                         child: Container(
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
@@ -120,7 +131,7 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                     style: Theme.of(context).textTheme.bodyMedium,
                     children: [
                       TextSpan(
-                        text: "  ${(_saleHistoryCtrl.chartBySeller[index]["ratio"] * 100).toStringAsFixed(1)}%",
+                        text: "  ${(_saleHistoryCtrl.chartBySeller[index]["ratio"] * 100).toStringAsFixed(2)}%",
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               fontWeight: FontWeight.w600,
                               letterSpacing: -0.5,

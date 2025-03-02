@@ -3,7 +3,6 @@ import 'package:bean_diary/controllers/year_picker_controller.dart';
 import 'package:bean_diary/screens/sale_history_information_main.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
-import 'package:bean_diary/widgets/custom_year_picker.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/roasting_type_widget.dart';
@@ -20,7 +19,6 @@ class SaleHistoryMain extends StatefulWidget {
 
 class _SaleHistoryMainState extends State<SaleHistoryMain> {
   final SaleHistoryController _saleHistoryCtrl = Get.put(SaleHistoryController());
-  final YearPickerController _yearPickerController = Get.put(YearPickerController());
   final _scrollCtrl = ScrollController();
 
   @override
@@ -54,17 +52,20 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
               heroTag: "chart",
               tooltip: "판매 내역 통계",
               elevation: 3,
-              onPressed: () async => _saleHistoryCtrl.showList.isEmpty
-                  ? () {}
-                  : showModalBottomSheet(
-                      context: context,
-                      enableDrag: false,
-                      useSafeArea: true,
-                      isScrollControlled: true,
-                      clipBehavior: Clip.hardEdge,
-                      backgroundColor: Colors.white,
-                      builder: (context) => const SaleHistoryInformationMain(),
-                    ),
+              onPressed: _saleHistoryCtrl.showList.isEmpty
+                  ? () {
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      CustomDialog().showSnackBar(context, "원두 판매 내역이 없습니다.");
+                    }
+                  : () => showModalBottomSheet(
+                        context: context,
+                        enableDrag: false,
+                        useSafeArea: true,
+                        isScrollControlled: true,
+                        clipBehavior: Clip.hardEdge,
+                        backgroundColor: Colors.white,
+                        builder: (context) => const SaleHistoryInformationMain(),
+                      ),
               child: Icon(
                 CupertinoIcons.chart_pie_fill,
                 size: height / 40,
@@ -196,67 +197,6 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                         ),
                       ),
                     ),
-                    // _saleHistoryCtrl.totalList.length > 0
-                    //     ? Padding(
-                    //         padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
-                    //         child: Row(
-                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //           crossAxisAlignment: CrossAxisAlignment.baseline,
-                    //           textBaseline: TextBaseline.ideographic,
-                    //           children: [
-                    //             Row(
-                    //               crossAxisAlignment: CrossAxisAlignment.baseline,
-                    //               textBaseline: TextBaseline.ideographic,
-                    //               children: [
-                    //                 TextButton(
-                    //                   style: TextButton.styleFrom(
-                    //                     minimumSize: const Size(0, 0),
-                    //                     padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 3),
-                    //                     shape: RoundedRectangleBorder(
-                    //                       borderRadius: BorderRadius.circular(5),
-                    //                     ),
-                    //                   ),
-                    //                   onPressed: () {
-                    //                     showModalBottomSheet(
-                    //                       showDragHandle: true,
-                    //                       backgroundColor: Colors.white,
-                    //                       context: context,
-                    //                       builder: (context) => const CustomYearPicker(),
-                    //                     );
-                    //                   },
-                    //                   child: Text(
-                    //                     _yearPickerController.selectedYear,
-                    //                     style: TextStyle(
-                    //                       fontSize: height / 40,
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //                 Text(
-                    //                   "년 총 판매량",
-                    //                   style: TextStyle(
-                    //                     fontSize: height / 60,
-                    //                     color: Colors.black87,
-                    //                     fontWeight: FontWeight.w300,
-                    //                     letterSpacing: -0.3,
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             Expanded(
-                    //               child: Text(
-                    //                 _saleHistoryCtrl.totalWeightForYear != 0 ? "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalWeightForYear))}kg" : "판매 내역이 없습니다",
-                    //                 textAlign: TextAlign.right,
-                    //                 style: TextStyle(
-                    //                   fontSize: _saleHistoryCtrl.totalWeightForYear != 0 ? height / 46 : height / 60,
-                    //                   fontWeight: _saleHistoryCtrl.totalWeightForYear != 0 ? FontWeight.w600 : FontWeight.w300,
-                    //                   color: _saleHistoryCtrl.totalWeightForYear != 0 ? Colors.black : Colors.black54,
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       )
-                    //     : const SizedBox(),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
                       child: Row(
