@@ -1,7 +1,7 @@
 import 'package:bean_diary/screens/data_management_main.dart';
 import 'package:bean_diary/screens/green_bean_warehousing_main.dart';
 import 'package:bean_diary/screens/roasting_management_main.dart';
-import 'package:bean_diary/screens/sale_history_main.dart';
+import 'package:bean_diary/screens/sale_history/sale_history_main.dart';
 import 'package:bean_diary/screens/sale_management_main.dart';
 import 'package:bean_diary/screens/stock_status_main.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';

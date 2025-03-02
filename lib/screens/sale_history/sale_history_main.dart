@@ -1,6 +1,6 @@
 import 'package:bean_diary/controllers/sale_history_controller.dart';
 import 'package:bean_diary/controllers/year_picker_controller.dart';
-import 'package:bean_diary/screens/sale_history_information_main.dart';
+import 'package:bean_diary/screens/sale_history/sale_history_information_main.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';

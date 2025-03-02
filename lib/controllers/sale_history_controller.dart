@@ -1,4 +1,4 @@
-import 'package:bean_diary/screens/sale_history_filter_bottom_sheet.dart';
+import 'package:bean_diary/screens/sale_history/sale_history_filter_bottom_sheet.dart';
 import 'package:bean_diary/sqflite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:flutter/material.dart';
@@ -223,6 +223,11 @@ class SaleHistoryController extends GetxController {
     _showList(list);
     _sortCount(sortCnt);
   }
+
+  /// 25-03-02
+  ///
+  /// 판매 내역 필터 초기화하기
+  void resetSortFilter() => sort("desc", "", "", "");
 
   /// 25-02-24
   ///

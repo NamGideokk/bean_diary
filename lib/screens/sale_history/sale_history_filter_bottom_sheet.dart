@@ -35,9 +35,26 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: HeaderTitle(title: "판매 내역 필터"),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Wrap(
+                  children: [
+                    const HeaderTitle(title: "판매 내역 필터"),
+                    Visibility(
+                      visible: _saleHistoryCtrl.sortCount > 0,
+                      child: IconButton(
+                        style: IconButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                          iconSize: height / 50,
+                          minimumSize: const Size(0, 0),
+                        ),
+                        onPressed: () => _saleHistoryCtrl.resetSortFilter(),
+                        icon: const Icon(Icons.refresh_rounded),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SingleChildScrollView(
                 padding: _saleHistoryCtrl.sortCount > 0 ? const EdgeInsets.fromLTRB(15, 0, 15, 5) : const EdgeInsets.only(top: 5),

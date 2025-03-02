@@ -113,7 +113,7 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
             ),
             SaleHistoryInformationChart(),
             LabelContentRow(label: "판매기간", content: _saleHistoryCtrl.salesPeriod),
-            LabelContentRow(label: "판매건수", content: "${_saleHistoryCtrl.showList.length}건"),
+            LabelContentRow(label: "판매건수", content: "${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건"),
             LabelContentRow.list(
               label: "판매처수",
               content: _saleHistoryCtrl.showSellerList.join("\n"),

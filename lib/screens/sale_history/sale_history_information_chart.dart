@@ -38,6 +38,19 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
         () => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const SizedBox(height: 15),
+            Text(
+              "판매처별 판매량 비율",
+              textAlign: TextAlign.center,
+              textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Text(
+              "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSalesInShowList)}kg",
+              textAlign: TextAlign.center,
+              textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
               width: height / 5,
