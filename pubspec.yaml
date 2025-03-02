@@ -23,6 +23,8 @@ dependencies:
   upgrader: ^11.3.1
 
   path: any
+  dio: ^5.8.0+1
+  flutter_dotenv: ^5.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
