@@ -10,7 +10,6 @@ import 'package:bean_diary/utility/custom_upgrade_message.dart';
 import 'package:bean_diary/widgets/drawer_widget.dart';
 import 'package:bean_diary/widgets/home_menu_button.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -172,29 +171,6 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
-          // body: GridView.builder(
-          //   padding: const EdgeInsets.all(15),
-          //   physics: const BouncingScrollPhysics(),
-          //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //     crossAxisCount: width < 700 ? 2 : 3,
-          //     childAspectRatio: 1.1 / textScaleFactor,
-          //     crossAxisSpacing: 20,
-          //     mainAxisSpacing: 20,
-          //   ),
-          //   itemCount: _menus.length,
-          //   itemBuilder: (context, index) => HomeMenuButton(
-          //     menus: _menus,
-          //     index: index,
-          //     onPressed: () {
-          //       Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) => _menus[index]["screen"],
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
         ),
       ),
     );
