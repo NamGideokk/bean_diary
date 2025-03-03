@@ -41,6 +41,7 @@ class DrawerWidget extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   "Bean Diary",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: height / 60,
                     color: Colors.black54,
@@ -49,6 +50,7 @@ class DrawerWidget extends StatelessWidget {
                 ),
                 Text(
                   "원두 다이어리",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: height / 40,
                     color: Colors.black,
@@ -61,12 +63,17 @@ class DrawerWidget extends StatelessWidget {
               () => Column(
                 children: [
                   _MyText(text: "v${appInfoCtrl.version}"),
+                  Text(
+                    AppInfoController.to.latestVersion == appInfoCtrl.version ? "최신 버전입니다." : "${AppInfoController.to.latestVersion} 버전으로 업데이트 하세요.",
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
+                  ),
                   const SizedBox(height: 5),
                   const _MyText(text: "created by 남기덕"),
                   const _MyText(text: "namgd1222@gmail.com"),
                   const SizedBox(height: 50),
                   Text(
                     "all icons created by Freepik - Flaticon",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black26,
                       fontSize: height / 70,
@@ -91,6 +98,7 @@ class _MyText extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Text(
       text,
+      textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: height / 60,
       ),

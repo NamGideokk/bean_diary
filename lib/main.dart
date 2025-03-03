@@ -1,10 +1,15 @@
+import 'package:bean_diary/controllers/app_info_controller.dart';
 import 'package:bean_diary/screens/home.dart';
 import 'package:bean_diary/utility/custom_app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "assets/.env");
+  Get.put(AppInfoController());
   runApp(const MyApp());
 }
 

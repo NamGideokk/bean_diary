@@ -13,7 +13,7 @@ class CustomDialog {
   ) {
     final height = MediaQuery.of(context).size.height;
     return SnackBar(
-      backgroundColor: isError ? const Color(0xffD24545) : Colors.brown,
+      backgroundColor: isError ? const Color(0xffD24545) : Colors.brown[800],
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(15),

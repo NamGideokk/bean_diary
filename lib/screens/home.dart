@@ -1,3 +1,4 @@
+import 'package:bean_diary/controllers/app_info_controller.dart';
 import 'package:bean_diary/screens/data_management_main.dart';
 import 'package:bean_diary/screens/green_bean_warehousing_main.dart';
 import 'package:bean_diary/screens/roasting_management_main.dart';
@@ -9,6 +10,7 @@ import 'package:bean_diary/utility/custom_upgrade_message.dart';
 import 'package:bean_diary/widgets/drawer_widget.dart';
 import 'package:bean_diary/widgets/home_menu_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -71,6 +73,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -100,23 +103,74 @@ class _HomeState extends State<Home> {
             leadingWidth: 44,
           ),
           drawer: const DrawerWidget(),
-          body: ListView.separated(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.all(15),
-            itemCount: _menus.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 10),
-            itemBuilder: (context, index) => HomeMenuButton(
-              menus: _menus,
-              index: index,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => _menus[index]["screen"],
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Visibility(
+                visible: AppInfoController.to.hasNewVersion,
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      visualDensity: VisualDensity.standard,
+                      backgroundColor: Colors.brown[50],
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () => AppInfoController.to.goToPlayStore(context),
+                    child: MediaQuery(
+                      data: const MediaQueryData(textScaler: TextScaler.noScaling),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/playstore.png",
+                            width: height / 28,
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: Column(
+                              children: [
+                                Text(
+                                  "최신 버전 업데이트",
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  "Play 스토어로 이동하기",
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                );
-              },
-            ),
+                ),
+              ),
+              Expanded(
+                child: ListView.separated(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(15),
+                  itemCount: _menus.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) => HomeMenuButton(
+                    menus: _menus,
+                    index: index,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => _menus[index]["screen"],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
           // body: GridView.builder(
           //   padding: const EdgeInsets.all(15),
