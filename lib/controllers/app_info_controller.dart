@@ -44,7 +44,15 @@ class AppInfoController extends GetxController {
     if (result["bool"]) {
       if (result["data"]["version"] != null && result["data"]["version"] != "") {
         _latestVersion(result["data"]["version"]);
-        _hasNewVersion(version == latestVersion ? false : true);
+        List splitVersion = version.split(".");
+        List splitLatestVersion = latestVersion.split(".");
+        for (int i = 0; i < 3; i++) {
+          if (i != 0) {
+            splitVersion[i] = splitVersion[i].toString().padLeft(2, "0");
+            splitLatestVersion[i] = splitLatestVersion[i].toString().padLeft(2, "0");
+          }
+        }
+        _hasNewVersion(int.parse(splitVersion.join()) < int.parse(splitLatestVersion.join()) ? true : false);
       } else {
         _hasNewVersion(false);
       }

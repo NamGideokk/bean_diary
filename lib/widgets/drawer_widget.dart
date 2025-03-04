@@ -64,7 +64,7 @@ class DrawerWidget extends StatelessWidget {
                 children: [
                   _MyText(text: "v${appInfoCtrl.version}"),
                   Text(
-                    AppInfoController.to.latestVersion == appInfoCtrl.version ? "최신 버전입니다." : "${AppInfoController.to.latestVersion} 버전으로 업데이트 하세요.",
+                    AppInfoController.to.hasNewVersion ? "${AppInfoController.to.latestVersion} 버전으로 업데이트 하세요." : "최신 버전입니다.",
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
                   ),
                   const SizedBox(height: 5),
