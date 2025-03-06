@@ -321,11 +321,11 @@ class _DataManagementMainState extends State<DataManagementMain> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const HeaderTitle(title: "데이터 백업", subTitle: "data backup"),
+              const HeaderTitle(title: "데이터 백업", subTitle: "Data backup"),
               SizedBox(
                 width: double.infinity,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Column(
                     children: [
                       _BackupButton(
@@ -352,10 +352,10 @@ class _DataManagementMainState extends State<DataManagementMain> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
+                padding: EdgeInsets.symmetric(vertical: 50),
                 child: UsageAlertWidget(isWeightGuide: false),
               ),
-              const HeaderTitle(title: "데이터 복구", subTitle: "data recovery"),
+              const HeaderTitle(title: "데이터 복구", subTitle: "Data recovery"),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.ideographic,

@@ -38,7 +38,7 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const HeaderTitle(title: "생두명", subTitle: "green bean name"),
+                  const HeaderTitle(title: "생두명", subTitle: "Green coffee bean name"),
                   TextField(
                     controller: _registerGreenBeanCtrl.greenBeanNameTECtrl,
                     focusNode: _registerGreenBeanCtrl.greenBeanNameFN,
@@ -54,13 +54,13 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                     ),
                     onSubmitted: (value) => _registerGreenBeanCtrl.registerGreenBean(context),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 50),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: [
-                      const HeaderTitle(title: "생두 목록", subTitle: "green bean list"),
+                      const HeaderTitle(title: "생두 목록", subTitle: "Green coffee bean list"),
                       Visibility(
                         visible: _registerGreenBeanCtrl.greenBeanList.isNotEmpty,
                         child: Text(

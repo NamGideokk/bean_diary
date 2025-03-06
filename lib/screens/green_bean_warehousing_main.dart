@@ -53,10 +53,10 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const HeaderTitle(title: "입고 일자", subTitle: "warehousing day"),
+                      const HeaderTitle(title: "입고 일자", subTitle: "Receiving date"),
                       const CustomDatePicker(),
-                      const SizedBox(height: 20),
-                      const HeaderTitle(title: "입고처", subTitle: "company name"),
+                      const SizedBox(height: 50),
+                      const HeaderTitle(title: "공급처", subTitle: "Supplier"),
                       TextField(
                         textAlign: TextAlign.center,
                         controller: _warehousingGreenBeanCtrl.companyTECtrl,
@@ -66,8 +66,8 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                         ),
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      const SizedBox(height: 20),
-                      const HeaderTitle(title: "생두 정보", subTitle: "green bean information"),
+                      const SizedBox(height: 50),
+                      const HeaderTitle(title: "생두 정보", subTitle: "Green coffee bean info"),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -107,7 +107,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 50),
                       const UsageAlertWidget(),
                     ],
                   ),

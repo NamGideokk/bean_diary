@@ -49,10 +49,10 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const HeaderTitle(title: "판매 일자", subTitle: "sale day"),
+                  const HeaderTitle(title: "판매 일자", subTitle: "Sale date"),
                   const CustomDatePicker(),
-                  const SizedBox(height: 20),
-                  const HeaderTitle(title: "판매처", subTitle: "company name"),
+                  const SizedBox(height: 50),
+                  const HeaderTitle(title: "판매처", subTitle: "Retailer"),
                   TextField(
                     textAlign: TextAlign.center,
                     controller: _roastingBeanSalesCtrl.companyTECtrl,
@@ -62,8 +62,8 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                       hintText: "업체명",
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const HeaderTitle(title: "판매 원두 정보", subTitle: "roasting bean sale information"),
+                  const SizedBox(height: 50),
+                  const HeaderTitle(title: "판매 원두 정보", subTitle: "Roasted coffee bean sale info"),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -90,7 +90,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                       )
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 50),
                   const UsageAlertWidget(),
                   SizedBox(height: height / 9),
                 ],

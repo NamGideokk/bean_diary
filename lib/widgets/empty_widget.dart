@@ -12,9 +12,10 @@ class EmptyWidget extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.all(20),
         child: Text(
           content,
+          textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.grey,
             fontSize: height / 60,

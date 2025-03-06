@@ -37,9 +37,15 @@ class _StockStatusMainState extends State<StockStatusMain> {
             () => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const HeaderTitle(title: "생두 재고", subTitle: "green bean stock"),
+                const HeaderTitle(title: "생두 재고", subTitle: "Green coffee beans inventory"),
                 _stockCtrl.greenBeanStockList.isEmpty
-                    ? const EmptyWidget(content: "생두 재고가 없습니다.")
+                    ? Container(
+                        decoration: BoxDecoration(
+                          color: Colors.brown[50],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const EmptyWidget(content: "생두 재고가 없습니다."),
+                      )
                     : Column(
                         children: [
                           ListView.separated(
@@ -53,10 +59,16 @@ class _StockStatusMainState extends State<StockStatusMain> {
                           const _GuideText(text: "입고"),
                         ],
                       ),
-                const SizedBox(height: 30),
-                const HeaderTitle(title: "원두 재고", subTitle: "roasting bean stock"),
+                const SizedBox(height: 50),
+                const HeaderTitle(title: "원두 재고", subTitle: "Roasted coffee beans inventory"),
                 _stockCtrl.roastingBeanStockList.isEmpty
-                    ? const EmptyWidget(content: "원두 재고가 없습니다.")
+                    ? Container(
+                        decoration: BoxDecoration(
+                          color: Colors.brown[50],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const EmptyWidget(content: "원두 재고가 없습니다."),
+                      )
                     : Column(
                         children: [
                           ListView.separated(

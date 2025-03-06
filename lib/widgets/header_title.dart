@@ -26,7 +26,7 @@ class HeaderTitle extends StatelessWidget {
               TextSpan(
                 text: "\t\t$subTitle",
                 style: TextStyle(
-                  fontSize: height / 60,
+                  fontSize: height / 64,
                   color: Colors.black45,
                   fontWeight: FontWeight.normal,
                 ),

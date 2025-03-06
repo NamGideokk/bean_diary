@@ -154,7 +154,7 @@ class WarehousingGreenBeanController extends GetxController {
   /// 생두 입고 등록하기
   Future registerWarehousingGreenBean(BuildContext context) async {
     if (companyTECtrl.text.trim() == "") {
-      CustomDialog().showSnackBar(context, "입고처(업체명)를 입력해 주세요.");
+      CustomDialog().showSnackBar(context, "공급처(업체명)를 입력해 주세요.");
       companyFN.requestFocus();
       return;
     }
@@ -187,7 +187,7 @@ class WarehousingGreenBeanController extends GetxController {
     final bool? confirm = await CustomDialog().showAlertDialog(
       context,
       "입고 등록",
-      "입고일: ${customDatePickerCtrl.textEditingCtrl.text}\n입고처: ${companyTECtrl.text.trim()}\n생두: $selectedBean\n입고량: ${weightTECtrl.text}kg\n\n입력하신 정보로 입고를 등록합니다.",
+      "입고일: ${customDatePickerCtrl.textEditingCtrl.text}\n공급처: ${companyTECtrl.text.trim()}\n생두: $selectedBean\n입고량: ${weightTECtrl.text}kg\n\n입력하신 정보로 입고를 등록합니다.",
       acceptTitle: "등록하기",
     );
 

@@ -113,7 +113,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const HeaderTitle(title: "판매 내역", subTitle: "sale history"),
+                    const HeaderTitle(title: "판매 내역", subTitle: "Sales history"),
                     IntrinsicHeight(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -198,7 +198,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -262,11 +262,14 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                             ),
                           ),
                           const SizedBox(width: 15),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            child: Text(
-                              "총 ${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건",
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
+                          Visibility(
+                            visible: _saleHistoryCtrl.showList.isNotEmpty,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 3),
+                              child: Text(
+                                "총 ${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건",
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
+                              ),
                             ),
                           ),
                         ],

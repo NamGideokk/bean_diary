@@ -72,10 +72,10 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const HeaderTitle(title: "로스팅 일자", subTitle: "roasting day"),
+                    const HeaderTitle(title: "로스팅 일자", subTitle: "Roasting date"),
                     const CustomDatePicker(),
-                    const SizedBox(height: 20),
-                    const HeaderTitle(title: "로스팅 타입", subTitle: "roasting type"),
+                    const SizedBox(height: 50),
+                    const HeaderTitle(title: "로스팅 타입", subTitle: "Roast type"),
                     Row(
                       children: [
                         Expanded(
@@ -116,8 +116,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    const HeaderTitle(title: "투입 생두 정보", subTitle: "input green bean information"),
+                    const SizedBox(height: 50),
+                    const HeaderTitle(title: "투입 생두 정보", subTitle: "Green coffee bean input info"),
                     const BeanSelectDropdownButton(listType: 2),
                     const SizedBox(height: 5),
                     if (_warehousingGreenBeanCtrl.roastingType == 2)
@@ -278,15 +278,15 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               ),
                             ],
                           ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 50),
                     const UsageAlertWidget(),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 50),
                     if (_warehousingGreenBeanCtrl.roastingType == 2)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 20),
-                          const HeaderTitle(title: "블렌드명", subTitle: "blend name"),
+                          const HeaderTitle(title: "블렌드명", subTitle: "Blend name"),
                           SizedBox(
                             width: double.infinity,
                             child: TextField(
