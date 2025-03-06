@@ -1,4 +1,5 @@
 import 'package:bean_diary/controllers/register_green_bean_controller.dart';
+import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
@@ -65,7 +66,7 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                       Visibility(
                         visible: _registerGreenBeanCtrl.greenBeanList.isNotEmpty,
                         child: Text(
-                          "${_registerGreenBeanCtrl.greenBeanList.length}건",
+                          "${Utility().numberFormat(_registerGreenBeanCtrl.greenBeanList.length.toString(), isWeight: false)}건",
                           style: TextStyle(
                             fontSize: height / 60,
                             color: Colors.black54,
