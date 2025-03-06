@@ -60,7 +60,8 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.ideographic,
                     children: [
-                      const HeaderTitle(title: "생두 목록", subTitle: "Green coffee bean list"),
+                      const Expanded(child: HeaderTitle(title: "생두 목록", subTitle: "Green coffee bean list")),
+                      const SizedBox(width: 15),
                       Visibility(
                         visible: _registerGreenBeanCtrl.greenBeanList.isNotEmpty,
                         child: Text(
@@ -75,35 +76,48 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                   ),
                   Expanded(
                     child: _registerGreenBeanCtrl.greenBeanList.isEmpty
-                        ? const EmptyWidget(content: "등록된 생두가 없습니다.")
+                        ? Container(
+                            padding: EdgeInsets.only(bottom: height / 10),
+                            decoration: BoxDecoration(
+                              color: Colors.brown[50],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const EmptyWidget(content: "등록된 생두가 없습니다."),
+                          )
                         : SafeArea(
                             child: ListView.separated(
                               itemCount: _registerGreenBeanCtrl.greenBeanList.length,
-                              padding: EdgeInsets.fromLTRB(5, 0, 5, height / 9),
+                              padding: EdgeInsets.only(bottom: height / 10),
                               physics: const BouncingScrollPhysics(),
-                              separatorBuilder: (context, index) => const Divider(height: 10),
+                              separatorBuilder: (context, index) => const SizedBox(height: 5),
                               itemBuilder: (context, index) {
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        _registerGreenBeanCtrl.greenBeanList[index]["name"],
-                                        style: TextStyle(
-                                          fontSize: height / 52,
+                                return Container(
+                                  padding: const EdgeInsets.fromLTRB(12, 8, 6, 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.brown[50],
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(index == 0 ? 8 : 0),
+                                      bottom: Radius.circular(index == _registerGreenBeanCtrl.greenBeanList.length - 1 ? 8 : 0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          _registerGreenBeanCtrl.greenBeanList[index]["name"],
+                                          style: Theme.of(context).textTheme.bodyMedium,
                                         ),
                                       ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () => _registerGreenBeanCtrl.deleteGreenBean(context, index),
-                                      child: Text(
-                                        "삭제",
-                                        style: TextStyle(
-                                          fontSize: height / 60,
+                                      TextButton(
+                                        onPressed: () => _registerGreenBeanCtrl.deleteGreenBean(context, index),
+                                        child: Text(
+                                          "삭제",
+                                          style: TextStyle(fontSize: height / 70),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 );
                               },
                             ),

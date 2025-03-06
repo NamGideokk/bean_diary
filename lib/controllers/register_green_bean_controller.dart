@@ -54,15 +54,16 @@ class RegisterGreenBeanController extends GetxController {
         isError: result == 1 ? false : true,
       );
       if (result == 0) {
+        // 실패
         return;
       } else if (result == 1) {
+        // 성공
         greenBeanNameTECtrl.clear();
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        currentFocus.unfocus();
         await getGreenBeanList();
         await _warehousingGreenBeanCtrl.getBeanList();
         return;
       } else {
+        // 중복
         greenBeanNameFN.requestFocus();
         return;
       }
@@ -100,4 +101,11 @@ class RegisterGreenBeanController extends GetxController {
 
   /// 에러 메세지 보여주기 여부 값 할당하기
   void setShowErrorMessage(bool value) => _showErrorText(value);
+
+  @override
+  void onClose() {
+    super.onClose();
+    greenBeanNameTECtrl.dispose();
+    greenBeanNameFN.dispose();
+  }
 }
