@@ -144,15 +144,6 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                     ),
                   ),
                   Divider(thickness: _retailerFN.hasFocus ? 2 : 1, color: _retailerFN.hasFocus ? Colors.brown : Colors.brown[200]),
-                  // TextField(
-                  //   textAlign: TextAlign.center,
-                  //   controller: _roastingBeanSalesCtrl.companyTECtrl,
-                  //   focusNode: _roastingBeanSalesCtrl.companyFN,
-                  //   style: Theme.of(context).textTheme.bodyMedium,
-                  //   decoration: const InputDecoration(
-                  //     hintText: "업체명",
-                  //   ),
-                  // ),
                   const SizedBox(height: 50),
                   const HeaderTitle(title: "판매 원두 정보", subTitle: "Roasted coffee bean sale info"),
                   Row(
