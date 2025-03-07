@@ -53,7 +53,7 @@ class CustomAppTheme {
         ),
         hintStyle: TextStyle(
           color: Colors.grey,
-          fontSize: height / 52,
+          fontSize: height / 54,
         ),
         prefixStyle: TextStyle(
           fontSize: height / 60,
@@ -160,6 +160,29 @@ class CustomAppTheme {
       ),
       listTileTheme: const ListTileThemeData(
         visualDensity: VisualDensity.comfortable,
+        dense: true,
+      ),
+      searchBarTheme: SearchBarThemeData(
+        backgroundColor: const WidgetStatePropertyAll(Colors.white),
+        shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
+        elevation: const WidgetStatePropertyAll(0),
+        padding: const WidgetStatePropertyAll(EdgeInsets.fromLTRB(5, 3, 0, 3)),
+        constraints: const BoxConstraints(minHeight: 0),
+        hintStyle: WidgetStatePropertyAll(
+          TextStyle(
+            color: Colors.grey,
+            fontSize: height / 54,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(
+            fontSize: height / 54,
+            fontWeight: FontWeight.normal,
+            color: Colors.black,
+            letterSpacing: 0,
+          ),
+        ),
       ),
     );
   }

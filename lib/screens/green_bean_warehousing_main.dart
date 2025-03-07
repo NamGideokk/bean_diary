@@ -6,6 +6,7 @@ import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
+import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,14 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
   final WarehousingGreenBeanController _warehousingGreenBeanCtrl = Get.put(WarehousingGreenBeanController());
 
   final _scrollCtrl = ScrollController();
+  final _searchCtrl = SearchController();
+  final _supplierFN = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _warehousingGreenBeanCtrl.getSuppliers();
+  }
 
   @override
   void dispose() {
@@ -30,6 +39,8 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
     Get.delete<CustomDatePickerController>();
     Get.delete<WarehousingGreenBeanController>();
     _scrollCtrl.dispose();
+    _searchCtrl.dispose();
+    _supplierFN.dispose();
   }
 
   @override
@@ -57,15 +68,85 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                       const CustomDatePicker(),
                       const SizedBox(height: 50),
                       const HeaderTitle(title: "공급처", subTitle: "Supplier"),
-                      TextField(
-                        textAlign: TextAlign.center,
-                        controller: _warehousingGreenBeanCtrl.companyTECtrl,
-                        focusNode: _warehousingGreenBeanCtrl.companyFN,
-                        decoration: const InputDecoration(
-                          hintText: "업체명",
+                      SearchAnchor(
+                        searchController: _searchCtrl,
+                        viewBackgroundColor: Colors.brown[50],
+                        viewElevation: 2,
+                        isFullScreen: false,
+                        viewConstraints: BoxConstraints(
+                          minHeight: 0,
+                          maxHeight: height / 4,
                         ),
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        viewLeading: const SizedBox(),
+                        headerTextStyle: Theme.of(context).textTheme.bodyMedium,
+                        headerHintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey),
+                        viewShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        viewHintText: "업체명",
+                        suggestionsBuilder: (context, controller) async {
+                          List suggestions = _warehousingGreenBeanCtrl.getSupplierSuggestions(controller.text);
+                          return suggestions.isNotEmpty
+                              ? suggestions
+                                  .map((e) => ListTile(
+                                        contentPadding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                        onTap: () {
+                                          _searchCtrl.closeView(e);
+                                          _supplierFN.unfocus();
+                                        },
+                                        title: Text(
+                                          e.toString(),
+                                          style: Theme.of(context).textTheme.bodyMedium,
+                                        ),
+                                        trailing: IconButton(
+                                          style: IconButton.styleFrom(
+                                            visualDensity: VisualDensity.compact,
+                                            padding: const EdgeInsets.all(14),
+                                            minimumSize: const Size(0, 0),
+                                            shape: const CircleBorder(),
+                                          ),
+                                          onPressed: () => controller.text = e,
+                                          icon: Icon(
+                                            Icons.arrow_outward_rounded,
+                                            size: height / 50,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
+                              : const [EmptyWidget(content: "입력된 공급처가 없습니다.")];
+                        },
+                        viewTrailing: [
+                          IconButton(
+                            style: IconButton.styleFrom(
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.all(14),
+                              minimumSize: const Size(0, 0),
+                              shape: const CircleBorder(),
+                            ),
+                            onPressed: () => _searchCtrl.clear(),
+                            icon: Icon(
+                              Icons.clear,
+                              size: height / 50,
+                            ),
+                          ),
+                        ],
+                        viewOnSubmitted: (value) {
+                          _searchCtrl.closeView(_searchCtrl.text);
+                          _supplierFN.unfocus();
+                        },
+                        builder: (context, controller) => SearchBar(
+                          controller: controller,
+                          focusNode: _supplierFN,
+                          textInputAction: TextInputAction.next,
+                          hintText: "업체명",
+                          onTap: () => controller.openView(),
+                          onChanged: (value) {
+                            List suggestions = _warehousingGreenBeanCtrl.getSupplierSuggestions(value);
+                            if (suggestions.isNotEmpty) controller.openView();
+                          },
+                        ),
                       ),
+                      Divider(thickness: 1, color: Colors.brown[200]),
                       const SizedBox(height: 50),
                       const HeaderTitle(title: "생두 정보", subTitle: "Green coffee bean info"),
                       SizedBox(
@@ -102,7 +183,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                 suffixText: "kg",
                               ),
                               onTap: () => Utility().moveScrolling(_scrollCtrl),
-                              onSubmitted: (value) => _warehousingGreenBeanCtrl.registerWarehousingGreenBean(context),
+                              onSubmitted: (value) => _warehousingGreenBeanCtrl.registerWarehousingGreenBean(context, _searchCtrl.text.trim()),
                             ),
                           ),
                         ],
@@ -132,7 +213,10 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                         GestureDetector(
                           onTap: () async {
                             bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
-                            if (confirm) _warehousingGreenBeanCtrl.setInitGreenBeanWarehousingInfo();
+                            if (confirm) {
+                              _searchCtrl.clear();
+                              _warehousingGreenBeanCtrl.setInitGreenBeanWarehousingInfo();
+                            }
                           },
                           child: Container(
                             color: Colors.brown[100],
@@ -149,7 +233,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => _warehousingGreenBeanCtrl.registerWarehousingGreenBean(context),
+                            onTap: () => _warehousingGreenBeanCtrl.registerWarehousingGreenBean(context, _searchCtrl.text.trim()),
                             child: Container(
                               color: Colors.brown,
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
