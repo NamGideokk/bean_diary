@@ -31,7 +31,7 @@ class WarehousingGreenBeanController extends GetxController {
   final RxList<Map<String, dynamic>> _greenBeanStockList = <Map<String, dynamic>>[].obs;
   final RxList<Rxn<String>> _blendBeanList = <Rxn<String>>[].obs;
 
-  final RxList _suppliers = [].obs; // 공급처 목록 추천
+  final RxList _suppliers = [].obs; // 공급처 목록
 
   final RxBool _isLoading = true.obs;
 

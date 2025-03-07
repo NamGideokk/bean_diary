@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
@@ -7,19 +9,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class RoastingBeanSalesController extends GetxController {
-  final companyTECtrl = TextEditingController();
   final weightTECtrl = TextEditingController();
 
-  final companyFN = FocusNode();
   final weightFN = FocusNode();
 
   final RxList _beanList = <String?>[].obs;
   final RxList _beanMapDataList = [].obs;
   final _selectedBean = Rxn<String>();
 
+  final RxList _retailers = [].obs; // 판매처 목록
+
   get beanList => _beanList;
   get beanMapDataList => _beanMapDataList;
   get selectedBean => _selectedBean.value;
+
+  get retailers => _retailers;
 
   @override
   void onInit() {
@@ -53,10 +57,9 @@ class RoastingBeanSalesController extends GetxController {
     _selectedBean(replaceString);
   }
 
-  void onTapSalesButton(BuildContext context) async {
-    if (companyTECtrl.text.trim() == "") {
+  void onTapSalesButton(BuildContext context, String retailer) async {
+    if (retailer == "") {
       CustomDialog().showSnackBar(context, "판매처(업체명)를 입력해 주세요.");
-      companyFN.requestFocus();
       return;
     }
     if (selectedBean == null) {
@@ -88,12 +91,11 @@ class RoastingBeanSalesController extends GetxController {
 
     final customDatePickerCtrl = Get.find<CustomDatePickerController>();
     String name = selectedBean.toString().split(" / ")[0];
-    String company = companyTECtrl.text.trim();
 
     final bool? confirm = await CustomDialog().showAlertDialog(
       context,
       "판매 등록",
-      "판매일: ${customDatePickerCtrl.textEditingCtrl.text}\n판매처: $company\n원두: $name\n판매량: ${weightTECtrl.text}kg\n\n입력하신 정보로 판매를 등록합니다.",
+      "판매일: ${customDatePickerCtrl.textEditingCtrl.text}\n판매처: $retailer\n원두: $name\n판매량: ${weightTECtrl.text}kg\n\n입력하신 정보로 판매를 등록합니다.",
       acceptTitle: "등록하기",
     );
 
@@ -112,15 +114,16 @@ class RoastingBeanSalesController extends GetxController {
         "name": name,
         "type": type,
         "sales_weight": salesWeight,
-        "company": company,
+        "company": retailer,
         "date": date,
       };
       bool result = await RoastingBeanSalesSqfLite().insertRoastingBeanSales(value);
 
       if (result) {
-        String successMsg = "${customDatePickerCtrl.textEditingCtrl.text}\n$company\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
+        String successMsg = "${customDatePickerCtrl.textEditingCtrl.text}\n$retailer\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
         if (!context.mounted) return;
         CustomDialog().showSnackBar(context, successMsg);
+        await getRetailers();
         bool updateWeightResult = await RoastingBeanStockSqfLite().updateWeightRoastingBeanStock(value);
         if (!updateWeightResult) {
           if (!context.mounted) return;
@@ -143,7 +146,32 @@ class RoastingBeanSalesController extends GetxController {
   void allValueInit() async {
     final customDatePickerCtrl = Get.find<CustomDatePickerController>();
     customDatePickerCtrl.setDateToToday();
-    companyTECtrl.clear();
     weightTECtrl.clear();
+  }
+
+  /// 25-03-07
+  ///
+  /// 판매 관리 > 판매처(업체명) 전체 가져오기
+  Future<void> getRetailers() async {
+    List salesHistory = await RoastingBeanSalesSqfLite().getRoastingBeanSales();
+    _retailers.clear();
+    if (salesHistory.isNotEmpty) {
+      Set duplicateRetailer = {};
+      for (final supplier in salesHistory) {
+        duplicateRetailer.add(supplier["company"]);
+      }
+      _retailers(duplicateRetailer.toList());
+    }
+  }
+
+  /// 25-03-07
+  ///
+  /// 판매 관리 > 판매처(업체명) 입력에 따른 추천 목록 가져오기
+  List getRetailerSuggestions(String value) {
+    List list = [];
+    for (final retailer in retailers) {
+      if (retailer.contains(value)) list.add(retailer);
+    }
+    return list;
   }
 }

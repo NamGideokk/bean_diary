@@ -6,6 +6,7 @@ import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
+import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,14 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
   final CustomDatePickerController _customDatePickerCtrl = Get.put(CustomDatePickerController());
   final RoastingBeanSalesController _roastingBeanSalesCtrl = Get.put(RoastingBeanSalesController());
   final _scrollCtrl = ScrollController();
+  final _searchCtrl = SearchController();
+  final _retailerFN = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _roastingBeanSalesCtrl.getRetailers();
+  }
 
   @override
   void dispose() {
@@ -30,6 +39,9 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
     Get.delete<WarehousingGreenBeanController>();
     Get.delete<CustomDatePickerController>();
     Get.delete<RoastingBeanSalesController>();
+    _scrollCtrl.dispose();
+    _searchCtrl.dispose();
+    _retailerFN.dispose();
   }
 
   @override
@@ -53,15 +65,94 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                   const CustomDatePicker(),
                   const SizedBox(height: 50),
                   const HeaderTitle(title: "판매처", subTitle: "Retailer"),
-                  TextField(
-                    textAlign: TextAlign.center,
-                    controller: _roastingBeanSalesCtrl.companyTECtrl,
-                    focusNode: _roastingBeanSalesCtrl.companyFN,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    decoration: const InputDecoration(
+                  SearchAnchor(
+                    searchController: _searchCtrl,
+                    viewBackgroundColor: Colors.brown[50],
+                    viewElevation: 2,
+                    isFullScreen: false,
+                    viewConstraints: BoxConstraints(
+                      minHeight: 0,
+                      maxHeight: height / 4,
+                    ),
+                    viewLeading: const SizedBox(),
+                    headerTextStyle: Theme.of(context).textTheme.bodyMedium,
+                    headerHintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey),
+                    viewShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    viewHintText: "업체명",
+                    suggestionsBuilder: (context, controller) async {
+                      List suggestions = _roastingBeanSalesCtrl.getRetailerSuggestions(controller.text);
+                      return suggestions.isNotEmpty
+                          ? suggestions
+                              .map((e) => ListTile(
+                                    contentPadding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                                    onTap: () {
+                                      _searchCtrl.closeView(e);
+                                      _retailerFN.unfocus();
+                                    },
+                                    title: Text(
+                                      e.toString(),
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                    trailing: IconButton(
+                                      style: IconButton.styleFrom(
+                                        visualDensity: VisualDensity.compact,
+                                        padding: const EdgeInsets.all(14),
+                                        minimumSize: const Size(0, 0),
+                                        shape: const CircleBorder(),
+                                      ),
+                                      onPressed: () => controller.text = e,
+                                      icon: Icon(
+                                        Icons.arrow_outward_rounded,
+                                        size: height / 50,
+                                      ),
+                                    ),
+                                  ))
+                              .toList()
+                          : const [EmptyWidget(content: "입력된 판매처가 없습니다.")];
+                    },
+                    viewTrailing: [
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          visualDensity: VisualDensity.compact,
+                          padding: const EdgeInsets.all(14),
+                          minimumSize: const Size(0, 0),
+                          shape: const CircleBorder(),
+                        ),
+                        onPressed: () => _searchCtrl.clear(),
+                        icon: Icon(
+                          Icons.clear,
+                          size: height / 50,
+                        ),
+                      ),
+                    ],
+                    viewOnSubmitted: (value) {
+                      _searchCtrl.closeView(_searchCtrl.text);
+                      _retailerFN.unfocus();
+                    },
+                    builder: (context, controller) => SearchBar(
+                      controller: controller,
+                      focusNode: _retailerFN,
+                      textInputAction: TextInputAction.next,
                       hintText: "업체명",
+                      onTap: () => controller.openView(),
+                      onChanged: (value) {
+                        List suggestions = _roastingBeanSalesCtrl.getRetailerSuggestions(value);
+                        if (suggestions.isNotEmpty) controller.openView();
+                      },
                     ),
                   ),
+                  Divider(thickness: _retailerFN.hasFocus ? 2 : 1, color: _retailerFN.hasFocus ? Colors.brown : Colors.brown[200]),
+                  // TextField(
+                  //   textAlign: TextAlign.center,
+                  //   controller: _roastingBeanSalesCtrl.companyTECtrl,
+                  //   focusNode: _roastingBeanSalesCtrl.companyFN,
+                  //   style: Theme.of(context).textTheme.bodyMedium,
+                  //   decoration: const InputDecoration(
+                  //     hintText: "업체명",
+                  //   ),
+                  // ),
                   const SizedBox(height: 50),
                   const HeaderTitle(title: "판매 원두 정보", subTitle: "Roasted coffee bean sale info"),
                   Row(
@@ -85,7 +176,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                             suffixText: "kg",
                           ),
                           onTap: () => Utility().moveScrolling(_scrollCtrl),
-                          onSubmitted: (value) => _roastingBeanSalesCtrl.onTapSalesButton(context),
+                          onSubmitted: (value) => _roastingBeanSalesCtrl.onTapSalesButton(context, _searchCtrl.text.trim()),
                         ),
                       )
                     ],
@@ -113,7 +204,10 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                         GestureDetector(
                           onTap: () async {
                             bool? confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
-                            if (confirm == true) _roastingBeanSalesCtrl.allValueInit();
+                            if (confirm == true) {
+                              _searchCtrl.clear();
+                              _roastingBeanSalesCtrl.allValueInit();
+                            }
                           },
                           child: Container(
                             color: Colors.brown[100],
@@ -130,7 +224,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => _roastingBeanSalesCtrl.onTapSalesButton(context),
+                            onTap: () => _roastingBeanSalesCtrl.onTapSalesButton(context, _searchCtrl.text.trim()),
                             child: Container(
                               color: Colors.brown,
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
