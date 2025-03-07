@@ -146,7 +146,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                           },
                         ),
                       ),
-                      Divider(thickness: 1, color: Colors.brown[200]),
+                      Divider(thickness: _supplierFN.hasFocus ? 2 : 1, color: _supplierFN.hasFocus ? Colors.brown : Colors.brown[200]),
                       const SizedBox(height: 50),
                       const HeaderTitle(title: "생두 정보", subTitle: "Green coffee bean info"),
                       SizedBox(
