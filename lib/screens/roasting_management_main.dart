@@ -438,7 +438,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   bool? finalConfirm = await CustomDialog().showAlertDialog(
                                     context,
                                     "로스팅 등록",
-                                    "블렌드\n\n로스팅일: ${_customDatePickerCtrl.textEditingCtrl.text}\n$beans\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n블렌드명: ${_warehousingGreenBeanCtrl.blendNameTECtrl.text}\n\n입력하신 정보로 로스팅을 등록합니다.",
+                                    "블렌드\n\n로스팅일: ${Utility().pasteTextToDate(_customDatePickerCtrl.date)}\n$beans\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n블렌드명: ${_warehousingGreenBeanCtrl.blendNameTECtrl.text}\n\n입력하신 정보로 로스팅을 등록합니다.",
                                     acceptTitle: "등록하기",
                                   );
                                   if (finalConfirm != true) return;
@@ -449,7 +449,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   CustomDialog().showSnackBar(
                                     context,
                                     insertResult
-                                        ? "${_customDatePickerCtrl.textEditingCtrl.text}\n블렌드 - ${_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
+                                        ? "${Utility().pasteTextToDate(_customDatePickerCtrl.date)}\n블렌드 - ${_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
                                         : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                     isError: insertResult ? false : true,
                                   );
@@ -551,7 +551,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 bool? finalConfirm = await CustomDialog().showAlertDialog(
                                   context,
                                   "로스팅 등록",
-                                  "싱글오리진\n\n로스팅일: ${_customDatePickerCtrl.textEditingCtrl.text}\n생두: ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
+                                  "싱글오리진\n\n로스팅일: ${Utility().pasteTextToDate(_customDatePickerCtrl.date)}\n생두: ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
                                   acceptTitle: "등록하기",
                                 );
                                 if (finalConfirm != true) return;
@@ -562,7 +562,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 CustomDialog().showSnackBar(
                                   context,
                                   insertResult
-                                      ? "${_customDatePickerCtrl.textEditingCtrl.text}\n싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
+                                      ? "${Utility().pasteTextToDate(_customDatePickerCtrl.date)}\n싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
                                       : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                   isError: insertResult ? false : true,
                                 );

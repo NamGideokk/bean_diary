@@ -186,14 +186,14 @@ class WarehousingGreenBeanController extends GetxController {
     final bool? confirm = await CustomDialog().showAlertDialog(
       context,
       "입고 등록",
-      "입고일: ${customDatePickerCtrl.textEditingCtrl.text}\n공급처: $supplier\n생두: $selectedBean\n입고량: ${weightTECtrl.text}kg\n\n입력하신 정보로 입고를 등록합니다.",
+      "입고일: ${Utility().pasteTextToDate(customDatePickerCtrl.date)}\n공급처: $supplier\n생두: $selectedBean\n입고량: ${weightTECtrl.text}kg\n\n입력하신 정보로 입고를 등록합니다.",
       acceptTitle: "등록하기",
     );
 
     if (confirm != true) {
       return;
     } else {
-      String date = customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
+      String date = customDatePickerCtrl.date;
       String weight = weightTECtrl.text.replaceAll(".", "");
       String history = jsonEncode([
         {
@@ -214,7 +214,7 @@ class WarehousingGreenBeanController extends GetxController {
       if (!context.mounted) return;
       CustomDialog().showSnackBar(
         context,
-        insertResult ? "${customDatePickerCtrl.textEditingCtrl.text}\n$supplier\n$selectedBean\n${weightTECtrl.text}kg\n\n입고 등록이 완료되었습니다." : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
+        insertResult ? "${Utility().pasteTextToDate(customDatePickerCtrl.date)}\n$supplier\n$selectedBean\n${weightTECtrl.text}kg\n\n입고 등록이 완료되었습니다." : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
         isError: insertResult ? false : true,
       );
 

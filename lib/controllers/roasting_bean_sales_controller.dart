@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
@@ -95,7 +93,7 @@ class RoastingBeanSalesController extends GetxController {
     final bool? confirm = await CustomDialog().showAlertDialog(
       context,
       "판매 등록",
-      "판매일: ${customDatePickerCtrl.textEditingCtrl.text}\n판매처: $retailer\n원두: $name\n판매량: ${weightTECtrl.text}kg\n\n입력하신 정보로 판매를 등록합니다.",
+      "판매일: ${Utility().pasteTextToDate(customDatePickerCtrl.date)}\n판매처: $retailer\n원두: $name\n판매량: ${weightTECtrl.text}kg\n\n입력하신 정보로 판매를 등록합니다.",
       acceptTitle: "등록하기",
     );
 
@@ -120,7 +118,8 @@ class RoastingBeanSalesController extends GetxController {
       bool result = await RoastingBeanSalesSqfLite().insertRoastingBeanSales(value);
 
       if (result) {
-        String successMsg = "${customDatePickerCtrl.textEditingCtrl.text}\n$retailer\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
+        String successMsg =
+            "${Utility().pasteTextToDate(customDatePickerCtrl.date)}\n$retailer\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
         if (!context.mounted) return;
         CustomDialog().showSnackBar(context, successMsg);
         await getRetailers();
