@@ -17,50 +17,58 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
 
     return Column(
       children: [
-        IconButton(
-          style: IconButton.styleFrom(
-            backgroundColor: Colors.grey[100],
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-            elevation: 0.5,
-            shadowColor: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            margin: const EdgeInsets.only(top: 10),
+            height: height / 10,
+            width: width >= 700 ? width / 2 : null,
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                CupertinoDatePicker(
+                  key: _key,
+                  mode: CupertinoDatePickerMode.date,
+                  dateOrder: DatePickerDateOrder.ymd,
+                  maximumYear: customDatePickerCtrl.thisYear,
+                  initialDateTime: DateTime(
+                    customDatePickerCtrl.year,
+                    customDatePickerCtrl.month,
+                    customDatePickerCtrl.day,
+                  ),
+                  onDateTimeChanged: (value) {
+                    customDatePickerCtrl.setYear(value.year);
+                    customDatePickerCtrl.setMonth(value.month);
+                    customDatePickerCtrl.setDay(value.day);
+                    customDatePickerCtrl.setDate();
+                  },
+                ),
+                IconButton(
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.brown,
+                    foregroundColor: Colors.white,
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    shadowColor: Colors.black,
+                    elevation: 2,
+                  ),
+                  onPressed: () {
+                    customDatePickerCtrl.setDateToToday();
+                    setState(() {
+                      _key = UniqueKey();
+                    });
+                  },
+                  icon: Icon(
+                    Icons.restart_alt_rounded,
+                    size: height / 40,
+                  ),
+                ),
+              ],
             ),
-          ),
-          onPressed: () {
-            customDatePickerCtrl.setDateToToday();
-            setState(() {
-              _key = UniqueKey();
-            });
-          },
-          icon: Icon(
-            Icons.restart_alt_rounded,
-            size: height / 40,
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 10),
-          height: height / 10,
-          child: CupertinoDatePicker(
-            key: _key,
-            mode: CupertinoDatePickerMode.date,
-            dateOrder: DatePickerDateOrder.ymd,
-            maximumYear: customDatePickerCtrl.thisYear,
-            initialDateTime: DateTime(
-              customDatePickerCtrl.year,
-              customDatePickerCtrl.month,
-              customDatePickerCtrl.day,
-            ),
-            onDateTimeChanged: (value) {
-              customDatePickerCtrl.setYear(value.year);
-              customDatePickerCtrl.setMonth(value.month);
-              customDatePickerCtrl.setDay(value.day);
-              customDatePickerCtrl.setDate();
-            },
           ),
         ),
       ],

@@ -1,3 +1,4 @@
+import 'package:bean_diary/utility/colors_list.dart';
 import 'package:flutter/material.dart';
 
 class RoastingTypeWidget extends StatelessWidget {
@@ -11,7 +12,8 @@ class RoastingTypeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
       margin: const EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
-        color: Colors.brown[400]!.withOpacity(0.9),
+        // color: Colors.brown[400]!.withOpacity(0.9),
+        color: type == "1" ? ColorsList().chip8Color : ColorsList().chip3Color,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
@@ -19,7 +21,7 @@ class RoastingTypeWidget extends StatelessWidget {
         style: TextStyle(
           color: Colors.white,
           fontSize: height / 67,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.normal,
         ),
       ),
     );

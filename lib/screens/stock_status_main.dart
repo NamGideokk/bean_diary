@@ -56,7 +56,10 @@ class _StockStatusMainState extends State<StockStatusMain> {
                             itemBuilder: (context, index) => _GreenBeanTile(stockList: _stockCtrl.greenBeanStockList, index: index),
                           ),
                           const SizedBox(height: 5),
-                          const _GuideText(text: "입고"),
+                          Text(
+                            "항목을 누르면 상세 내역을 확인할 수 있습니다.",
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
+                          ),
                         ],
                       ),
                 const SizedBox(height: 50),
@@ -79,30 +82,16 @@ class _StockStatusMainState extends State<StockStatusMain> {
                             itemBuilder: (context, index) => _RoastingBeanTile(stockList: _stockCtrl.roastingBeanStockList, index: index),
                           ),
                           const SizedBox(height: 5),
-                          const _GuideText(text: "로스팅"),
+                          Text(
+                            "항목을 누르면 상세 내역을 확인할 수 있습니다.",
+                            style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
+                          ),
                         ],
                       ),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _GuideText extends StatelessWidget {
-  final String text;
-  const _GuideText({Key? key, required this.text}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    return Text(
-      "항목을 누르면 $text 내역을 확인할 수 있습니다.",
-      style: TextStyle(
-        fontSize: height / 70,
-        color: Colors.black54,
       ),
     );
   }
