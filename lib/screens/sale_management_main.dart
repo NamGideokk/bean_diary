@@ -8,6 +8,7 @@ import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -63,7 +64,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                 children: [
                   const HeaderTitle(title: "판매 일자", subTitle: "Sale date"),
                   const CustomDatePicker(),
-                  const SizedBox(height: 50),
+                  const UiSpacing(),
                   const HeaderTitle(title: "판매처", subTitle: "Retailer"),
                   SearchAnchor(
                     searchController: _searchCtrl,
@@ -144,7 +145,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                     ),
                   ),
                   Divider(thickness: _retailerFN.hasFocus ? 2 : 1, color: _retailerFN.hasFocus ? Colors.brown : Colors.brown[200]),
-                  const SizedBox(height: 50),
+                  const UiSpacing(),
                   const HeaderTitle(title: "판매 원두 정보", subTitle: "Roasted coffee bean sale info"),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -172,7 +173,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                       )
                     ],
                   ),
-                  const SizedBox(height: 50),
+                  const UiSpacing(),
                   const UsageAlertWidget(),
                   SizedBox(height: height / 9),
                 ],

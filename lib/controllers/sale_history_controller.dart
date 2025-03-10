@@ -25,6 +25,8 @@ class SaleHistoryController extends GetxController {
   final RxString _sortBySeller = "".obs;
   final RxInt _sortCount = 0.obs;
 
+  final RxDouble _markerWidth = 0.0.obs;
+
   // 판매 내역 통계 변수
   final RxString _salesPeriod = "".obs; // 판매기간
   final RxList _showSellerList = [].obs; // showList 판매처수
@@ -54,6 +56,8 @@ class SaleHistoryController extends GetxController {
   get sortByRoastingType => _sortByRoastingType.value;
   get sortBySeller => _sortBySeller.value;
   get sortCount => _sortCount.value;
+
+  get markerWidth => _markerWidth.value;
 
   get salesPeriod => _salesPeriod.value;
   get showSellerList => _showSellerList;
@@ -390,4 +394,9 @@ class SaleHistoryController extends GetxController {
     _showChartInfo(0);
     _showChartInfoOpacity(0.0);
   }
+
+  /// 25-03-10
+  ///
+  /// 총 판매량 Text 너비 구하기
+  void getMarkerWidth(double? value) => _markerWidth(value ?? 0.0);
 }

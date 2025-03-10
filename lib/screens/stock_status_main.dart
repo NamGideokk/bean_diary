@@ -5,6 +5,7 @@ import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/roasting_type_widget.dart';
+import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -62,7 +63,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
                           ),
                         ],
                       ),
-                const SizedBox(height: 50),
+                const UiSpacing(),
                 const HeaderTitle(title: "원두 재고", subTitle: "Roasted coffee beans inventory"),
                 _stockCtrl.roastingBeanStockList.isEmpty
                     ? Container(

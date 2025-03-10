@@ -10,6 +10,7 @@ import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -74,7 +75,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                   children: [
                     const HeaderTitle(title: "로스팅 일자", subTitle: "Roasting date"),
                     const CustomDatePicker(),
-                    const SizedBox(height: 50),
+                    const UiSpacing(),
                     const HeaderTitle(title: "로스팅 타입", subTitle: "Roast type"),
                     Row(
                       children: [
@@ -116,7 +117,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 50),
+                    const UiSpacing(),
                     const HeaderTitle(title: "투입 생두 정보", subTitle: "Green coffee bean input info"),
                     const BeanSelectDropdownButton(listType: 2),
                     const SizedBox(height: 5),
@@ -278,9 +279,9 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               ),
                             ],
                           ),
-                    const SizedBox(height: 50),
+                    const UiSpacing(),
                     const UsageAlertWidget(),
-                    const SizedBox(height: 50),
+                    const UiSpacing(),
                     if (_warehousingGreenBeanCtrl.roastingType == 2)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

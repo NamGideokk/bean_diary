@@ -39,7 +39,13 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Wrap(
                   children: [
-                    const HeaderTitle(title: "판매 내역 필터"),
+                    Text(
+                      "판매 내역 필터",
+                      style: TextStyle(
+                        fontSize: height / 50,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     Visibility(
                       visible: _saleHistoryCtrl.sortCount > 0,
                       child: IconButton(
@@ -56,6 +62,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
               SingleChildScrollView(
                 padding: _saleHistoryCtrl.sortCount > 0 ? const EdgeInsets.fromLTRB(15, 0, 15, 5) : const EdgeInsets.only(top: 5),
                 scrollDirection: Axis.horizontal,

@@ -44,7 +44,15 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Expanded(child: HeaderTitle(title: "판매 내역 통계")),
+                  Expanded(
+                    child: Text(
+                      "판매 내역 통계",
+                      style: TextStyle(
+                        fontSize: height / 50,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                   IconButton(
                     style: IconButton.styleFrom(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,

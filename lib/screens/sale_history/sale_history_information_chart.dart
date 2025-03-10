@@ -45,11 +45,30 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
               textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
               style: Theme.of(context).textTheme.bodyLarge,
             ),
-            Text(
-              "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSalesInShowList)}kg",
-              textAlign: TextAlign.center,
-              textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
-              style: Theme.of(context).textTheme.bodyMedium,
+            Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                ColoredBox(
+                  color: Colors.orange.withOpacity(0.9),
+                  child: SizedBox(
+                    height: 6,
+                    width: _saleHistoryCtrl.markerWidth * 1.15,
+                  ),
+                ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      _saleHistoryCtrl.getMarkerWidth(context.size?.width);
+                    });
+                    return Text(
+                      "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSalesInShowList)}kg",
+                      textAlign: TextAlign.center,
+                      textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                    );
+                  },
+                ),
+              ],
             ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),

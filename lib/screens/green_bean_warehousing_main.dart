@@ -1,6 +1,7 @@
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/screens/register_green_bean.dart';
+import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
@@ -8,6 +9,7 @@ import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -66,7 +68,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                     children: [
                       const HeaderTitle(title: "입고 일자", subTitle: "Receiving date"),
                       const CustomDatePicker(),
-                      const SizedBox(height: 50),
+                      const UiSpacing(),
                       const HeaderTitle(title: "공급처", subTitle: "Supplier"),
                       SearchAnchor(
                         searchController: _searchCtrl,
@@ -147,10 +149,9 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                         ),
                       ),
                       Divider(thickness: _supplierFN.hasFocus ? 2 : 1, color: _supplierFN.hasFocus ? Colors.brown : Colors.brown[200]),
-                      const SizedBox(height: 50),
+                      const UiSpacing(),
                       const HeaderTitle(title: "생두 정보", subTitle: "Green coffee bean info"),
-                      SizedBox(
-                        width: double.infinity,
+                      Center(
                         child: ElevatedButton(
                           onPressed: () => Navigator.push(
                             context,
@@ -161,17 +162,19 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                           child: const Text("생두 등록 / 관리"),
                         ),
                       ),
+                      const SizedBox(height: 20),
+                      const BeanSelectDropdownButton(listType: 0),
                       const SizedBox(height: 10),
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          const Expanded(
-                            flex: 4,
-                            child: BeanSelectDropdownButton(listType: 0),
+                          Text(
+                            "입고",
+                            style: TextStyle(
+                              fontSize: height / 54,
+                              color: Colors.brown,
+                            ),
                           ),
-                          const SizedBox(width: 10),
-                          Flexible(
-                            flex: 2,
+                          Expanded(
                             child: TextField(
                               controller: _warehousingGreenBeanCtrl.weightTECtrl,
                               focusNode: _warehousingGreenBeanCtrl.weightFN,
@@ -188,7 +191,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 50),
+                      const UiSpacing(),
                       const UsageAlertWidget(),
                     ],
                   ),

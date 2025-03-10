@@ -1,4 +1,5 @@
 import 'package:bean_diary/controllers/app_info_controller.dart';
+import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -70,7 +71,7 @@ class DrawerWidget extends StatelessWidget {
                   const SizedBox(height: 5),
                   const _MyText(text: "created by 남기덕"),
                   const _MyText(text: "namgd1222@gmail.com"),
-                  const SizedBox(height: 50),
+                  const UiSpacing(),
                   Text(
                     "all icons created by Freepik - Flaticon",
                     textAlign: TextAlign.center,
