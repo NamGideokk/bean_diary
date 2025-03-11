@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 
 class CustomDatePickerController extends GetxController {
+  static CustomDatePickerController get to => Get.find();
+
   final _now = DateTime.now();
   late final RxInt _thisYear = 0.obs;
   final RxInt _year = 0.obs;

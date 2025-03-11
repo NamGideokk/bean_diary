@@ -1,4 +1,5 @@
 import 'package:bean_diary/controllers/app_info_controller.dart';
+import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/screens/data_management_main.dart';
 import 'package:bean_diary/screens/green_bean_warehousing_main.dart';
 import 'package:bean_diary/screens/roasting_management_main.dart';
@@ -65,6 +66,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    Get.put(CustomDatePickerController());
     getPackageInfo();
   }
 

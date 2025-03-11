@@ -1,7 +1,6 @@
 import 'package:bean_diary/controllers/sale_history_controller.dart';
 import 'package:bean_diary/screens/sale_history/sale_history_information_chart.dart';
 import 'package:bean_diary/utility/utility.dart';
-import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/label_content_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

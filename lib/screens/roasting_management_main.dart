@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
@@ -10,6 +9,7 @@ import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/suggestions_view.dart';
 import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
@@ -23,25 +23,29 @@ class RoastingManagementMain extends StatefulWidget {
 }
 
 class _RoastingManagementMainState extends State<RoastingManagementMain> {
-  final CustomDatePickerController _customDatePickerCtrl = Get.put(CustomDatePickerController());
   final WarehousingGreenBeanController _warehousingGreenBeanCtrl = Get.put(WarehousingGreenBeanController());
 
   final _weightFN = FocusNode();
   final _roastingWeightFN = FocusNode();
 
   final _scrollCtrl = ScrollController();
+  final _blendNameTECtrl = TextEditingController();
+  final _blendNameFN = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _warehousingGreenBeanCtrl.getBlendNames();
+      CustomDatePickerController.to.setDateToToday();
+    });
   }
 
   void allValueInit() {
     FocusScope.of(context).requestFocus(FocusNode());
-    _customDatePickerCtrl.setDateToToday();
+    CustomDatePickerController.to.setDateToToday();
     _warehousingGreenBeanCtrl.weightTECtrl.clear();
     _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
-    _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
 
     // 블렌드 초기화
     _warehousingGreenBeanCtrl.initBlendInfo();
@@ -50,8 +54,11 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
   @override
   void dispose() {
     super.dispose();
-    Get.delete<CustomDatePickerController>();
+    CustomDatePickerController.to.setDateToToday();
     Get.delete<WarehousingGreenBeanController>();
+    _scrollCtrl.dispose();
+    _blendNameTECtrl.dispose();
+    _blendNameFN.dispose();
   }
 
   @override
@@ -118,6 +125,28 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                       ],
                     ),
                     const UiSpacing(),
+                    if (_warehousingGreenBeanCtrl.roastingType == 2)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const HeaderTitle(title: "블렌드명", subTitle: "Blend name"),
+                          TextField(
+                            controller: _blendNameTECtrl,
+                            focusNode: _blendNameFN,
+                            textAlign: TextAlign.center,
+                            decoration: const InputDecoration(hintText: "블렌드명"),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            onTap: () => _warehousingGreenBeanCtrl.setAllBlendNames(_blendNameTECtrl),
+                            onChanged: (value) => _warehousingGreenBeanCtrl.getBlendNameSuggestions(_blendNameTECtrl.text),
+                          ),
+                          SuggestionsView(
+                            suggestions: _warehousingGreenBeanCtrl.blendNameSuggestions,
+                            textEditingCtrl: _blendNameTECtrl,
+                            focusNode: _blendNameFN,
+                          ),
+                          const UiSpacing(),
+                        ],
+                      ),
                     const HeaderTitle(title: "투입 생두 정보", subTitle: "Green coffee bean input info"),
                     const BeanSelectDropdownButton(listType: 2),
                     const SizedBox(height: 5),
@@ -204,7 +233,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                           ),
                         ),
                       ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: _warehousingGreenBeanCtrl.roastingType == 1 ? 10 : 30),
                     _warehousingGreenBeanCtrl.roastingType == 1
                         ? Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -282,27 +311,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                     const UiSpacing(),
                     const UsageAlertWidget(),
                     const UiSpacing(),
-                    if (_warehousingGreenBeanCtrl.roastingType == 2)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 20),
-                          const HeaderTitle(title: "블렌드명", subTitle: "Blend name"),
-                          SizedBox(
-                            width: double.infinity,
-                            child: TextField(
-                              controller: _warehousingGreenBeanCtrl.blendNameTECtrl,
-                              focusNode: _warehousingGreenBeanCtrl.blendNameFN,
-                              textAlign: TextAlign.center,
-                              decoration: const InputDecoration(
-                                hintText: "블렌드명",
-                              ),
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              onTap: () => Utility().moveScrolling(_scrollCtrl),
-                            ),
-                          ),
-                        ],
-                      ),
                     SizedBox(height: height / 9),
                   ],
                 ),
@@ -344,6 +352,11 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               onTap: () async {
                                 // 블렌드
                                 if (_warehousingGreenBeanCtrl.roastingType == 2) {
+                                  if (_blendNameTECtrl.text.trim() == "") {
+                                    CustomDialog().showSnackBar(context, "블렌드명을 입력해 주세요.");
+                                    _blendNameFN.requestFocus();
+                                    return;
+                                  }
                                   if (_warehousingGreenBeanCtrl.blendBeanList.isEmpty) {
                                     CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
                                     FocusScope.of(context).requestFocus(FocusNode());
@@ -402,13 +415,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                       }
                                     }
                                   }
-                                  if (_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim() == "") {
-                                    CustomDialog().showSnackBar(context, "블렌드명을 입력해 주세요.");
-                                    _warehousingGreenBeanCtrl.blendNameFN.requestFocus();
-                                    return;
-                                  }
 
-                                  String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
+                                  String date = CustomDatePickerController.to.date.replaceAll(RegExp("[년 월 일 ]"), "-");
                                   String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", "");
                                   String history = jsonEncode([
                                     {
@@ -420,8 +428,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   // type, name, roasting_weight, history
                                   Map<String, String> value = {
                                     "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                    "name":
-                                        _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
+                                    "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _blendNameTECtrl.text.trim(),
                                     "roasting_weight": roastingWeight,
                                     "history": history,
                                   };
@@ -439,7 +446,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   bool? finalConfirm = await CustomDialog().showAlertDialog(
                                     context,
                                     "로스팅 등록",
-                                    "블렌드\n\n로스팅일: ${Utility().pasteTextToDate(_customDatePickerCtrl.date)}\n$beans\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n블렌드명: ${_warehousingGreenBeanCtrl.blendNameTECtrl.text}\n\n입력하신 정보로 로스팅을 등록합니다.",
+                                    "블렌드\n\n로스팅일: ${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n블렌드명: ${_blendNameTECtrl.text}\n$beans\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
                                     acceptTitle: "등록하기",
                                   );
                                   if (finalConfirm != true) return;
@@ -450,7 +457,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   CustomDialog().showSnackBar(
                                     context,
                                     insertResult
-                                        ? "${Utility().pasteTextToDate(_customDatePickerCtrl.date)}\n블렌드 - ${_warehousingGreenBeanCtrl.blendNameTECtrl.text.trim()}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
+                                        ? "${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n블렌드 - ${_blendNameTECtrl.text.trim()}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
                                         : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                     isError: insertResult ? false : true,
                                   );
@@ -470,8 +477,9 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     });
                                     _warehousingGreenBeanCtrl.weightTECtrl.clear();
                                     _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
-                                    _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
+                                    _blendNameTECtrl.clear();
                                     _warehousingGreenBeanCtrl.initBlendInfo();
+                                    await _warehousingGreenBeanCtrl.getBlendNames();
                                   }
 
                                   FocusScope.of(context).requestFocus(FocusNode());
@@ -532,7 +540,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   }
                                 }
 
-                                String date = _customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
+                                String date = CustomDatePickerController.to.date.replaceAll(RegExp("[년 월 일 ]"), "-");
                                 String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", "");
                                 String history = jsonEncode([
                                   {
@@ -544,7 +552,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 // type, name, roasting_weight, history
                                 Map<String, String> value = {
                                   "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                  "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
+                                  "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _blendNameTECtrl.text.trim(),
                                   "roasting_weight": roastingWeight,
                                   "history": history,
                                 };
@@ -552,7 +560,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 bool? finalConfirm = await CustomDialog().showAlertDialog(
                                   context,
                                   "로스팅 등록",
-                                  "싱글오리진\n\n로스팅일: ${Utility().pasteTextToDate(_customDatePickerCtrl.date)}\n생두: ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
+                                  "싱글오리진\n\n로스팅일: ${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n생두: ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
                                   acceptTitle: "등록하기",
                                 );
                                 if (finalConfirm != true) return;
@@ -563,7 +571,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                 CustomDialog().showSnackBar(
                                   context,
                                   insertResult
-                                      ? "${Utility().pasteTextToDate(_customDatePickerCtrl.date)}\n싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
+                                      ? "${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
                                       : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
                                   isError: insertResult ? false : true,
                                 );
@@ -572,8 +580,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   String useWeight = _warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", "");
                                   Map<String, String> updateValue = {
                                     "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                    "name":
-                                        _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _warehousingGreenBeanCtrl.blendNameTECtrl.text.trim(),
+                                    "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _blendNameTECtrl.text.trim(),
                                     "weight": useWeight,
                                     "date": date,
                                   };
@@ -581,7 +588,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   _warehousingGreenBeanCtrl.updateBeanListWeight(_warehousingGreenBeanCtrl.selectedBean, useWeight);
                                   _warehousingGreenBeanCtrl.weightTECtrl.clear();
                                   _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
-                                  _warehousingGreenBeanCtrl.blendNameTECtrl.clear();
+                                  _blendNameTECtrl.clear();
                                 }
                               },
                               child: Container(

@@ -6,8 +6,8 @@ import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
-import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/suggestions_view.dart';
 import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
@@ -22,26 +22,27 @@ class SaleManagementMain extends StatefulWidget {
 
 class _SaleManagementMainState extends State<SaleManagementMain> {
   final WarehousingGreenBeanController _warehousingGreenBeanCtrl = Get.put(WarehousingGreenBeanController());
-  final CustomDatePickerController _customDatePickerCtrl = Get.put(CustomDatePickerController());
   final RoastingBeanSalesController _roastingBeanSalesCtrl = Get.put(RoastingBeanSalesController());
   final _scrollCtrl = ScrollController();
-  final _searchCtrl = SearchController();
+  final _retailerTECtrl = TextEditingController();
   final _retailerFN = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _roastingBeanSalesCtrl.getRetailers();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _roastingBeanSalesCtrl.getRetailers();
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
+    CustomDatePickerController.to.setDateToToday();
     Get.delete<WarehousingGreenBeanController>();
-    Get.delete<CustomDatePickerController>();
     Get.delete<RoastingBeanSalesController>();
     _scrollCtrl.dispose();
-    _searchCtrl.dispose();
+    _retailerTECtrl.dispose();
     _retailerFN.dispose();
   }
 
@@ -66,97 +67,34 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                   const CustomDatePicker(),
                   const UiSpacing(),
                   const HeaderTitle(title: "판매처", subTitle: "Retailer"),
-                  SearchAnchor(
-                    searchController: _searchCtrl,
-                    viewBackgroundColor: Colors.brown[50],
-                    viewElevation: 2,
-                    isFullScreen: false,
-                    viewConstraints: BoxConstraints(
-                      minHeight: 0,
-                      maxHeight: height / 4,
-                    ),
-                    viewLeading: const SizedBox(),
-                    headerTextStyle: Theme.of(context).textTheme.bodyMedium,
-                    headerHintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey),
-                    viewShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    viewHintText: "업체명",
-                    suggestionsBuilder: (context, controller) async {
-                      List suggestions = _roastingBeanSalesCtrl.getRetailerSuggestions(controller.text);
-                      return suggestions.isNotEmpty
-                          ? suggestions
-                              .map((e) => ListTile(
-                                    contentPadding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                                    onTap: () {
-                                      _searchCtrl.closeView(e);
-                                      _retailerFN.unfocus();
-                                    },
-                                    title: Text(
-                                      e.toString(),
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                    ),
-                                    trailing: IconButton(
-                                      style: IconButton.styleFrom(
-                                        visualDensity: VisualDensity.compact,
-                                        padding: const EdgeInsets.all(14),
-                                        minimumSize: const Size(0, 0),
-                                        shape: const CircleBorder(),
-                                      ),
-                                      onPressed: () => controller.text = e,
-                                      icon: Icon(
-                                        Icons.arrow_outward_rounded,
-                                        size: height / 50,
-                                      ),
-                                    ),
-                                  ))
-                              .toList()
-                          : const [EmptyWidget(content: "입력된 판매처가 없습니다.")];
-                    },
-                    viewTrailing: [
-                      IconButton(
-                        style: IconButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
-                          padding: const EdgeInsets.all(14),
-                          minimumSize: const Size(0, 0),
-                          shape: const CircleBorder(),
-                        ),
-                        onPressed: () => _searchCtrl.clear(),
-                        icon: Icon(
-                          Icons.clear,
-                          size: height / 50,
-                        ),
-                      ),
-                    ],
-                    viewOnSubmitted: (value) {
-                      _searchCtrl.closeView(_searchCtrl.text);
-                      _retailerFN.unfocus();
-                    },
-                    builder: (context, controller) => SearchBar(
-                      controller: controller,
-                      focusNode: _retailerFN,
-                      textInputAction: TextInputAction.next,
-                      hintText: "업체명",
-                      onTap: () => controller.openView(),
-                      onChanged: (value) {
-                        List suggestions = _roastingBeanSalesCtrl.getRetailerSuggestions(value);
-                        if (suggestions.isNotEmpty) controller.openView();
-                      },
-                    ),
+                  TextField(
+                    controller: _retailerTECtrl,
+                    focusNode: _retailerFN,
+                    textAlign: TextAlign.center,
+                    decoration: const InputDecoration(hintText: "업체명"),
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    onTap: () => _roastingBeanSalesCtrl.setAllRetailers(_retailerTECtrl),
+                    onChanged: (value) => _roastingBeanSalesCtrl.getRetailerSuggestions(_retailerTECtrl.text),
                   ),
-                  Divider(thickness: _retailerFN.hasFocus ? 2 : 1, color: _retailerFN.hasFocus ? Colors.brown : Colors.brown[200]),
+                  SuggestionsView(
+                    suggestions: _roastingBeanSalesCtrl.retailerSuggestions,
+                    textEditingCtrl: _retailerTECtrl,
+                    focusNode: _retailerFN,
+                  ),
                   const UiSpacing(),
                   const HeaderTitle(title: "판매 원두 정보", subTitle: "Roasted coffee bean sale info"),
+                  const BeanSelectDropdownButton(listType: 1),
+                  const SizedBox(height: 10),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const Expanded(
-                        flex: 4,
-                        child: BeanSelectDropdownButton(listType: 1),
+                      Text(
+                        "판매",
+                        style: TextStyle(
+                          fontSize: height / 54,
+                          color: Colors.brown,
+                        ),
                       ),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        flex: 2,
+                      Expanded(
                         child: TextField(
                           textAlign: TextAlign.center,
                           controller: _roastingBeanSalesCtrl.weightTECtrl,
@@ -168,9 +106,13 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                             suffixText: "kg",
                           ),
                           onTap: () => Utility().moveScrolling(_scrollCtrl),
-                          onSubmitted: (value) => _roastingBeanSalesCtrl.onTapSalesButton(context, _searchCtrl.text.trim()),
+                          onSubmitted: (value) => _roastingBeanSalesCtrl.onTapSalesButton(
+                            context,
+                            _retailerTECtrl.text.trim(),
+                            _retailerFN,
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                   const UiSpacing(),
@@ -197,7 +139,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                           onTap: () async {
                             bool? confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
                             if (confirm == true) {
-                              _searchCtrl.clear();
+                              _retailerTECtrl.clear();
                               _roastingBeanSalesCtrl.allValueInit();
                             }
                           },
@@ -216,7 +158,11 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => _roastingBeanSalesCtrl.onTapSalesButton(context, _searchCtrl.text.trim()),
+                            onTap: () => _roastingBeanSalesCtrl.onTapSalesButton(
+                              context,
+                              _retailerTECtrl.text.trim(),
+                              _retailerFN,
+                            ),
                             child: Container(
                               color: Colors.brown,
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

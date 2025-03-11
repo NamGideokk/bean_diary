@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
+import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,6 @@ class WarehousingGreenBeanController extends GetxController {
   final RxList _weightTECtrlList = <TextEditingController>[].obs;
   final RxList _weightFNList = <FocusNode>[].obs;
   final roastingWeightTECtrl = TextEditingController();
-  final blendNameTECtrl = TextEditingController();
-  final blendNameFN = FocusNode();
 
   // 생두 입고 관리
   final greenBeanFN = FocusNode();
@@ -32,6 +31,9 @@ class WarehousingGreenBeanController extends GetxController {
   final RxList<Rxn<String>> _blendBeanList = <Rxn<String>>[].obs;
 
   final RxList _suppliers = [].obs; // 공급처 목록
+  final RxList _supplierSuggestions = [].obs; // 공급처 추천 목록
+  final RxList _blendNames = [].obs; // 블렌드명 전체 목록
+  final RxList _blendNameSuggestions = [].obs; // 블렌드명 추천 목록
 
   final RxBool _isLoading = true.obs;
 
@@ -50,6 +52,9 @@ class WarehousingGreenBeanController extends GetxController {
   get weightFNList => _weightFNList;
 
   get suppliers => _suppliers;
+  get supplierSuggestions => _supplierSuggestions;
+  get blendNames => _blendNames;
+  get blendNameSuggestions => _blendNameSuggestions;
 
   get isLoading => _isLoading.value;
 
@@ -146,15 +151,15 @@ class WarehousingGreenBeanController extends GetxController {
 
   /// 생두 입고 입력 정보 초기화하기
   void setInitGreenBeanWarehousingInfo() {
-    final customDatePickerCtrl = Get.find<CustomDatePickerController>();
-    customDatePickerCtrl.setDateToToday();
+    CustomDatePickerController.to.setDateToToday();
     weightTECtrl.clear();
   }
 
   /// 생두 입고 등록하기
-  Future registerWarehousingGreenBean(BuildContext context, String supplier) async {
+  Future registerWarehousingGreenBean(BuildContext context, String supplier, FocusNode supplierFN) async {
     if (supplier == "") {
       CustomDialog().showSnackBar(context, "공급처(업체명)를 입력해 주세요.");
+      supplierFN.requestFocus();
       return;
     }
     if (selectedBean == "" || selectedBean == null) {
@@ -181,19 +186,17 @@ class WarehousingGreenBeanController extends GetxController {
       return;
     }
 
-    final customDatePickerCtrl = Get.find<CustomDatePickerController>();
-
     final bool? confirm = await CustomDialog().showAlertDialog(
       context,
       "입고 등록",
-      "입고일: ${Utility().pasteTextToDate(customDatePickerCtrl.date)}\n공급처: $supplier\n생두: $selectedBean\n입고량: ${weightTECtrl.text}kg\n\n입력하신 정보로 입고를 등록합니다.",
+      "입고일: ${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n공급처: $supplier\n생두: $selectedBean\n입고량: ${weightTECtrl.text}kg\n\n입력하신 정보로 입고를 등록합니다.",
       acceptTitle: "등록하기",
     );
 
     if (confirm != true) {
       return;
     } else {
-      String date = customDatePickerCtrl.date;
+      String date = CustomDatePickerController.to.date;
       String weight = weightTECtrl.text.replaceAll(".", "");
       String history = jsonEncode([
         {
@@ -214,7 +217,9 @@ class WarehousingGreenBeanController extends GetxController {
       if (!context.mounted) return;
       CustomDialog().showSnackBar(
         context,
-        insertResult ? "${Utility().pasteTextToDate(customDatePickerCtrl.date)}\n$supplier\n$selectedBean\n${weightTECtrl.text}kg\n\n입고 등록이 완료되었습니다." : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
+        insertResult
+            ? "${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n$supplier\n$selectedBean\n${weightTECtrl.text}kg\n\n입고 등록이 완료되었습니다."
+            : "입고 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
         isError: insertResult ? false : true,
       );
 
@@ -287,18 +292,62 @@ class WarehousingGreenBeanController extends GetxController {
           duplicateSupplier.add(history["company"]);
         }
       }
-      _suppliers(duplicateSupplier.toList());
+      _suppliers(Utility().sortHangulAscending(duplicateSupplier.toList()));
     }
   }
 
-  /// 25-03-07
+  /// 25-03-11
   ///
   /// 생두 입고 관리 > 공급처(업체명) 입력에 따른 추천 목록 가져오기
-  List getSupplierSuggestions(String value) {
+  void getSupplierSuggestions(String value) {
     List list = [];
     for (final supplier in suppliers) {
       if (supplier.contains(value)) list.add(supplier);
     }
-    return list;
+    _supplierSuggestions(list);
+  }
+
+  /// 25-03-11
+  ///
+  /// 블렌드명 TextField 선택 시 블렌드명 전체 목록 할당하기
+  void setAllSuppliers(TextEditingController ctrl) {
+    if (ctrl.text == "") {
+      _supplierSuggestions(suppliers);
+    }
+  }
+
+  /// 25-03-11
+  ///
+  /// 로스팅 관리 > 블렌드명 전체 가져오기
+  Future<void> getBlendNames() async {
+    List roastedBeans = await RoastingBeanStockSqfLite().getRoastingBeanStock();
+    _blendNames.clear();
+    if (roastedBeans.isNotEmpty) {
+      Set duplicateName = {};
+      for (final item in roastedBeans) {
+        if (item["type"] == "2") duplicateName.add(item["name"]);
+      }
+      _blendNames(Utility().sortHangulAscending(duplicateName.toList()));
+    }
+  }
+
+  /// 25-03-11
+  ///
+  /// 로스팅 관리 > 블렌드명 입력에 따른 추천 목록 가져오기
+  void getBlendNameSuggestions(String value) {
+    List list = [];
+    for (final name in blendNames) {
+      if (name.contains(value)) list.add(name);
+    }
+    _blendNameSuggestions(list);
+  }
+
+  /// 25-03-11
+  ///
+  /// 블렌드명 TextField 선택 시 블렌드명 전체 목록 할당하기
+  void setAllBlendNames(TextEditingController ctrl) {
+    if (ctrl.text == "") {
+      _blendNameSuggestions(blendNames);
+    }
   }
 }

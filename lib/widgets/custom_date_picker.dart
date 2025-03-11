@@ -1,7 +1,6 @@
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class CustomDatePicker extends StatefulWidget {
   const CustomDatePicker({Key? key}) : super(key: key);
@@ -11,7 +10,6 @@ class CustomDatePicker extends StatefulWidget {
 }
 
 class _CustomDatePickerState extends State<CustomDatePicker> {
-  final CustomDatePickerController customDatePickerCtrl = Get.find<CustomDatePickerController>();
   Key _key = UniqueKey();
 
   @override
@@ -34,17 +32,17 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                   key: _key,
                   mode: CupertinoDatePickerMode.date,
                   dateOrder: DatePickerDateOrder.ymd,
-                  maximumYear: customDatePickerCtrl.thisYear,
+                  maximumYear: CustomDatePickerController.to.thisYear,
                   initialDateTime: DateTime(
-                    customDatePickerCtrl.year,
-                    customDatePickerCtrl.month,
-                    customDatePickerCtrl.day,
+                    CustomDatePickerController.to.year,
+                    CustomDatePickerController.to.month,
+                    CustomDatePickerController.to.day,
                   ),
                   onDateTimeChanged: (value) {
-                    customDatePickerCtrl.setYear(value.year);
-                    customDatePickerCtrl.setMonth(value.month);
-                    customDatePickerCtrl.setDay(value.day);
-                    customDatePickerCtrl.setDate();
+                    CustomDatePickerController.to.setYear(value.year);
+                    CustomDatePickerController.to.setMonth(value.month);
+                    CustomDatePickerController.to.setDay(value.day);
+                    CustomDatePickerController.to.setDate();
                   },
                 ),
                 IconButton(
@@ -57,7 +55,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                     elevation: 2,
                   ),
                   onPressed: () {
-                    customDatePickerCtrl.setDateToToday();
+                    CustomDatePickerController.to.setDateToToday();
                     setState(() {
                       _key = UniqueKey();
                     });

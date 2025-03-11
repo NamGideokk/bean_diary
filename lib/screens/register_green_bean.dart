@@ -107,11 +107,15 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                                           style: Theme.of(context).textTheme.bodyMedium,
                                         ),
                                       ),
-                                      TextButton(
+                                      IconButton(
+                                        style: IconButton.styleFrom(
+                                          visualDensity: VisualDensity.compact,
+                                        ),
                                         onPressed: () => _registerGreenBeanCtrl.deleteGreenBean(context, index),
-                                        child: Text(
-                                          "삭제",
-                                          style: TextStyle(fontSize: height / 70),
+                                        icon: Icon(
+                                          Icons.clear,
+                                          size: height / 50,
+                                          applyTextScaling: true,
                                         ),
                                       ),
                                     ],

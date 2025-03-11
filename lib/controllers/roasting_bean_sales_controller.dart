@@ -16,12 +16,14 @@ class RoastingBeanSalesController extends GetxController {
   final _selectedBean = Rxn<String>();
 
   final RxList _retailers = [].obs; // 판매처 목록
+  final RxList _retailerSuggestions = [].obs; // 판매처 추천 목록
 
   get beanList => _beanList;
   get beanMapDataList => _beanMapDataList;
   get selectedBean => _selectedBean.value;
 
   get retailers => _retailers;
+  get retailerSuggestions => _retailerSuggestions;
 
   @override
   void onInit() {
@@ -55,9 +57,10 @@ class RoastingBeanSalesController extends GetxController {
     _selectedBean(replaceString);
   }
 
-  void onTapSalesButton(BuildContext context, String retailer) async {
+  void onTapSalesButton(BuildContext context, String retailer, FocusNode retailerFN) async {
     if (retailer == "") {
       CustomDialog().showSnackBar(context, "판매처(업체명)를 입력해 주세요.");
+      retailerFN.requestFocus();
       return;
     }
     if (selectedBean == null) {
@@ -87,13 +90,12 @@ class RoastingBeanSalesController extends GetxController {
       }
     }
 
-    final customDatePickerCtrl = Get.find<CustomDatePickerController>();
     String name = selectedBean.toString().split(" / ")[0];
 
     final bool? confirm = await CustomDialog().showAlertDialog(
       context,
       "판매 등록",
-      "판매일: ${Utility().pasteTextToDate(customDatePickerCtrl.date)}\n판매처: $retailer\n원두: $name\n판매량: ${weightTECtrl.text}kg\n\n입력하신 정보로 판매를 등록합니다.",
+      "판매일: ${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n판매처: $retailer\n원두: $name\n판매량: ${weightTECtrl.text}kg\n\n입력하신 정보로 판매를 등록합니다.",
       acceptTitle: "등록하기",
     );
 
@@ -105,7 +107,7 @@ class RoastingBeanSalesController extends GetxController {
         if (name == e["name"]) type = e["type"].toString();
       });
       String salesWeight = weightTECtrl.text.trim().replaceAll(".", "");
-      String date = customDatePickerCtrl.date.replaceAll(RegExp("[년 월 일 ]"), "-");
+      String date = CustomDatePickerController.to.date.replaceAll(RegExp("[년 월 일 ]"), "-");
 
       // 등록할 데이터
       Map<String, String> value = {
@@ -119,7 +121,7 @@ class RoastingBeanSalesController extends GetxController {
 
       if (result) {
         String successMsg =
-            "${Utility().pasteTextToDate(customDatePickerCtrl.date)}\n$retailer\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
+            "${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n$retailer\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
         if (!context.mounted) return;
         CustomDialog().showSnackBar(context, successMsg);
         await getRetailers();
@@ -143,8 +145,7 @@ class RoastingBeanSalesController extends GetxController {
 
   /// 모든 정보 초기화하기
   void allValueInit() async {
-    final customDatePickerCtrl = Get.find<CustomDatePickerController>();
-    customDatePickerCtrl.setDateToToday();
+    CustomDatePickerController.to.setDateToToday();
     weightTECtrl.clear();
   }
 
@@ -159,18 +160,27 @@ class RoastingBeanSalesController extends GetxController {
       for (final supplier in salesHistory) {
         duplicateRetailer.add(supplier["company"]);
       }
-      _retailers(duplicateRetailer.toList());
+      _retailers(Utility().sortHangulAscending(duplicateRetailer.toList()));
     }
   }
 
-  /// 25-03-07
+  /// 25-03-11
   ///
   /// 판매 관리 > 판매처(업체명) 입력에 따른 추천 목록 가져오기
-  List getRetailerSuggestions(String value) {
+  void getRetailerSuggestions(String value) {
     List list = [];
     for (final retailer in retailers) {
       if (retailer.contains(value)) list.add(retailer);
     }
-    return list;
+    _retailerSuggestions(list);
+  }
+
+  /// 25-03-11
+  ///
+  /// 판매처(업체명) TextField 선택 시 판매처 전체 목록 할당하기
+  void setAllRetailers(TextEditingController ctrl) {
+    if (ctrl.text == "") {
+      _retailerSuggestions(retailers);
+    }
   }
 }
