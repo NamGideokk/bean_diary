@@ -3,6 +3,7 @@ import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
@@ -64,6 +65,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final textScaleFactor = MediaQuery.of(context).textScaler.scale(1);
     return Scaffold(
       appBar: AppBar(
         title: const Text("로스팅 관리"),
@@ -134,8 +136,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                             controller: _blendNameTECtrl,
                             focusNode: _blendNameFN,
                             textAlign: TextAlign.center,
-                            decoration: const InputDecoration(hintText: "블렌드명"),
                             style: Theme.of(context).textTheme.bodyMedium,
+                            decoration: const InputDecoration(hintText: "블렌드명"),
                             onTap: () => _warehousingGreenBeanCtrl.setAllBlendNames(_blendNameTECtrl),
                             onChanged: (value) => _warehousingGreenBeanCtrl.getBlendNameSuggestions(_blendNameTECtrl.text),
                           ),
@@ -153,83 +155,108 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                     if (_warehousingGreenBeanCtrl.roastingType == 2)
                       ListView.separated(
                         shrinkWrap: true,
+                        padding: const EdgeInsets.only(top: 10),
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: _warehousingGreenBeanCtrl.blendBeanList.length,
                         separatorBuilder: (context, index) => const SizedBox(height: 15),
-                        itemBuilder: (context, index) => ListTile(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: RichText(
-                                  text: TextSpan(
-                                    text: "${(index + 1).toString().padLeft(2, "0")}.  ",
-                                    style: TextStyle(
-                                      fontSize: height / 40,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
+                        itemBuilder: (context, index) => Obx(
+                          () => AnimatedOpacity(
+                            duration: const Duration(milliseconds: 500),
+                            opacity: _warehousingGreenBeanCtrl.opacityList[index],
+                            curve: Curves.easeInOut,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(top: 10 * textScaleFactor),
+                                  padding: EdgeInsets.fromLTRB(15, 15 * textScaleFactor, 10, 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.brown[100],
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
-                                      TextSpan(
-                                        text: Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 1),
-                                        style: TextStyle(
-                                          fontSize: height / 54,
-                                          fontWeight: FontWeight.normal,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 1),
+                                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 15),
+                                          FocusScope(
+                                            canRequestFocus: false,
+                                            child: IconButton(
+                                              style: IconButton.styleFrom(
+                                                visualDensity: VisualDensity.compact,
+                                              ),
+                                              onPressed: () => _warehousingGreenBeanCtrl.deleteBlendBeanListItem(index),
+                                              icon: Icon(
+                                                Icons.clear,
+                                                color: Colors.black,
+                                                size: height / 40,
+                                                applyTextScaling: true,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                      const SizedBox(height: 5),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            "${Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 2)}  /  ",
+                                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600),
+                                          ),
+                                          Flexible(
+                                            child: IntrinsicWidth(
+                                              child: TextField(
+                                                controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
+                                                focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
+                                                textInputAction: TextInputAction.next,
+                                                keyboardType: TextInputType.number,
+                                                style: Theme.of(context).textTheme.bodyLarge,
+                                                textAlign: TextAlign.right,
+                                                decoration: InputDecoration(
+                                                  hintText: "투입 중량",
+                                                  filled: true,
+                                                  fillColor: Colors.white,
+                                                  enabledBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    borderSide: const BorderSide(color: Colors.white),
+                                                  ),
+                                                  suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                                                  suffixIcon: Text(
+                                                    "kg",
+                                                    textAlign: TextAlign.center,
+                                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
                                     ],
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              FocusScope(
-                                canRequestFocus: false,
-                                child: IconButton(
-                                  style: IconButton.styleFrom(
-                                    visualDensity: VisualDensity.compact,
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    shape: const CircleBorder(),
-                                  ),
-                                  onPressed: () => _warehousingGreenBeanCtrl.deleteBlendBeanListItem(index),
-                                  icon: Icon(
-                                    Icons.clear,
-                                    size: height / 40,
-                                    color: Colors.black54,
+                                Positioned(
+                                  left: 15,
+                                  top: -5 * textScaleFactor,
+                                  child: Text(
+                                    (index + 1).toString().padLeft(2, "0"),
+                                    style: TextStyle(
+                                      fontSize: height / 30,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.brown[600],
+                                      letterSpacing: -1,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          subtitle: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.ideographic,
-                            children: [
-                              Text(
-                                Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 2),
-                                style: TextStyle(
-                                  fontSize: height / 52,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.brown,
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                              Flexible(
-                                child: TextField(
-                                  controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
-                                  focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
-                                  textAlign: TextAlign.center,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    hintText: "투입 중량",
-                                    suffixText: "kg",
-                                    prefixText: "투입",
-                                  ),
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

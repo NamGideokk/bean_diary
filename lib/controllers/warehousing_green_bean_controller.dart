@@ -35,6 +35,8 @@ class WarehousingGreenBeanController extends GetxController {
   final RxList _blendNames = [].obs; // 블렌드명 전체 목록
   final RxList _blendNameSuggestions = [].obs; // 블렌드명 추천 목록
 
+  final RxList _opacityList = [].obs;
+
   final RxBool _isLoading = true.obs;
 
   get company => _company.value;
@@ -55,6 +57,8 @@ class WarehousingGreenBeanController extends GetxController {
   get supplierSuggestions => _supplierSuggestions;
   get blendNames => _blendNames;
   get blendNameSuggestions => _blendNameSuggestions;
+
+  get opacityList => _opacityList;
 
   get isLoading => _isLoading.value;
 
@@ -241,10 +245,12 @@ class WarehousingGreenBeanController extends GetxController {
     if (dupCheck) {
       return;
     }
+    _opacityList.add(0.0);
     addWeightCtrlList();
     final addElement = Rxn<String>();
     addElement(value);
     _blendBeanList.add(addElement);
+    calculateOpacity();
   }
 
   /// 로스팅 관리 > 블렌드 > 생두 목록 삭제하기
@@ -276,6 +282,7 @@ class WarehousingGreenBeanController extends GetxController {
     _blendBeanList.removeAt(index);
     _weightFNList.removeAt(index);
     _weightTECtrlList.removeAt(index);
+    _opacityList.removeAt(index);
   }
 
   /// 25-03-07
@@ -348,6 +355,17 @@ class WarehousingGreenBeanController extends GetxController {
   void setAllBlendNames(TextEditingController ctrl) {
     if (ctrl.text == "") {
       _blendNameSuggestions(blendNames);
+    }
+  }
+
+  /// 25-03-11
+  ///
+  /// 블렌드 로스팅 > 투입 생두 목록 UI 투명도 계산하기
+  Future calculateOpacity() async {
+    if (blendBeanList.isNotEmpty) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _opacityList[opacityList.length - 1] = 1.0;
+      });
     }
   }
 }

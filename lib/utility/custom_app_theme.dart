@@ -54,6 +54,7 @@ class CustomAppTheme {
         hintStyle: TextStyle(
           color: Colors.grey,
           fontSize: height / 54,
+          fontWeight: FontWeight.normal,
         ),
         prefixStyle: TextStyle(
           fontSize: height / 60,
