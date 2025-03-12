@@ -34,7 +34,10 @@ class CoffeeCountryChips extends StatelessWidget {
                         child: Text(
                           e["region"]["kor"],
                           textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.4),
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.brown),
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                color: Colors.brown[400],
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
                       ),
                       Expanded(
@@ -72,6 +75,10 @@ class CoffeeCountryChips extends StatelessWidget {
                 );
               },
             ).toList(),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Divider(height: 0, thickness: 0.5),
           ),
           Align(
             alignment: Alignment.topRight,

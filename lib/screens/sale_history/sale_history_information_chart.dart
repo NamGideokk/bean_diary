@@ -51,7 +51,7 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                 ColoredBox(
                   color: Colors.orange.withOpacity(0.9),
                   child: SizedBox(
-                    height: 6,
+                    height: 9,
                     width: _saleHistoryCtrl.markerWidth * 1.15,
                   ),
                 ),
@@ -64,7 +64,7 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                       "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSalesInShowList)}kg",
                       textAlign: TextAlign.center,
                       textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     );
                   },
                 ),

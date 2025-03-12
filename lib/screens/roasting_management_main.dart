@@ -13,6 +13,7 @@ import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/suggestions_view.dart';
 import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
+import 'package:bean_diary/widgets/weight_input_guide.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -95,9 +96,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                             selected: _warehousingGreenBeanCtrl.roastingType == 1 ? true : false,
                             contentPadding: EdgeInsets.zero,
                             dense: true,
-                            onChanged: (value) {
-                              _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
-                            },
+                            onChanged: (value) => _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString())),
                             title: Text(
                               "싱글오리진",
                               style: TextStyle(
@@ -113,9 +112,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                             selected: _warehousingGreenBeanCtrl.roastingType == 2 ? true : false,
                             contentPadding: EdgeInsets.zero,
                             dense: true,
-                            onChanged: (value) {
-                              _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString()));
-                            },
+                            onChanged: (value) => _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString())),
                             title: Text(
                               "블렌드",
                               style: TextStyle(
@@ -234,6 +231,17 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
                                                   ),
                                                 ),
+                                                onTapOutside: (event) {
+                                                  if (!_warehousingGreenBeanCtrl.weightTECtrlList[index].text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrlList[index].text != "") {
+                                                    _warehousingGreenBeanCtrl.weightTECtrlList[index].text = "${_warehousingGreenBeanCtrl.weightTECtrlList[index].text}.0";
+                                                  }
+                                                },
+                                                onEditingComplete: () {
+                                                  if (!_warehousingGreenBeanCtrl.weightTECtrlList[index].text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrlList[index].text != "") {
+                                                    _warehousingGreenBeanCtrl.weightTECtrlList[index].text = "${_warehousingGreenBeanCtrl.weightTECtrlList[index].text}.0";
+                                                  }
+                                                },
+                                                onSubmitted: (value) => FocusScope.of(context).nextFocus(),
                                               ),
                                             ),
                                           ),
@@ -278,17 +286,32 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   focusNode: _weightFN,
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.next,
                                   decoration: InputDecoration(
                                     hintText: "투입 중량",
                                     suffixIconConstraints: const BoxConstraints(minWidth: 25),
-                                    suffixIcon: Text(
-                                      "kg",
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                    suffixIcon: FocusScope(
+                                      canRequestFocus: false,
+                                      child: Text(
+                                        "kg",
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                      ),
                                     ),
                                   ),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   onTap: () => Utility().moveScrolling(_scrollCtrl),
+                                  onTapOutside: (event) {
+                                    if (!_warehousingGreenBeanCtrl.weightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrl.text != "") {
+                                      _warehousingGreenBeanCtrl.weightTECtrl.text = "${_warehousingGreenBeanCtrl.weightTECtrl.text}.0";
+                                    }
+                                  },
+                                  onEditingComplete: () {
+                                    if (!_warehousingGreenBeanCtrl.weightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrl.text != "") {
+                                      _warehousingGreenBeanCtrl.weightTECtrl.text = "${_warehousingGreenBeanCtrl.weightTECtrl.text}.0";
+                                    }
+                                  },
+                                  onSubmitted: (value) => FocusScope.of(context).nextFocus(),
                                 ),
                               ),
                               const SizedBox(width: 15),
@@ -305,6 +328,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   focusNode: _roastingWeightFN,
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
                                     hintText: "로스팅 후 중량",
                                     suffixIconConstraints: const BoxConstraints(minWidth: 25),
@@ -316,6 +340,17 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   ),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   onTap: () => Utility().moveScrolling(_scrollCtrl),
+                                  onTapOutside: (event) {
+                                    if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
+                                      _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
+                                    }
+                                  },
+                                  onEditingComplete: () {
+                                    if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
+                                      _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
+                                    }
+                                  },
+                                  onSubmitted: (value) => _roastingWeightFN.unfocus(),
                                 ),
                               ),
                             ],
@@ -346,13 +381,45 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   ),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   onTap: () => Utility().moveScrolling(_scrollCtrl),
+                                  onTapOutside: (event) {
+                                    if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
+                                      _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
+                                    }
+                                  },
+                                  onEditingComplete: () {
+                                    if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
+                                      _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
+                                    }
+                                  },
+                                  onSubmitted: (value) => _roastingWeightFN.unfocus(),
                                 ),
                               ),
                             ],
                           ),
-                    const UiSpacing(),
-                    const UsageAlertWidget(),
-                    const UiSpacing(),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: TextButton.icon(
+                          onPressed: () async => await showModalBottomSheet(
+                            context: context,
+                            showDragHandle: true,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.brown[50],
+                            builder: (ctx) => const WeightInputGuide(),
+                          ),
+                          icon: Icon(
+                            Icons.help_outline_rounded,
+                            size: height / 50,
+                            color: Colors.red,
+                            applyTextScaling: true,
+                          ),
+                          label: Text(
+                            "중량 입력 안내",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(height: height / 9),
                   ],
                 ),
@@ -392,7 +459,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () async {
-                                // 블렌드
+                                // 2 = 블렌드 로스팅 등록
                                 if (_warehousingGreenBeanCtrl.roastingType == 2) {
                                   if (_blendNameTECtrl.text.trim() == "") {
                                     CustomDialog().showSnackBar(context, "블렌드명을 입력해 주세요.");
@@ -522,13 +589,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     _blendNameTECtrl.clear();
                                     _warehousingGreenBeanCtrl.initBlendInfo();
                                     await _warehousingGreenBeanCtrl.getBlendNames();
+                                    _warehousingGreenBeanCtrl.resetOpacityList();
                                   }
 
                                   FocusScope.of(context).requestFocus(FocusNode());
                                   return;
                                 }
 
-                                // 1
+                                // 1 = 싱글오리진 로스팅 등록
                                 if (_warehousingGreenBeanCtrl.selectedBean == null) {
                                   CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
                                   FocusScope.of(context).requestFocus(FocusNode());
@@ -539,6 +607,9 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   _weightFN.requestFocus();
                                   return;
                                 } else {
+                                  if (!_warehousingGreenBeanCtrl.weightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrl.text != "") {
+                                    _warehousingGreenBeanCtrl.weightTECtrl.text = "${_warehousingGreenBeanCtrl.weightTECtrl.text}.0";
+                                  }
                                   var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.weightTECtrl.text.trim());
                                   _warehousingGreenBeanCtrl.weightTECtrl.text = result["replaceValue"];
 
@@ -563,6 +634,9 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   _roastingWeightFN.requestFocus();
                                   return;
                                 } else {
+                                  if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
+                                    _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
+                                  }
                                   var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim());
                                   _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
 
@@ -631,6 +705,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   _warehousingGreenBeanCtrl.weightTECtrl.clear();
                                   _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
                                   _blendNameTECtrl.clear();
+                                  FocusScope.of(context).requestFocus(FocusNode());
                                 }
                               },
                               child: Container(

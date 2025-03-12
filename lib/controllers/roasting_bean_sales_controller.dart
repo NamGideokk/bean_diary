@@ -72,6 +72,9 @@ class RoastingBeanSalesController extends GetxController {
       weightFN.requestFocus();
       return;
     } else {
+      if (!weightTECtrl.text.contains(".") && weightTECtrl.text != "") {
+        weightTECtrl.text = "${weightTECtrl.text}.0";
+      }
       final Map<String, dynamic> result = Utility().checkWeightRegEx(weightTECtrl.text.trim());
       weightTECtrl.text = result["replaceValue"];
 
@@ -124,6 +127,7 @@ class RoastingBeanSalesController extends GetxController {
             "${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n$retailer\n${type == "1" ? "싱글오리진" : "블렌드"} - $name\n${Utility().numberFormat(weightTECtrl.text.trim())}kg\n판매 등록이 완료되었습니다.";
         if (!context.mounted) return;
         CustomDialog().showSnackBar(context, successMsg);
+        FocusScope.of(context).requestFocus(FocusNode());
         await getRetailers();
         bool updateWeightResult = await RoastingBeanStockSqfLite().updateWeightRoastingBeanStock(value);
         if (!updateWeightResult) {

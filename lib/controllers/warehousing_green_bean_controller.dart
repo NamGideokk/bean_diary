@@ -177,6 +177,10 @@ class WarehousingGreenBeanController extends GetxController {
       return;
     }
 
+    if (!weightTECtrl.text.contains(".") && weightTECtrl.text != "") {
+      weightTECtrl.text = "${weightTECtrl.text}.0";
+    }
+
     final Map<String, dynamic> result = Utility().checkWeightRegEx(weightTECtrl.text.trim());
     weightTECtrl.text = result["replaceValue"];
 
@@ -368,4 +372,9 @@ class WarehousingGreenBeanController extends GetxController {
       });
     }
   }
+
+  /// 25-03-12
+  ///
+  /// 투명도 배열 초기화하기
+  void resetOpacityList() => _opacityList.clear();
 }

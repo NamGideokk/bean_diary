@@ -10,6 +10,7 @@ import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/suggestions_view.dart';
 import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:bean_diary/widgets/usage_alert_widget.dart';
+import 'package:bean_diary/widgets/weight_input_guide.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -111,6 +112,16 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                             ),
                           ),
                           onTap: () => Utility().moveScrolling(_scrollCtrl),
+                          onTapOutside: (event) {
+                            if (!_roastingBeanSalesCtrl.weightTECtrl.text.contains(".") && _roastingBeanSalesCtrl.weightTECtrl.text != "") {
+                              _roastingBeanSalesCtrl.weightTECtrl.text = "${_roastingBeanSalesCtrl.weightTECtrl.text}.0";
+                            }
+                          },
+                          onEditingComplete: () {
+                            if (!_roastingBeanSalesCtrl.weightTECtrl.text.contains(".") && _roastingBeanSalesCtrl.weightTECtrl.text != "") {
+                              _roastingBeanSalesCtrl.weightTECtrl.text = "${_roastingBeanSalesCtrl.weightTECtrl.text}.0";
+                            }
+                          },
                           onSubmitted: (value) => _roastingBeanSalesCtrl.onTapSalesButton(
                             context,
                             _retailerTECtrl.text.trim(),
@@ -120,8 +131,30 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                       ),
                     ],
                   ),
-                  const UiSpacing(),
-                  const UsageAlertWidget(),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: TextButton.icon(
+                        onPressed: () async => await showModalBottomSheet(
+                          context: context,
+                          showDragHandle: true,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.brown[50],
+                          builder: (ctx) => const WeightInputGuide(),
+                        ),
+                        icon: Icon(
+                          Icons.help_outline_rounded,
+                          size: height / 50,
+                          color: Colors.red,
+                          applyTextScaling: true,
+                        ),
+                        label: Text(
+                          "중량 입력 안내",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                    ),
+                  ),
                   SizedBox(height: height / 9),
                 ],
               ),
