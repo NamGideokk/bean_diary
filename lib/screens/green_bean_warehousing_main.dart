@@ -117,9 +117,14 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                               keyboardType: TextInputType.number,
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: "입고 중량",
-                                suffixText: "kg",
+                                suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                                suffixIcon: Text(
+                                  "kg",
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                ),
                               ),
                               onTap: () => Utility().moveScrolling(_scrollCtrl),
                               onSubmitted: (value) => _warehousingGreenBeanCtrl.registerWarehousingGreenBean(

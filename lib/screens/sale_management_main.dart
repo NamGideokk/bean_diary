@@ -101,9 +101,14 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                           focusNode: _roastingBeanSalesCtrl.weightFN,
                           style: Theme.of(context).textTheme.bodyMedium,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             hintText: "판매 중량",
-                            suffixText: "kg",
+                            suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                            suffixIcon: Text(
+                              "kg",
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                            ),
                           ),
                           onTap: () => Utility().moveScrolling(_scrollCtrl),
                           onSubmitted: (value) => _roastingBeanSalesCtrl.onTapSalesButton(

@@ -278,9 +278,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   focusNode: _weightFN,
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: "투입 중량",
-                                    suffixText: "kg",
+                                    suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                                    suffixIcon: Text(
+                                      "kg",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                    ),
                                   ),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   onTap: () => Utility().moveScrolling(_scrollCtrl),
@@ -300,9 +305,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   focusNode: _roastingWeightFN,
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: "로스팅 후 중량",
-                                    suffixText: "kg",
+                                    suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                                    suffixIcon: Text(
+                                      "kg",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                    ),
                                   ),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   onTap: () => Utility().moveScrolling(_scrollCtrl),
@@ -325,9 +335,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   focusNode: _roastingWeightFN,
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: "로스팅 후 중량",
-                                    suffixText: "kg",
+                                    suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                                    suffixIcon: Text(
+                                      "kg",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                    ),
                                   ),
                                   style: Theme.of(context).textTheme.bodyMedium,
                                   onTap: () => Utility().moveScrolling(_scrollCtrl),
