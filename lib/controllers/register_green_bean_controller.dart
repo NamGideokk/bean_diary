@@ -12,8 +12,115 @@ class RegisterGreenBeanController extends GetxController {
   final RxList _greenBeanList = [].obs;
   final RxBool _showErrorText = false.obs;
 
+  final RxBool _isKoreanDisplay = true.obs;
+
+  final List coffeeProducingCountries = [
+    {
+      "region": {
+        "eng": "South America",
+        "kor": "남아메리카",
+      },
+      "countries": [
+        {"eng": "Brazil", "kor": "브라질"},
+        {"eng": "Colombia", "kor": "콜롬비아"},
+        {"eng": "Peru", "kor": "페루"},
+        {"eng": "Ecuador", "kor": "에콰도르"},
+        {"eng": "Bolivia", "kor": "볼리비아"},
+        {"eng": "Venezuela", "kor": "베네수엘라"},
+        {"eng": "Guyana", "kor": "가이아나"},
+      ],
+    },
+    {
+      "region": {
+        "eng": "Central America",
+        "kor": "중앙아메리카",
+      },
+      "countries": [
+        {"eng": "Guatemala", "kor": "과테말라"},
+        {"eng": "Honduras", "kor": "온두라스"},
+        {"eng": "El Salvador", "kor": "엘살바도르"},
+        {"eng": "Nicaragua", "kor": "니카라과"},
+        {"eng": "Costa Rica", "kor": "코스타리카"},
+        {"eng": "Panama", "kor": "파나마"},
+      ],
+    },
+    {
+      "region": {
+        "eng": "Caribbean",
+        "kor": "카리브해",
+      },
+      "countries": [
+        {"eng": "Dominican Republic", "kor": "도미니카공화국"},
+        {"eng": "Cuba", "kor": "쿠바"},
+        {"eng": "Jamaica", "kor": "자메이카"},
+        {"eng": "Haiti", "kor": "아이티"},
+      ],
+    },
+    {
+      "region": {
+        "eng": "Africa",
+        "kor": "아프리카",
+      },
+      "countries": [
+        {"eng": "Ethiopia", "kor": "에티오피아"},
+        {"eng": "Uganda", "kor": "우간다"},
+        {"eng": "Tanzania", "kor": "탄자니아"},
+        {"eng": "Kenya", "kor": "케냐"},
+        {"eng": "Rwanda", "kor": "르완다"},
+        {"eng": "Burundi", "kor": "부룬디"},
+        {"eng": "Democratic Republic of the Congo", "kor": "콩고민주공화국"},
+        {"eng": "Malawi", "kor": "말라위"},
+        {"eng": "Zambia", "kor": "잠비아"},
+        {"eng": "Ivory Coast", "kor": "코트디부아르"},
+        {"eng": "Cameroon", "kor": "카메룬"},
+        {"eng": "Madagascar", "kor": "마다가스카르"},
+        {"eng": "Gabon", "kor": "가봉"},
+      ],
+    },
+    {
+      "region": {
+        "eng": "Asia",
+        "kor": "아시아",
+      },
+      "countries": [
+        {"eng": "Vietnam", "kor": "베트남"},
+        {"eng": "Indonesia", "kor": "인도네시아"},
+        {"eng": "India", "kor": "인도"},
+        {"eng": "Thailand", "kor": "태국"},
+        {"eng": "Myanmar", "kor": "미얀마"},
+        {"eng": "Laos", "kor": "라오스"},
+        {"eng": "Malaysia", "kor": "말레이시아"},
+        {"eng": "Philippines", "kor": "필리핀"},
+        {"eng": "China", "kor": "중국"},
+        {"eng": "Nepal", "kor": "네팔"}
+      ],
+    },
+    {
+      "region": {
+        "eng": "Oceania",
+        "kor": "오세아니아",
+      },
+      "countries": [
+        {"eng": "Papua New Guinea", "kor": "파푸아뉴기니"},
+        {"eng": "Tuvalu", "kor": "투발루"},
+        {"eng": "Fiji", "kor": "피지"}
+      ],
+    },
+    {
+      "region": {
+        "eng": "Middle East",
+        "kor": "중동",
+      },
+      "countries": [
+        {"eng": "Yemen", "kor": "예멘"}
+      ],
+    },
+  ];
+
   get greenBeanList => _greenBeanList;
   get showErrorText => _showErrorText.value;
+
+  get isKoreanDisplay => _isKoreanDisplay.value;
 
   @override
   void onInit() {
@@ -101,6 +208,19 @@ class RegisterGreenBeanController extends GetxController {
 
   /// 에러 메세지 보여주기 여부 값 할당하기
   void setShowErrorMessage(bool value) => _showErrorText(value);
+
+  /// 25-03-12
+  ///
+  /// 국가 목록 한글/영문 표출 여부 값 변경하기
+  void setIsKoreanDisplay(bool value) => _isKoreanDisplay(value);
+
+  /// 25-03-12
+  ///
+  /// 국가 Chip 선택하여 TextField에 입력하기
+  void onCountrySelected(String value) {
+    greenBeanNameTECtrl.text = "$value ";
+    greenBeanNameFN.requestFocus();
+  }
 
   @override
   void onClose() {

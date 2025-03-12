@@ -40,7 +40,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
               children: [
                 const HeaderTitle(title: "생두 재고", subTitle: "Green coffee beans inventory"),
                 _stockCtrl.greenBeanStockList.isEmpty
-                    ? Container(
+                    ? DecoratedBox(
                         decoration: BoxDecoration(
                           color: Colors.brown[50],
                           borderRadius: BorderRadius.circular(8),
@@ -66,7 +66,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
                 const UiSpacing(),
                 const HeaderTitle(title: "원두 재고", subTitle: "Roasted coffee beans inventory"),
                 _stockCtrl.roastingBeanStockList.isEmpty
-                    ? Container(
+                    ? DecoratedBox(
                         decoration: BoxDecoration(
                           color: Colors.brown[50],
                           borderRadius: BorderRadius.circular(8),

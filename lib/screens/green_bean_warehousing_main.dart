@@ -1,6 +1,6 @@
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
-import 'package:bean_diary/screens/register_green_bean.dart';
+import 'package:bean_diary/screens/green_bean_management/green_bean_register.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
@@ -92,7 +92,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const RegisterGreenBean(),
+                              builder: (context) => const GreenBeanRegister(),
                             ),
                           ),
                           child: const Text("생두 등록 / 관리"),

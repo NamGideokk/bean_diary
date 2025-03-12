@@ -1,4 +1,5 @@
 import 'package:bean_diary/controllers/register_green_bean_controller.dart';
+import 'package:bean_diary/screens/green_bean_management/coffee_country_chips.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
@@ -7,14 +8,14 @@ import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class RegisterGreenBean extends StatefulWidget {
-  const RegisterGreenBean({Key? key}) : super(key: key);
+class GreenBeanRegister extends StatefulWidget {
+  const GreenBeanRegister({Key? key}) : super(key: key);
 
   @override
-  State<RegisterGreenBean> createState() => _RegisterGreenBeanState();
+  State<GreenBeanRegister> createState() => _GreenBeanRegisterState();
 }
 
-class _RegisterGreenBeanState extends State<RegisterGreenBean> {
+class _GreenBeanRegisterState extends State<GreenBeanRegister> {
   final _registerGreenBeanCtrl = Get.put(RegisterGreenBeanController());
 
   @override
@@ -34,7 +35,7 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
       body: Obx(
         () => Stack(
           children: [
-            Padding(
+            SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -56,6 +57,7 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                     ),
                     onSubmitted: (value) => _registerGreenBeanCtrl.registerGreenBean(context),
                   ),
+                  CoffeeCountryChips(),
                   const UiSpacing(),
                   const HeaderTitle(title: "생두 목록", subTitle: "Green coffee bean list"),
                   Visibility(
@@ -72,59 +74,55 @@ class _RegisterGreenBeanState extends State<RegisterGreenBean> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: _registerGreenBeanCtrl.greenBeanList.isEmpty
-                        ? Container(
-                            padding: EdgeInsets.only(bottom: height / 10),
-                            decoration: BoxDecoration(
-                              color: Colors.brown[50],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const EmptyWidget(content: "등록된 생두가 없습니다."),
-                          )
-                        : SafeArea(
-                            child: ListView.separated(
-                              itemCount: _registerGreenBeanCtrl.greenBeanList.length,
-                              padding: EdgeInsets.only(bottom: height / 10),
-                              physics: const BouncingScrollPhysics(),
-                              separatorBuilder: (context, index) => const SizedBox(height: 5),
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  padding: const EdgeInsets.fromLTRB(12, 8, 6, 8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.brown[50],
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(index == 0 ? 8 : 0),
-                                      bottom: Radius.circular(index == _registerGreenBeanCtrl.greenBeanList.length - 1 ? 8 : 0),
+                  _registerGreenBeanCtrl.greenBeanList.isEmpty
+                      ? DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.brown[50],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const EmptyWidget(content: "등록된 생두가 없습니다."),
+                        )
+                      : ListView.separated(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(bottom: height / 10),
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _registerGreenBeanCtrl.greenBeanList.length,
+                          separatorBuilder: (context, index) => const SizedBox(height: 5),
+                          itemBuilder: (context, index) {
+                            return Container(
+                              padding: const EdgeInsets.fromLTRB(12, 8, 6, 8),
+                              decoration: BoxDecoration(
+                                color: Colors.brown[50],
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(index == 0 ? 8 : 0),
+                                  bottom: Radius.circular(index == _registerGreenBeanCtrl.greenBeanList.length - 1 ? 8 : 0),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _registerGreenBeanCtrl.greenBeanList[index]["name"],
+                                      style: Theme.of(context).textTheme.bodyMedium,
                                     ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          _registerGreenBeanCtrl.greenBeanList[index]["name"],
-                                          style: Theme.of(context).textTheme.bodyMedium,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        style: IconButton.styleFrom(
-                                          visualDensity: VisualDensity.compact,
-                                        ),
-                                        onPressed: () => _registerGreenBeanCtrl.deleteGreenBean(context, index),
-                                        icon: Icon(
-                                          Icons.clear,
-                                          size: height / 50,
-                                          applyTextScaling: true,
-                                        ),
-                                      ),
-                                    ],
+                                  IconButton(
+                                    style: IconButton.styleFrom(
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                    onPressed: () => _registerGreenBeanCtrl.deleteGreenBean(context, index),
+                                    icon: Icon(
+                                      Icons.clear,
+                                      size: height / 50,
+                                      applyTextScaling: true,
+                                    ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                 ],
               ),
             ),
