@@ -1,5 +1,6 @@
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/utility/utility.dart';
 import 'package:get/get.dart';
 
 class StockController extends GetxController {
@@ -18,11 +19,21 @@ class StockController extends GetxController {
 
   void getGreenBeanList() async {
     final list = await GreenBeanStockSqfLite().getGreenBeanStock();
-    if (list.isNotEmpty) _greenBeanStockList(list);
+    if (list.isNotEmpty) {
+      _greenBeanStockList(Utility().sortingName(list));
+    }
   }
 
   void getRoastingBeanStockList() async {
     final list = await RoastingBeanStockSqfLite().getRoastingBeanStock();
-    if (list.isNotEmpty) _roastingBeanStockList(list);
+    if (list.isNotEmpty) {
+      List singles = [];
+      List blends = [];
+      for (final item in Utility().sortingName(list)) {
+        item["type"] == "1" ? singles.add(item) : blends.add(item);
+      }
+      _roastingBeanStockList.insertAll(0, singles);
+      _roastingBeanStockList.addAll(blends);
+    }
   }
 }
