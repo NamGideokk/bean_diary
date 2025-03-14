@@ -9,9 +9,7 @@ import 'package:bean_diary/widgets/custom_date_picker.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/suggestions_view.dart';
 import 'package:bean_diary/widgets/ui_spacing.dart';
-import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:bean_diary/widgets/weight_input_guide.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -194,8 +192,8 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
-                            if (confirm) {
+                            bool? confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
+                            if (confirm == true) {
                               _supplierTECtrl.clear();
                               _warehousingGreenBeanCtrl.setInitGreenBeanWarehousingInfo();
                             }

@@ -344,7 +344,7 @@ class WarehousingGreenBeanController extends GetxController {
 
   /// 25-03-11
   ///
-  /// 로스팅 관리 > 블렌드명 입력에 따른 추천 목록 가져오기
+  /// 로스팅 관리 > 블렌드명 입력에 따른 추천 목록 가져오기🥦
   void getBlendNameSuggestions(String value) {
     List list = [];
     for (final name in blendNames) {
@@ -355,7 +355,7 @@ class WarehousingGreenBeanController extends GetxController {
 
   /// 25-03-11
   ///
-  /// 블렌드명 TextField 선택 시 블렌드명 전체 목록 할당하기
+  /// 블렌드명 TextField 선택 시 블렌드명 전체 목록 할당하기🥦
   void setAllBlendNames(TextEditingController ctrl) {
     if (ctrl.text == "") {
       _blendNameSuggestions(blendNames);
