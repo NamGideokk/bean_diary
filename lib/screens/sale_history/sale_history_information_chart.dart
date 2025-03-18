@@ -61,7 +61,7 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                       _saleHistoryCtrl.getMarkerWidth(context.size?.width);
                     });
                     return Text(
-                      "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSalesInShowList)}kg",
+                      "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSalesInShowList))}kg",
                       textAlign: TextAlign.center,
                       textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
                       style: Theme.of(context).textTheme.bodyLarge,
@@ -87,10 +87,10 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                           tween: ColorTween(
                             begin: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == i
                                 ? Colors.orange
-                                : _saleHistoryCtrl.getDynamicBrownColor(i, _saleHistoryCtrl.chartBySeller.length),
+                                : Utility().getDynamicBrownColor(i, _saleHistoryCtrl.chartBySeller.length),
                             end: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == i
                                 ? Colors.orange
-                                : _saleHistoryCtrl.getDynamicBrownColor(i, _saleHistoryCtrl.chartBySeller.length),
+                                : Utility().getDynamicBrownColor(i, _saleHistoryCtrl.chartBySeller.length),
                           ),
                           builder: (context, color, child) {
                             return CircularProgressIndicator(
@@ -120,8 +120,9 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                               style: Theme.of(context).textTheme.bodyMedium,
                               children: [
                                 TextSpan(
-                                  text:
-                                      _saleHistoryCtrl.showChartInfo != 0 ? "\n${Utility().parseToDoubleWeight(_saleHistoryCtrl.chartBySeller[_saleHistoryCtrl.showChartInfo - 1]["sales"])}kg" : null,
+                                  text: _saleHistoryCtrl.showChartInfo != 0
+                                      ? "\n${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.chartBySeller[_saleHistoryCtrl.showChartInfo - 1]["sales"]))}kg"
+                                      : null,
                                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                         height: 1,
                                         letterSpacing: -0.5,
@@ -153,7 +154,7 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                     borderRadius: BorderRadius.circular(5),
                     color: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == index
                         ? Colors.orange
-                        : _saleHistoryCtrl.getDynamicBrownColor(index, _saleHistoryCtrl.chartBySeller.length),
+                        : Utility().getDynamicBrownColor(index, _saleHistoryCtrl.chartBySeller.length),
                   ),
                 ),
                 label: RichText(

@@ -1,5 +1,4 @@
 import 'package:bean_diary/controllers/roasting_management_controller.dart';
-import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/header_title.dart';
 import 'package:bean_diary/widgets/suggestions_view.dart';
 import 'package:bean_diary/widgets/ui_spacing.dart';
@@ -21,8 +20,6 @@ class BlendView extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium,
           decoration: const InputDecoration(hintText: "블렌드명"),
-          onTap: () => roastingManagementCtrl.setAllBlendNames(roastingManagementCtrl.blendNameTECtrl),
-          onChanged: (value) => roastingManagementCtrl.getBlendNameSuggestions(roastingManagementCtrl.blendNameTECtrl.text),
         ),
         SuggestionsView(
           suggestions: roastingManagementCtrl.blendNameSuggestions,
@@ -31,7 +28,6 @@ class BlendView extends StatelessWidget {
         ),
         const UiSpacing(),
         const HeaderTitle(title: "투입 생두 정보", subTitle: "Green coffee bean input info"),
-        const BeanSelectDropdownButton(listType: 2),
       ],
     );
   }

@@ -364,16 +364,6 @@ class SaleHistoryController extends GetxController {
     _chartBySeller(list);
   }
 
-  /// 25-03-01
-  ///
-  /// 차트 길이에 맞게 유동적으로 색상 분배하기
-  Color getDynamicBrownColor(int index, int chartLength) {
-    if (chartLength == 1) return Colors.brown;
-
-    double ratio = index / (chartLength - 1);
-    return Color.lerp(Colors.brown[900], Colors.brown[50], ratio)!;
-  }
-
   /// 25-02-27
   ///
   /// 차트 항목 탭 시 정보 보여주기

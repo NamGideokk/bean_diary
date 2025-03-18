@@ -1,10 +1,11 @@
 import 'package:bean_diary/controllers/app_info_controller.dart';
+import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/screens/data_management_main.dart';
 import 'package:bean_diary/screens/green_bean_warehousing_main.dart';
 import 'package:bean_diary/screens/roasting_management_main.dart';
 import 'package:bean_diary/screens/sale_history/sale_history_main.dart';
-import 'package:bean_diary/screens/sale_management_main.dart';
+import 'package:bean_diary/screens/sales_management_main.dart';
 import 'package:bean_diary/screens/stock_status_main.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/custom_upgrade_message.dart';
@@ -47,7 +48,7 @@ class _HomeState extends State<Home> {
       "title": "판매 관리",
       "subTitle": "판매한 원두를 등록하세요",
       "img": "assets/images/production.png",
-      "screen": const SaleManagementMain(),
+      "screen": const SalesManagementMain(),
     },
     {
       "title": "판매 내역",
@@ -67,6 +68,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     Get.put(CustomDatePickerController());
+    Get.put(BeanSelectionDropdownController());
     getPackageInfo();
   }
 

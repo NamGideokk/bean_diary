@@ -1,38 +1,35 @@
+import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
-import 'package:bean_diary/controllers/roasting_bean_sales_controller.dart';
-import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/controllers/sales_management_controller.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
-import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
+import 'package:bean_diary/widgets/enums.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/new_bean_selection_dropdown.dart';
 import 'package:bean_diary/widgets/suggestions_view.dart';
 import 'package:bean_diary/widgets/ui_spacing.dart';
-import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:bean_diary/widgets/weight_input_guide.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SaleManagementMain extends StatefulWidget {
-  const SaleManagementMain({Key? key}) : super(key: key);
+class SalesManagementMain extends StatefulWidget {
+  const SalesManagementMain({Key? key}) : super(key: key);
 
   @override
-  State<SaleManagementMain> createState() => _SaleManagementMainState();
+  State<SalesManagementMain> createState() => _SalesManagementMainState();
 }
 
-class _SaleManagementMainState extends State<SaleManagementMain> {
-  final WarehousingGreenBeanController _warehousingGreenBeanCtrl = Get.put(WarehousingGreenBeanController());
-  final RoastingBeanSalesController _roastingBeanSalesCtrl = Get.put(RoastingBeanSalesController());
-  final _scrollCtrl = ScrollController();
-  final _retailerTECtrl = TextEditingController();
-  final _retailerFN = FocusNode();
+class _SalesManagementMainState extends State<SalesManagementMain> {
+  final SalesManagementController _salesManagementCtrl = Get.put(SalesManagementController());
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _roastingBeanSalesCtrl.getRetailers();
+      _salesManagementCtrl.getRetailers();
+      BeanSelectionDropdownController.to.getBeans(ListType.roastedBeanInventory);
     });
   }
 
@@ -40,11 +37,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
   void dispose() {
     super.dispose();
     CustomDatePickerController.to.setDateToToday();
-    Get.delete<WarehousingGreenBeanController>();
-    Get.delete<RoastingBeanSalesController>();
-    _scrollCtrl.dispose();
-    _retailerTECtrl.dispose();
-    _retailerFN.dispose();
+    Get.delete<SalesManagementController>();
   }
 
   @override
@@ -60,7 +53,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(10),
-              controller: _scrollCtrl,
+              controller: _salesManagementCtrl.scrollCtrl,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -69,22 +62,22 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                   const UiSpacing(),
                   const HeaderTitle(title: "판매처", subTitle: "Retailer"),
                   TextField(
-                    controller: _retailerTECtrl,
-                    focusNode: _retailerFN,
+                    controller: _salesManagementCtrl.retailerTECtrl,
+                    focusNode: _salesManagementCtrl.retailerFN,
                     textAlign: TextAlign.center,
                     decoration: const InputDecoration(hintText: "업체명"),
                     style: Theme.of(context).textTheme.bodyMedium,
-                    onTap: () => _roastingBeanSalesCtrl.setAllRetailers(_retailerTECtrl),
-                    onChanged: (value) => _roastingBeanSalesCtrl.getRetailerSuggestions(_retailerTECtrl.text),
+                    onTap: () => _salesManagementCtrl.setAllRetailers(),
+                    onChanged: (value) => _salesManagementCtrl.getRetailerSuggestions(),
                   ),
                   SuggestionsView(
-                    suggestions: _roastingBeanSalesCtrl.retailerSuggestions,
-                    textEditingCtrl: _retailerTECtrl,
-                    focusNode: _retailerFN,
+                    suggestions: _salesManagementCtrl.retailerSuggestions,
+                    textEditingCtrl: _salesManagementCtrl.retailerTECtrl,
+                    focusNode: _salesManagementCtrl.retailerFN,
                   ),
                   const UiSpacing(),
                   const HeaderTitle(title: "판매 원두 정보", subTitle: "Roasted coffee bean sale info"),
-                  const BeanSelectDropdownButton(listType: 1),
+                  const NewBeanSelectionDropdown(listType: ListType.roastedBeanInventory),
                   const SizedBox(height: 10),
                   Row(
                     children: [
@@ -98,8 +91,8 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                       Expanded(
                         child: TextField(
                           textAlign: TextAlign.center,
-                          controller: _roastingBeanSalesCtrl.weightTECtrl,
-                          focusNode: _roastingBeanSalesCtrl.weightFN,
+                          controller: _salesManagementCtrl.salesWeightTECtrl,
+                          focusNode: _salesManagementCtrl.salesWeightFN,
                           style: Theme.of(context).textTheme.bodyMedium,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
@@ -111,22 +104,8 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                               style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
                             ),
                           ),
-                          onTap: () => Utility().moveScrolling(_scrollCtrl),
-                          onTapOutside: (event) {
-                            if (!_roastingBeanSalesCtrl.weightTECtrl.text.contains(".") && _roastingBeanSalesCtrl.weightTECtrl.text != "") {
-                              _roastingBeanSalesCtrl.weightTECtrl.text = "${_roastingBeanSalesCtrl.weightTECtrl.text}.0";
-                            }
-                          },
-                          onEditingComplete: () {
-                            if (!_roastingBeanSalesCtrl.weightTECtrl.text.contains(".") && _roastingBeanSalesCtrl.weightTECtrl.text != "") {
-                              _roastingBeanSalesCtrl.weightTECtrl.text = "${_roastingBeanSalesCtrl.weightTECtrl.text}.0";
-                            }
-                          },
-                          onSubmitted: (value) => _roastingBeanSalesCtrl.onTapSalesButton(
-                            context,
-                            _retailerTECtrl.text.trim(),
-                            _retailerFN,
-                          ),
+                          onTap: () => Utility().moveScrolling(_salesManagementCtrl.scrollCtrl),
+                          onSubmitted: (value) => _salesManagementCtrl.registerSales(context),
                         ),
                       ),
                     ],
@@ -176,9 +155,8 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                         GestureDetector(
                           onTap: () async {
                             bool? confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
-                            if (confirm == true) {
-                              _retailerTECtrl.clear();
-                              _roastingBeanSalesCtrl.allValueInit();
+                            if (confirm == true && context.mounted) {
+                              _salesManagementCtrl.clearData(context);
                             }
                           },
                           child: Container(
@@ -196,11 +174,7 @@ class _SaleManagementMainState extends State<SaleManagementMain> {
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => _roastingBeanSalesCtrl.onTapSalesButton(
-                              context,
-                              _retailerTECtrl.text.trim(),
-                              _retailerFN,
-                            ),
+                            onTap: () => _salesManagementCtrl.registerSales(context),
                             child: Container(
                               color: Colors.brown,
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

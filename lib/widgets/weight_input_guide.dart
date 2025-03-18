@@ -38,7 +38,7 @@ class WeightInputGuide extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(
-                    "100g 단위 입력 시, 소수점 첫째 자리까지 입력해 주세요.",
+                    "100g 단위 입력 시, 소수점 첫째 자리까지만 입력해 주세요.",
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),

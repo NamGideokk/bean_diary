@@ -1,18 +1,16 @@
-import 'dart:convert';
+import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
+import 'package:bean_diary/controllers/roasting_management_controller.dart';
 import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
-import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
-import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
-import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
-import 'package:bean_diary/widgets/bean_select_dropdown_button.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
 import 'package:bean_diary/widgets/custom_date_picker.dart';
+import 'package:bean_diary/widgets/enums.dart';
 import 'package:bean_diary/widgets/header_title.dart';
+import 'package:bean_diary/widgets/new_bean_selection_dropdown.dart';
 import 'package:bean_diary/widgets/suggestions_view.dart';
 import 'package:bean_diary/widgets/ui_spacing.dart';
-import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:bean_diary/widgets/weight_input_guide.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,32 +23,24 @@ class RoastingManagementMain extends StatefulWidget {
 }
 
 class _RoastingManagementMainState extends State<RoastingManagementMain> {
-  final WarehousingGreenBeanController _warehousingGreenBeanCtrl = Get.put(WarehousingGreenBeanController());
-
-  final _weightFN = FocusNode();
-  final _roastingWeightFN = FocusNode();
-
-  final _scrollCtrl = ScrollController();
-  final _blendNameTECtrl = TextEditingController();
-  final _blendNameFN = FocusNode();
+  final RoastingManagementController _roastingManagementCtrl = Get.put(RoastingManagementController());
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _warehousingGreenBeanCtrl.getBlendNames();
-      CustomDatePickerController.to.setDateToToday();
+      _roastingManagementCtrl.getBlendNames();
+      BeanSelectionDropdownController.to.getBeans(ListType.greenBeanInventory);
     });
   }
 
-  void allValueInit() {
-    FocusScope.of(context).requestFocus(FocusNode());
-    CustomDatePickerController.to.setDateToToday();
-    _warehousingGreenBeanCtrl.weightTECtrl.clear();
-    _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
-
-    // 블렌드 초기화
-    _warehousingGreenBeanCtrl.initBlendInfo();
+  /// 로스팅 등록
+  Future registerRoasting() async {
+    if (_roastingManagementCtrl.roastingType == 1) {
+      await _roastingManagementCtrl.registerSingleOriginRoasting(context);
+    } else {
+      await _roastingManagementCtrl.registerBlendRoasting(context);
+    }
   }
 
   @override
@@ -58,9 +48,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
     super.dispose();
     CustomDatePickerController.to.setDateToToday();
     Get.delete<WarehousingGreenBeanController>();
-    _scrollCtrl.dispose();
-    _blendNameTECtrl.dispose();
-    _blendNameFN.dispose();
+    Get.delete<RoastingManagementController>();
   }
 
   @override
@@ -78,7 +66,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
             SingleChildScrollView(
               padding: const EdgeInsets.all(10),
               physics: const ClampingScrollPhysics(),
-              controller: _scrollCtrl,
+              controller: _roastingManagementCtrl.scrollCtrl,
               child: SafeArea(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,76 +78,70 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                     Row(
                       children: [
                         Expanded(
-                          child: RadioListTile(
-                            value: 1,
-                            groupValue: _warehousingGreenBeanCtrl.roastingType,
-                            selected: _warehousingGreenBeanCtrl.roastingType == 1 ? true : false,
-                            contentPadding: EdgeInsets.zero,
-                            dense: true,
-                            onChanged: (value) => _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString())),
-                            title: Text(
-                              "싱글오리진",
-                              style: TextStyle(
-                                fontSize: height / 54,
-                              ),
-                            ),
+                          child: FilterChip(
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            selectedColor: _roastingManagementCtrl.roastingType == 1 ? Colors.brown[50] : Colors.white,
+                            side: BorderSide(color: _roastingManagementCtrl.roastingType == 1 ? Colors.brown[200]! : Colors.brown[100]!),
+                            checkmarkColor: Colors.orange,
+                            surfaceTintColor: Colors.white,
+                            selected: _roastingManagementCtrl.roastingType == 1 ? true : false,
+                            labelStyle: Theme.of(context).textTheme.bodyMedium,
+                            label: const Text("싱글오리진"),
+                            onSelected: (value) => _roastingManagementCtrl.setRoastingType(1),
                           ),
                         ),
                         Expanded(
-                          child: RadioListTile(
-                            value: 2,
-                            groupValue: _warehousingGreenBeanCtrl.roastingType,
-                            selected: _warehousingGreenBeanCtrl.roastingType == 2 ? true : false,
-                            contentPadding: EdgeInsets.zero,
-                            dense: true,
-                            onChanged: (value) => _warehousingGreenBeanCtrl.setRoastingType(int.parse(value.toString())),
-                            title: Text(
-                              "블렌드",
-                              style: TextStyle(
-                                fontSize: height / 54,
-                              ),
-                            ),
+                          child: FilterChip(
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            selectedColor: _roastingManagementCtrl.roastingType == 2 ? Colors.brown[50] : Colors.white,
+                            side: BorderSide(color: _roastingManagementCtrl.roastingType == 2 ? Colors.brown[200]! : Colors.brown[100]!),
+                            checkmarkColor: Colors.orange,
+                            surfaceTintColor: Colors.blue,
+                            selected: _roastingManagementCtrl.roastingType == 2 ? true : false,
+                            labelStyle: Theme.of(context).textTheme.bodyMedium,
+                            label: const Text("블렌드"),
+                            onSelected: (value) => _roastingManagementCtrl.setRoastingType(2),
                           ),
                         ),
                       ],
                     ),
                     const UiSpacing(),
-                    if (_warehousingGreenBeanCtrl.roastingType == 2)
+                    if (_roastingManagementCtrl.roastingType == 2)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const HeaderTitle(title: "블렌드명", subTitle: "Blend name"),
                           TextField(
-                            controller: _blendNameTECtrl,
-                            focusNode: _blendNameFN,
+                            controller: _roastingManagementCtrl.blendNameTECtrl,
+                            focusNode: _roastingManagementCtrl.blendNameFN,
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyMedium,
                             decoration: const InputDecoration(hintText: "블렌드명"),
-                            onTap: () => _warehousingGreenBeanCtrl.setAllBlendNames(_blendNameTECtrl),
-                            onChanged: (value) => _warehousingGreenBeanCtrl.getBlendNameSuggestions(_blendNameTECtrl.text),
+                            onTap: () => _roastingManagementCtrl.setAllBlendNames(),
+                            onChanged: (value) => _roastingManagementCtrl.getBlendNameSuggestions(),
                           ),
                           SuggestionsView(
-                            suggestions: _warehousingGreenBeanCtrl.blendNameSuggestions,
-                            textEditingCtrl: _blendNameTECtrl,
-                            focusNode: _blendNameFN,
+                            suggestions: _roastingManagementCtrl.blendNameSuggestions,
+                            textEditingCtrl: _roastingManagementCtrl.blendNameTECtrl,
+                            focusNode: _roastingManagementCtrl.blendNameFN,
                           ),
                           const UiSpacing(),
                         ],
                       ),
                     const HeaderTitle(title: "투입 생두 정보", subTitle: "Green coffee bean input info"),
-                    const BeanSelectDropdownButton(listType: 2),
-                    const SizedBox(height: 5),
-                    if (_warehousingGreenBeanCtrl.roastingType == 2)
+                    const NewBeanSelectionDropdown(listType: ListType.greenBeanInventory),
+                    const SizedBox(height: 10),
+                    if (_roastingManagementCtrl.roastingType == 2)
                       ListView.separated(
                         shrinkWrap: true,
-                        padding: const EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _warehousingGreenBeanCtrl.blendBeanList.length,
+                        itemCount: _roastingManagementCtrl.blendInputGreenBeans.length,
                         separatorBuilder: (context, index) => const SizedBox(height: 15),
                         itemBuilder: (context, index) => Obx(
                           () => AnimatedOpacity(
                             duration: const Duration(milliseconds: 500),
-                            opacity: _warehousingGreenBeanCtrl.opacityList[index],
+                            opacity: _roastingManagementCtrl.opacityList[index],
                             curve: Curves.easeInOut,
                             child: Stack(
                               children: [
@@ -177,7 +159,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 1),
+                                              Utility().splitNameAndWeight(_roastingManagementCtrl.blendInputGreenBeans[index].toString(), 1),
                                               style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600),
                                             ),
                                           ),
@@ -188,7 +170,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                               style: IconButton.styleFrom(
                                                 visualDensity: VisualDensity.compact,
                                               ),
-                                              onPressed: () => _warehousingGreenBeanCtrl.deleteBlendBeanListItem(index),
+                                              onPressed: () => _roastingManagementCtrl.deleteBlendBeanListItem(index),
                                               icon: Icon(
                                                 Icons.clear,
                                                 color: Colors.black,
@@ -204,14 +186,14 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
                                           Text(
-                                            "${Utility().splitNameAndWeight(_warehousingGreenBeanCtrl.blendBeanList[index].toString(), 2)}  /  ",
+                                            "${Utility().splitNameAndWeight(_roastingManagementCtrl.blendInputGreenBeans[index].toString(), 2)}  /  ",
                                             style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600),
                                           ),
                                           Flexible(
                                             child: IntrinsicWidth(
                                               child: TextField(
-                                                controller: _warehousingGreenBeanCtrl.weightTECtrlList[index],
-                                                focusNode: _warehousingGreenBeanCtrl.weightFNList[index],
+                                                controller: _roastingManagementCtrl.blendInputWeightTECtrlList[index],
+                                                focusNode: _roastingManagementCtrl.blendInputWeightFNList[index],
                                                 textInputAction: TextInputAction.next,
                                                 keyboardType: TextInputType.number,
                                                 style: Theme.of(context).textTheme.bodyLarge,
@@ -231,17 +213,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
                                                   ),
                                                 ),
-                                                onTapOutside: (event) {
-                                                  if (!_warehousingGreenBeanCtrl.weightTECtrlList[index].text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrlList[index].text != "") {
-                                                    _warehousingGreenBeanCtrl.weightTECtrlList[index].text = "${_warehousingGreenBeanCtrl.weightTECtrlList[index].text}.0";
-                                                  }
-                                                },
-                                                onEditingComplete: () {
-                                                  if (!_warehousingGreenBeanCtrl.weightTECtrlList[index].text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrlList[index].text != "") {
-                                                    _warehousingGreenBeanCtrl.weightTECtrlList[index].text = "${_warehousingGreenBeanCtrl.weightTECtrlList[index].text}.0";
-                                                  }
-                                                },
-                                                onSubmitted: (value) => FocusScope.of(context).nextFocus(),
                                               ),
                                             ),
                                           ),
@@ -268,8 +239,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                           ),
                         ),
                       ),
-                    SizedBox(height: _warehousingGreenBeanCtrl.roastingType == 1 ? 10 : 30),
-                    _warehousingGreenBeanCtrl.roastingType == 1
+                    // 싱글오리진
+                    _roastingManagementCtrl.roastingType == 1
                         ? Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -282,8 +253,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               ),
                               Flexible(
                                 child: TextField(
-                                  controller: _warehousingGreenBeanCtrl.weightTECtrl,
-                                  focusNode: _weightFN,
+                                  controller: _roastingManagementCtrl.singleInputWeightTECtrl,
+                                  focusNode: _roastingManagementCtrl.singleInputWeightFN,
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.next,
@@ -300,18 +271,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     ),
                                   ),
                                   style: Theme.of(context).textTheme.bodyMedium,
-                                  onTap: () => Utility().moveScrolling(_scrollCtrl),
-                                  onTapOutside: (event) {
-                                    if (!_warehousingGreenBeanCtrl.weightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrl.text != "") {
-                                      _warehousingGreenBeanCtrl.weightTECtrl.text = "${_warehousingGreenBeanCtrl.weightTECtrl.text}.0";
-                                    }
-                                  },
-                                  onEditingComplete: () {
-                                    if (!_warehousingGreenBeanCtrl.weightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrl.text != "") {
-                                      _warehousingGreenBeanCtrl.weightTECtrl.text = "${_warehousingGreenBeanCtrl.weightTECtrl.text}.0";
-                                    }
-                                  },
-                                  onSubmitted: (value) => FocusScope.of(context).nextFocus(),
+                                  onTap: () => Utility().moveScrolling(_roastingManagementCtrl.scrollCtrl),
                                 ),
                               ),
                               const SizedBox(width: 15),
@@ -324,8 +284,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               ),
                               Flexible(
                                 child: TextField(
-                                  controller: _warehousingGreenBeanCtrl.roastingWeightTECtrl,
-                                  focusNode: _roastingWeightFN,
+                                  controller: _roastingManagementCtrl.singleOutputWeightTECtrl,
+                                  focusNode: _roastingManagementCtrl.singleOutputWeightFN,
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
                                   textInputAction: TextInputAction.done,
@@ -339,22 +299,13 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     ),
                                   ),
                                   style: Theme.of(context).textTheme.bodyMedium,
-                                  onTap: () => Utility().moveScrolling(_scrollCtrl),
-                                  onTapOutside: (event) {
-                                    if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
-                                      _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
-                                    }
-                                  },
-                                  onEditingComplete: () {
-                                    if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
-                                      _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
-                                    }
-                                  },
-                                  onSubmitted: (value) => _roastingWeightFN.unfocus(),
+                                  onTap: () => Utility().moveScrolling(_roastingManagementCtrl.scrollCtrl),
+                                  onSubmitted: (value) => registerRoasting(),
                                 ),
                               ),
                             ],
                           )
+                        // 블렌드
                         : Row(
                             children: [
                               Text(
@@ -366,8 +317,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                               ),
                               Expanded(
                                 child: TextField(
-                                  controller: _warehousingGreenBeanCtrl.roastingWeightTECtrl,
-                                  focusNode: _roastingWeightFN,
+                                  controller: _roastingManagementCtrl.blendOutputWeightTECtrl,
+                                  focusNode: _roastingManagementCtrl.blendOutputWeightFN,
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
@@ -380,18 +331,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                     ),
                                   ),
                                   style: Theme.of(context).textTheme.bodyMedium,
-                                  onTap: () => Utility().moveScrolling(_scrollCtrl),
-                                  onTapOutside: (event) {
-                                    if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
-                                      _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
-                                    }
-                                  },
-                                  onEditingComplete: () {
-                                    if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
-                                      _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
-                                    }
-                                  },
-                                  onSubmitted: (value) => _roastingWeightFN.unfocus(),
+                                  onTap: () => Utility().moveScrolling(_roastingManagementCtrl.scrollCtrl),
+                                  onSubmitted: (value) => registerRoasting(),
                                 ),
                               ),
                             ],
@@ -440,8 +381,8 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              bool confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
-                              if (confirm) allValueInit();
+                              bool? confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
+                              if (confirm == true && context.mounted) _roastingManagementCtrl.clearData(context);
                             },
                             child: Container(
                               color: Colors.brown[100],
@@ -458,256 +399,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                           ),
                           Expanded(
                             child: GestureDetector(
-                              onTap: () async {
-                                // 2 = 블렌드 로스팅 등록
-                                if (_warehousingGreenBeanCtrl.roastingType == 2) {
-                                  if (_blendNameTECtrl.text.trim() == "") {
-                                    CustomDialog().showSnackBar(context, "블렌드명을 입력해 주세요.");
-                                    _blendNameFN.requestFocus();
-                                    return;
-                                  }
-                                  if (_warehousingGreenBeanCtrl.blendBeanList.isEmpty) {
-                                    CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
-                                    FocusScope.of(context).requestFocus(FocusNode());
-                                    return;
-                                  }
-                                  // 여기서부터 블렌드 n개 체크하기
-                                  _warehousingGreenBeanCtrl.weightTECtrlList.asMap().forEach((i, e) {
-                                    var divide = _warehousingGreenBeanCtrl.blendBeanList[i].toString().split(" / ");
-
-                                    if (e.text == "") {
-                                      CustomDialog().showSnackBar(context, "[${divide[0]}]\n생두의 투입량을 입력해 주세요.");
-                                      return;
-                                    }
-                                    var result = Utility().checkWeightRegEx(e.text.trim());
-                                    e.text = result["replaceValue"];
-
-                                    if (!result["bool"]) {
-                                      CustomDialog().showSnackBar(
-                                        context,
-                                        "[${divide[0]}]\n생두의 중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.",
-                                      );
-                                      return;
-                                    } else {
-                                      int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
-                                      int inputWeight = int.parse(e.text.trim().replaceAll(".", ""));
-                                      if (totalWeight < inputWeight) {
-                                        CustomDialog().showSnackBar(context, "[${divide[0]}]\n생두의 투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
-                                        return;
-                                      }
-                                    }
-                                  });
-
-                                  if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
-                                    CustomDialog().showSnackBar(context, "배출량을 입력해 주세요.");
-                                    FocusScope.of(context).requestFocus(FocusNode());
-                                    return;
-                                  } else {
-                                    var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim());
-                                    _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
-
-                                    if (!result["bool"]) {
-                                      CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
-                                      _roastingWeightFN.requestFocus();
-                                      return;
-                                    } else {
-                                      // 배출량과 블렌드 투입 총량 비교 부분
-                                      int blendTotalWeight = 0;
-                                      int roastingWeight = int.parse(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", ""));
-                                      _warehousingGreenBeanCtrl.weightTECtrlList.forEach((e) {
-                                        blendTotalWeight += int.parse(e.text.replaceAll(".", ""));
-                                      });
-                                      if (blendTotalWeight <= roastingWeight) {
-                                        CustomDialog().showSnackBar(context, "배출량이 총 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
-                                        FocusScope.of(context).requestFocus(FocusNode());
-                                        return;
-                                      }
-                                    }
-                                  }
-
-                                  String date = CustomDatePickerController.to.date.replaceAll(RegExp("[년 월 일 ]"), "-");
-                                  String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.replaceAll(".", "");
-                                  String history = jsonEncode([
-                                    {
-                                      "date": date,
-                                      "roasting_weight": roastingWeight,
-                                    },
-                                  ]);
-
-                                  // type, name, roasting_weight, history
-                                  Map<String, String> value = {
-                                    "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                    "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _blendNameTECtrl.text.trim(),
-                                    "roasting_weight": roastingWeight,
-                                    "history": history,
-                                  };
-
-                                  String beans = "";
-                                  for (int i = 0; i < _warehousingGreenBeanCtrl.blendBeanList.length; i++) {
-                                    String copyItem = _warehousingGreenBeanCtrl.blendBeanList[i].toString();
-                                    if (i == 0) {
-                                      beans = "생두 01: ${copyItem.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrlList[i].text}kg";
-                                    } else {
-                                      beans = "$beans\n생두 ${(i + 1).toString().padLeft(2, "0")}: ${copyItem.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrlList[i].text}kg";
-                                    }
-                                  }
-
-                                  bool? finalConfirm = await CustomDialog().showAlertDialog(
-                                    context,
-                                    "로스팅 등록",
-                                    "블렌드\n\n로스팅일: ${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n블렌드명: ${_blendNameTECtrl.text}\n$beans\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
-                                    acceptTitle: "등록하기",
-                                  );
-                                  if (finalConfirm != true) return;
-
-                                  bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
-
-                                  if (!mounted) return;
-                                  CustomDialog().showSnackBar(
-                                    context,
-                                    insertResult
-                                        ? "${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n블렌드 - ${_blendNameTECtrl.text.trim()}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
-                                        : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
-                                    isError: insertResult ? false : true,
-                                  );
-
-                                  if (insertResult) {
-                                    // 드롭다운버튼 생두 무게 리프레쉬
-                                    _warehousingGreenBeanCtrl.blendBeanList.asMap().forEach((i, e) {
-                                      String useWeight = _warehousingGreenBeanCtrl.weightTECtrlList[i].text.replaceAll(".", "");
-                                      Map<String, String> updateValue = {
-                                        "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                        "name": e.toString().split(" / ")[0],
-                                        "weight": useWeight,
-                                        "date": date,
-                                      };
-                                      GreenBeanStockSqfLite().updateWeightGreenBeanStock(updateValue);
-                                      _warehousingGreenBeanCtrl.updateBeanListWeight(e.toString(), useWeight);
-                                    });
-                                    _warehousingGreenBeanCtrl.weightTECtrl.clear();
-                                    _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
-                                    _blendNameTECtrl.clear();
-                                    _warehousingGreenBeanCtrl.initBlendInfo();
-                                    await _warehousingGreenBeanCtrl.getBlendNames();
-                                    _warehousingGreenBeanCtrl.resetOpacityList();
-                                  }
-
-                                  FocusScope.of(context).requestFocus(FocusNode());
-                                  return;
-                                }
-
-                                // 1 = 싱글오리진 로스팅 등록
-                                if (_warehousingGreenBeanCtrl.selectedBean == null) {
-                                  CustomDialog().showSnackBar(context, "투입할 생두를 선택해 주세요.");
-                                  FocusScope.of(context).requestFocus(FocusNode());
-                                  return;
-                                }
-                                if (_warehousingGreenBeanCtrl.weightTECtrl.text.trim() == "") {
-                                  CustomDialog().showSnackBar(context, "투입량을 입력해 주세요.");
-                                  _weightFN.requestFocus();
-                                  return;
-                                } else {
-                                  if (!_warehousingGreenBeanCtrl.weightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.weightTECtrl.text != "") {
-                                    _warehousingGreenBeanCtrl.weightTECtrl.text = "${_warehousingGreenBeanCtrl.weightTECtrl.text}.0";
-                                  }
-                                  var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.weightTECtrl.text.trim());
-                                  _warehousingGreenBeanCtrl.weightTECtrl.text = result["replaceValue"];
-
-                                  if (!result["bool"]) {
-                                    CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
-                                    _weightFN.requestFocus();
-                                    return;
-                                  } else {
-                                    // 투입량이랑 보유량이랑 비교하는 로직 부분
-                                    var divide = _warehousingGreenBeanCtrl.selectedBean.split(" / ");
-                                    int totalWeight = int.parse(divide[1].replaceAll(RegExp("[.,kg]"), ""));
-                                    int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
-                                    if (totalWeight < inputWeight) {
-                                      CustomDialog().showSnackBar(context, "투입량이 보유량보다 큽니다.\n다시 입력해 주세요.");
-                                      _weightFN.requestFocus();
-                                      return;
-                                    }
-                                  }
-                                }
-                                if (_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim() == "") {
-                                  CustomDialog().showSnackBar(context, "배출량을 입력해 주세요.");
-                                  _roastingWeightFN.requestFocus();
-                                  return;
-                                } else {
-                                  if (!_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.contains(".") && _warehousingGreenBeanCtrl.roastingWeightTECtrl.text != "") {
-                                    _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = "${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}.0";
-                                  }
-                                  var result = Utility().checkWeightRegEx(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim());
-                                  _warehousingGreenBeanCtrl.roastingWeightTECtrl.text = result["replaceValue"];
-
-                                  if (!result["bool"]) {
-                                    CustomDialog().showSnackBar(context, "중량 입력 형식이 맞지 않습니다.\n하단의 안내 문구대로 입력해 주세요.");
-                                    _roastingWeightFN.requestFocus();
-                                    return;
-                                  } else {
-                                    // 로스팅 후 총량이 투입량보다 낮은지 확인하는 로직 부분
-                                    int inputWeight = int.parse(_warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", ""));
-                                    int roastingWeight = int.parse(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", ""));
-                                    if (inputWeight <= roastingWeight) {
-                                      CustomDialog().showSnackBar(context, "배출량이 투입량과 같거나 클 수 없습니다.\n다시 입력해 주세요.");
-                                      _roastingWeightFN.requestFocus();
-                                      return;
-                                    }
-                                  }
-                                }
-
-                                String date = CustomDatePickerController.to.date.replaceAll(RegExp("[년 월 일 ]"), "-");
-                                String roastingWeight = _warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim().replaceAll(".", "");
-                                String history = jsonEncode([
-                                  {
-                                    "date": date,
-                                    "roasting_weight": roastingWeight,
-                                  },
-                                ]);
-
-                                // type, name, roasting_weight, history
-                                Map<String, String> value = {
-                                  "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                  "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _blendNameTECtrl.text.trim(),
-                                  "roasting_weight": roastingWeight,
-                                  "history": history,
-                                };
-
-                                bool? finalConfirm = await CustomDialog().showAlertDialog(
-                                  context,
-                                  "로스팅 등록",
-                                  "싱글오리진\n\n로스팅일: ${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n생두: ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]} / ${_warehousingGreenBeanCtrl.weightTECtrl.text}kg\n배출량: ${_warehousingGreenBeanCtrl.roastingWeightTECtrl.text}kg\n\n입력하신 정보로 로스팅을 등록합니다.",
-                                  acceptTitle: "등록하기",
-                                );
-                                if (finalConfirm != true) return;
-
-                                bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
-
-                                if (!mounted) return;
-                                CustomDialog().showSnackBar(
-                                  context,
-                                  insertResult
-                                      ? "${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n싱글오리진 - ${_warehousingGreenBeanCtrl.selectedBean.split(" / ")[0]}\n${Utility().numberFormat(_warehousingGreenBeanCtrl.roastingWeightTECtrl.text.trim())}kg\n로스팅 등록이 완료되었습니다."
-                                      : "로스팅 등록에 실패했습니다.\n입력값을 확인하시거나 잠시 후 다시 시도해 주세요.",
-                                  isError: insertResult ? false : true,
-                                );
-
-                                if (insertResult) {
-                                  String useWeight = _warehousingGreenBeanCtrl.weightTECtrl.text.trim().replaceAll(".", "");
-                                  Map<String, String> updateValue = {
-                                    "type": _warehousingGreenBeanCtrl.roastingType.toString(),
-                                    "name": _warehousingGreenBeanCtrl.roastingType == 1 ? _warehousingGreenBeanCtrl.selectedBean.split(" / ")[0] : _blendNameTECtrl.text.trim(),
-                                    "weight": useWeight,
-                                    "date": date,
-                                  };
-                                  GreenBeanStockSqfLite().updateWeightGreenBeanStock(updateValue);
-                                  _warehousingGreenBeanCtrl.updateBeanListWeight(_warehousingGreenBeanCtrl.selectedBean, useWeight);
-                                  _warehousingGreenBeanCtrl.weightTECtrl.clear();
-                                  _warehousingGreenBeanCtrl.roastingWeightTECtrl.clear();
-                                  _blendNameTECtrl.clear();
-                                  FocusScope.of(context).requestFocus(FocusNode());
-                                }
-                              },
+                              onTap: registerRoasting,
                               child: Container(
                                 color: Colors.brown,
                                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

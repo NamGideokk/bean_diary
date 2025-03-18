@@ -1,7 +1,9 @@
+import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
+import 'package:bean_diary/widgets/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -167,7 +169,7 @@ class RegisterGreenBeanController extends GetxController {
         // 성공
         greenBeanNameTECtrl.clear();
         await getGreenBeanList();
-        await _warehousingGreenBeanCtrl.getBeanList();
+        await BeanSelectionDropdownController.to.getBeans(ListType.greenBean);
         return;
       } else {
         // 중복
@@ -200,7 +202,7 @@ class RegisterGreenBeanController extends GetxController {
         copyList.removeAt(index);
         _greenBeanList(copyList);
         _warehousingGreenBeanCtrl.deleteBeanList(index);
-        _warehousingGreenBeanCtrl.getBeanList();
+        await BeanSelectionDropdownController.to.getBeans(ListType.greenBean);
       }
     }
     return;

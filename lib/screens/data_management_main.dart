@@ -43,7 +43,7 @@ class _DataManagementMainState extends State<DataManagementMain> {
 
     if (backupData.trim().isEmpty) {
       if (!mounted) return;
-      CustomDialog().showSnackBar(context, "백업할 데이터를 넣어주세요.");
+      CustomDialog().showSnackBar(context, "백업할 데이터를 넣어주세요.", isError: true);
       _dataManagementCtrl.backupDataFN.requestFocus();
       return;
     }

@@ -157,7 +157,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                         style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
                                       ),
                                       Text(
-                                        "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSales)}kg",
+                                        "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSales))}kg",
                                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
                                       ),
                                     ],
@@ -186,7 +186,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                       style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
                                     ),
                                     Text(
-                                      "${Utility().parseToDoubleWeight(_saleHistoryCtrl.thisYearSales)}kg",
+                                      "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.thisYearSales))}kg",
                                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
                                     ),
                                   ],

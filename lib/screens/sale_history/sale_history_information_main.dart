@@ -128,23 +128,23 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
             ),
             LabelContentRow(
               label: "총판매량",
-              content: "${Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSalesInShowList)}kg",
+              content: "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSalesInShowList))}kg",
             ),
             LabelContentRow(
               label: "최소판매량",
-              content: "${Utility().parseToDoubleWeight(_saleHistoryCtrl.minSales)}kg",
+              content: "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.minSales))}kg",
             ),
             LabelContentRow(
               label: "최대판매량",
-              content: "${Utility().parseToDoubleWeight(_saleHistoryCtrl.maxSales)}kg",
+              content: "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.maxSales))}kg",
             ),
             LabelContentRow(
               label: "평균판매량",
-              content: "${Utility().parseToDoubleWeight((_saleHistoryCtrl.totalSalesInShowList / _saleHistoryCtrl.showList.length).round())}kg",
+              content: "${Utility().numberFormat(Utility().parseToDoubleWeight((_saleHistoryCtrl.totalSalesInShowList / _saleHistoryCtrl.showList.length).round()))}kg",
             ),
             LabelContentRow(
               label: "월별판매량",
-              content: "${_saleHistoryCtrl.monthlySales.map((d) => "${d["date"]} - ${Utility().parseToDoubleWeight(d["sales"])}kg").join('\n')}",
+              content: "${_saleHistoryCtrl.monthlySales.map((d) => "${d["date"]} - ${Utility().numberFormat(Utility().parseToDoubleWeight(d["sales"]))}kg").join('\n')}",
             ),
           ],
         ),
