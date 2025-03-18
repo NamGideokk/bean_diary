@@ -53,6 +53,7 @@ class _SalesManagementMainState extends State<SalesManagementMain> {
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(10),
+              physics: const BouncingScrollPhysics(),
               controller: _salesManagementCtrl.scrollCtrl,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,6 +1,6 @@
 import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
-import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/controllers/green_bean_entry_controller.dart';
 import 'package:bean_diary/screens/green_bean_management/green_bean_register.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
@@ -15,21 +15,21 @@ import 'package:bean_diary/widgets/weight_input_guide.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class GreenBeanWarehousingMain extends StatefulWidget {
-  const GreenBeanWarehousingMain({Key? key}) : super(key: key);
+class GreenBeanEntryMain extends StatefulWidget {
+  const GreenBeanEntryMain({Key? key}) : super(key: key);
 
   @override
-  State<GreenBeanWarehousingMain> createState() => _GreenBeanWarehousingMainState();
+  State<GreenBeanEntryMain> createState() => _GreenBeanEntryMainState();
 }
 
-class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
-  final WarehousingGreenBeanController _warehousingGreenBeanCtrl = Get.put(WarehousingGreenBeanController());
+class _GreenBeanEntryMainState extends State<GreenBeanEntryMain> {
+  final GreenBeanEntryController _greenBeanEntryCtrl = Get.put(GreenBeanEntryController());
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _warehousingGreenBeanCtrl.getSuppliers();
+      _greenBeanEntryCtrl.getSuppliers();
       BeanSelectionDropdownController.to.getBeans(ListType.greenBean);
     });
   }
@@ -38,7 +38,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
   void dispose() {
     super.dispose();
     CustomDatePickerController.to.setDateToToday();
-    Get.delete<WarehousingGreenBeanController>();
+    Get.delete<GreenBeanEntryController>();
   }
 
   @override
@@ -54,8 +54,8 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
         children: [
           SingleChildScrollView(
             padding: const EdgeInsets.all(10),
-            physics: const ClampingScrollPhysics(),
-            controller: _warehousingGreenBeanCtrl.scrollCtrl,
+            physics: const BouncingScrollPhysics(),
+            controller: _greenBeanEntryCtrl.scrollCtrl,
             child: SafeArea(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,19 +68,19 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                       const UiSpacing(),
                       const HeaderTitle(title: "공급처", subTitle: "Supplier"),
                       TextField(
-                        controller: _warehousingGreenBeanCtrl.supplierTECtrl,
-                        focusNode: _warehousingGreenBeanCtrl.supplierFN,
+                        controller: _greenBeanEntryCtrl.supplierTECtrl,
+                        focusNode: _greenBeanEntryCtrl.supplierFN,
                         textAlign: TextAlign.center,
                         decoration: const InputDecoration(hintText: "업체명"),
                         style: Theme.of(context).textTheme.bodyMedium,
-                        onTap: () => _warehousingGreenBeanCtrl.setAllSuppliers(),
-                        onChanged: (value) => _warehousingGreenBeanCtrl.getSupplierSuggestions(),
-                        onEditingComplete: () => _warehousingGreenBeanCtrl.supplierFN.unfocus(),
+                        onTap: () => _greenBeanEntryCtrl.setAllSuppliers(),
+                        onChanged: (value) => _greenBeanEntryCtrl.getSupplierSuggestions(),
+                        onEditingComplete: () => _greenBeanEntryCtrl.supplierFN.unfocus(),
                       ),
                       SuggestionsView(
-                        suggestions: _warehousingGreenBeanCtrl.supplierSuggestions,
-                        textEditingCtrl: _warehousingGreenBeanCtrl.supplierTECtrl,
-                        focusNode: _warehousingGreenBeanCtrl.supplierFN,
+                        suggestions: _greenBeanEntryCtrl.supplierSuggestions,
+                        textEditingCtrl: _greenBeanEntryCtrl.supplierTECtrl,
+                        focusNode: _greenBeanEntryCtrl.supplierFN,
                       ),
                       const UiSpacing(),
                       const HeaderTitle(title: "생두 정보", subTitle: "Green coffee bean info"),
@@ -109,8 +109,8 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                           ),
                           Expanded(
                             child: TextField(
-                              controller: _warehousingGreenBeanCtrl.weightTECtrl,
-                              focusNode: _warehousingGreenBeanCtrl.weightFN,
+                              controller: _greenBeanEntryCtrl.weightTECtrl,
+                              focusNode: _greenBeanEntryCtrl.weightFN,
                               keyboardType: TextInputType.number,
                               style: Theme.of(context).textTheme.bodyMedium,
                               textAlign: TextAlign.center,
@@ -123,8 +123,8 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
                                 ),
                               ),
-                              onTap: () => Utility().moveScrolling(_warehousingGreenBeanCtrl.scrollCtrl),
-                              onSubmitted: (value) => _warehousingGreenBeanCtrl.registerWarehousingGreenBean(context),
+                              onTap: () => Utility().moveScrolling(_greenBeanEntryCtrl.scrollCtrl),
+                              onSubmitted: (value) => _greenBeanEntryCtrl.registerWarehousingGreenBean(context),
                             ),
                           ),
                         ],
@@ -177,7 +177,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                           onTap: () async {
                             bool? confirm = await CustomDialog().showAlertDialog(context, "초기화", "모든 입력값을 초기화하시겠습니까?");
                             if (confirm == true && context.mounted) {
-                              _warehousingGreenBeanCtrl.clearData(context);
+                              _greenBeanEntryCtrl.clearData(context);
                             }
                           },
                           child: Container(
@@ -195,7 +195,7 @@ class _GreenBeanWarehousingMainState extends State<GreenBeanWarehousingMain> {
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => _warehousingGreenBeanCtrl.registerWarehousingGreenBean(context),
+                            onTap: () => _greenBeanEntryCtrl.registerWarehousingGreenBean(context),
                             child: Container(
                               color: Colors.brown,
                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

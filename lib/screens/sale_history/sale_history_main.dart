@@ -279,6 +279,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                         ? Expanded(
                             child: SingleChildScrollView(
                               padding: EdgeInsets.only(bottom: height / 8.5),
+                              physics: const BouncingScrollPhysics(),
                               controller: _scrollCtrl,
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,

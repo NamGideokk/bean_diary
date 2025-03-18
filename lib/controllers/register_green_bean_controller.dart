@@ -1,5 +1,5 @@
 import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
-import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
+import 'package:bean_diary/controllers/green_bean_entry_controller.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RegisterGreenBeanController extends GetxController {
-  final _warehousingGreenBeanCtrl = Get.find<WarehousingGreenBeanController>();
+  final _greenBeanEntryCtrl = Get.find<GreenBeanEntryController>();
   final greenBeanNameTECtrl = TextEditingController();
   final greenBeanNameFN = FocusNode();
   final RxList _greenBeanList = [].obs;
@@ -201,7 +201,7 @@ class RegisterGreenBeanController extends GetxController {
         List copyList = [..._greenBeanList];
         copyList.removeAt(index);
         _greenBeanList(copyList);
-        _warehousingGreenBeanCtrl.deleteBeanList(index);
+        _greenBeanEntryCtrl.deleteBeanList(index);
         await BeanSelectionDropdownController.to.getBeans(ListType.greenBean);
       }
     }

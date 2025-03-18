@@ -34,6 +34,7 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
     return Obx(
       () => SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

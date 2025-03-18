@@ -37,6 +37,7 @@ class _GreenBeanRegisterState extends State<GreenBeanRegister> {
           children: [
             SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

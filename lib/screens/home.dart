@@ -2,11 +2,11 @@ import 'package:bean_diary/controllers/app_info_controller.dart';
 import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/screens/data_management_main.dart';
-import 'package:bean_diary/screens/green_bean_warehousing_main.dart';
+import 'package:bean_diary/screens/green_bean_entry_main.dart';
+import 'package:bean_diary/screens/inventory_status_main.dart';
 import 'package:bean_diary/screens/roasting_management_main.dart';
 import 'package:bean_diary/screens/sale_history/sale_history_main.dart';
 import 'package:bean_diary/screens/sales_management_main.dart';
-import 'package:bean_diary/screens/stock_status_main.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/custom_upgrade_message.dart';
 import 'package:bean_diary/widgets/drawer_widget.dart';
@@ -30,13 +30,13 @@ class _HomeState extends State<Home> {
       "title": "재고 현황",
       "subTitle": "생두와 원두 재고를 확인하세요",
       "img": "assets/images/stock.png",
-      "screen": const StockStatusMain(),
+      "screen": const InventoryStatusMain(),
     },
     {
       "title": "생두 입고 관리",
       "subTitle": "생두를 등록하고 입고를 관리하세요",
       "img": "assets/images/delivery.png",
-      "screen": const GreenBeanWarehousingMain(),
+      "screen": const GreenBeanEntryMain(),
     },
     {
       "title": "로스팅 관리",

@@ -9,14 +9,14 @@ import 'package:bean_diary/widgets/ui_spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class StockStatusMain extends StatefulWidget {
-  const StockStatusMain({Key? key}) : super(key: key);
+class InventoryStatusMain extends StatefulWidget {
+  const InventoryStatusMain({Key? key}) : super(key: key);
 
   @override
-  State<StockStatusMain> createState() => _StockStatusMainState();
+  State<InventoryStatusMain> createState() => _InventoryStatusMainState();
 }
 
-class _StockStatusMainState extends State<StockStatusMain> {
+class _InventoryStatusMainState extends State<InventoryStatusMain> {
   final _stockCtrl = Get.put(StockController());
 
   @override
@@ -33,6 +33,7 @@ class _StockStatusMainState extends State<StockStatusMain> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
+        physics: const BouncingScrollPhysics(),
         child: SafeArea(
           child: Obx(
             () => Column(

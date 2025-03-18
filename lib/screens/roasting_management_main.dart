@@ -1,7 +1,6 @@
 import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/controllers/roasting_management_controller.dart';
-import 'package:bean_diary/controllers/warehousing_green_bean_controller.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/bottom_button_border_container.dart';
@@ -47,7 +46,6 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
   void dispose() {
     super.dispose();
     CustomDatePickerController.to.setDateToToday();
-    Get.delete<WarehousingGreenBeanController>();
     Get.delete<RoastingManagementController>();
   }
 
@@ -65,7 +63,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
           children: [
             SingleChildScrollView(
               padding: const EdgeInsets.all(10),
-              physics: const ClampingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               controller: _roastingManagementCtrl.scrollCtrl,
               child: SafeArea(
                 child: Column(
