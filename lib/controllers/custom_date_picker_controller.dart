@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CustomDatePickerController extends GetxController {
   static CustomDatePickerController get to => Get.find();
 
+  var datePickerKey = UniqueKey().obs; // datePickerKey 추가
   final _now = DateTime.now();
   late final RxInt _thisYear = 0.obs;
   final RxInt _year = 0.obs;
@@ -31,6 +33,7 @@ class CustomDatePickerController extends GetxController {
     _month(_now.month);
     _day(_now.day);
     _date("${_now.year.toString()}-${_now.month.toString()}-${_now.day.toString()}");
+    datePickerKey.value = UniqueKey();
   }
 
   void setYear(int year) => _year(year);

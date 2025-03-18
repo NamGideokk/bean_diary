@@ -414,6 +414,7 @@ class RoastingManagementController extends GetxController {
   /// 모든 입력 정보 초기화하기
   void clearData(BuildContext context) {
     FocusScope.of(context).unfocus();
+    CustomDatePickerController.to.setDateToToday();
     if (roastingType == 1) {
       BeanSelectionDropdownController.to.resetSelectedBean();
       singleInputWeightTECtrl.clear();
