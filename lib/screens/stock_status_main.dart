@@ -110,9 +110,9 @@ class _GreenBeanTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
 
     return ExpansionTile(
+      tilePadding: const EdgeInsets.fromLTRB(10, 0, 2, 0),
       collapsedShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(index == 0 ? 8 : 0),
@@ -124,10 +124,13 @@ class _GreenBeanTile extends StatelessWidget {
           top: Radius.circular(index == 0 ? 8 : 0),
           bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
         ),
+        side: const BorderSide(color: Colors.black12, width: 0.5),
       ),
+      backgroundColor: Colors.grey[100],
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.ideographic,
         children: [
           Expanded(
             child: Text(
@@ -138,7 +141,7 @@ class _GreenBeanTile extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 5),
+          const SizedBox(width: 10),
           Text(
             "${Utility().numberFormat(Utility().parseToDoubleWeight(stockList[index]["weight"]))}kg",
             style: TextStyle(
@@ -150,83 +153,51 @@ class _GreenBeanTile extends StatelessWidget {
       ),
       children: [
         jsonDecode(stockList[index]["history"]).length > 0
-            ? ListView.builder(
+            ? ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
                 shrinkWrap: true,
                 itemCount: jsonDecode(stockList[index]["history"]).length,
+                separatorBuilder: (context, index) => const Divider(height: 10, thickness: 0.2, color: Colors.black54),
                 itemBuilder: (context, i) {
                   final history = Utility().sortingDate(jsonDecode(stockList[index]["history"]));
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: width / 4,
-                          child: Text(
-                            Utility().dateFormattingYYMMDD(history[i]["date"]),
-                            style: TextStyle(
-                              fontSize: height / 56,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        Utility().dateFormattingYYMMDD(history[i]["date"]),
+                        style: TextStyle(
+                          fontSize: height / 56,
+                          fontWeight: FontWeight.w300,
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.ideographic,
+                        children: [
+                          Expanded(
                             child: Text(
                               history[i]["company"],
                               textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: height / 56,
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
-                        ),
-                        Text(
-                          "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["weight"])))}kg",
-                          style: TextStyle(
-                            fontSize: height / 56,
+                          const SizedBox(width: 10),
+                          Text(
+                            "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["weight"])))}kg",
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: height / 56,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   );
                 },
               )
             : const SizedBox(),
-        //ngd 총 누적량 추가중
-        // Divider(
-        //   indent: 10,
-        //   endIndent: 10,
-        //   color: Colors.brown[200],
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.all(10),
-        //   child: Align(
-        //     alignment: Alignment.centerRight,
-        //     child: RichText(
-        //       text: TextSpan(
-        //         text: "총\t\t",
-        //         style: TextStyle(
-        //           fontSize: height / 70,
-        //           color: Colors.black54,
-        //         ),
-        //         children: [
-        //           TextSpan(
-        //             text: "1,200.0kg",
-        //             style: TextStyle(
-        //               fontSize: height / 54,
-        //               color: Colors.black87,
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }
@@ -240,9 +211,9 @@ class _RoastingBeanTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
 
     return ExpansionTile(
+      tilePadding: const EdgeInsets.fromLTRB(10, 0, 2, 0),
       collapsedShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(index == 0 ? 8 : 0),
@@ -254,18 +225,16 @@ class _RoastingBeanTile extends StatelessWidget {
           top: Radius.circular(index == 0 ? 8 : 0),
           bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
         ),
+        side: const BorderSide(color: Colors.black12, width: 0.5),
       ),
-      title: Row(
-        children: [
-          RoastingTypeWidget(type: stockList[index]["type"].toString()),
-        ],
-      ),
+      backgroundColor: Colors.grey[100],
+      title: Wrap(children: [RoastingTypeWidget(type: stockList[index]["type"].toString())]),
       subtitle: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: Text(
-              "${stockList[index]["name"]}",
+              " ${stockList[index]["name"]}",
               style: TextStyle(
                 fontSize: height / 54,
                 height: 1.2,
@@ -273,7 +242,7 @@ class _RoastingBeanTile extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 5),
+          const SizedBox(width: 10),
           Text(
             "${Utility().numberFormat(Utility().parseToDoubleWeight(stockList[index]["roasting_weight"]))}kg",
             style: TextStyle(
@@ -286,40 +255,36 @@ class _RoastingBeanTile extends StatelessWidget {
       ),
       children: [
         jsonDecode(stockList[index]["history"]).length > 0
-            ? ListView.builder(
+            ? ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
                 shrinkWrap: true,
                 itemCount: jsonDecode(stockList[index]["history"]).length,
+                separatorBuilder: (context, index) => const Divider(height: 10, thickness: 0.2, color: Colors.black54),
                 itemBuilder: (context, i) {
                   final history = Utility().sortingDate(jsonDecode(stockList[index]["history"]));
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: width / 4,
-                          child: Text(
-                            Utility().dateFormattingYYMMDD(history[i]["date"]),
-                            style: TextStyle(
-                              fontSize: height / 56,
-                              fontWeight: FontWeight.w300,
-                            ),
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        Utility().dateFormattingYYMMDD(history[i]["date"]),
+                        style: TextStyle(
+                          fontSize: height / 56,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["roasting_weight"])))}kg",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            fontSize: height / 56,
                           ),
                         ),
-                        Expanded(
-                          child: Text(
-                            "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["roasting_weight"])))}kg",
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              fontSize: height / 56,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   );
                 },
               )

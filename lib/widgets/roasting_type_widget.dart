@@ -12,7 +12,6 @@ class RoastingTypeWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
       margin: const EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
-        // color: Colors.brown[400]!.withOpacity(0.9),
         color: type == "1" ? ColorsList().chip8Color : ColorsList().chip3Color,
         borderRadius: BorderRadius.circular(10),
       ),
