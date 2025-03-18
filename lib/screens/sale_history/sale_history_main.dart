@@ -296,6 +296,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                         ),
                                       ),
                                       child: ListTile(
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                                         title: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment: CrossAxisAlignment.baseline,
