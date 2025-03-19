@@ -2,8 +2,10 @@ import 'package:bean_diary/controllers/roasting_management_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/enums.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class BeanSelectionDropdownController extends GetxController {
@@ -65,11 +67,16 @@ class BeanSelectionDropdownController extends GetxController {
   /// 25-03-14
   ///
   /// 목록 선택하기
-  void onChanged(Object? value, ListType listType) {
+  void onChanged(BuildContext context, Object? value, ListType listType) {
     if (listType == ListType.greenBean) {
       // 생두 선택
       _selectedBean(value.toString());
     } else if (listType == ListType.greenBeanInventory) {
+      List splitValue = value.toString().split(" / ");
+      if (int.parse(splitValue[1].replaceAll(RegExp(r"[,.kg]"), "")) == 0) {
+        CustomDialog().showSnackBar(context, "${splitValue[0]}의 재고가 없습니다.", isError: true);
+        return;
+      }
       // (블렌드 로스팅) 생두 목록 추가
       final roastingManagementCtrl = Get.find<RoastingManagementController>();
       if (roastingManagementCtrl.roastingType == 1) {
@@ -81,6 +88,11 @@ class BeanSelectionDropdownController extends GetxController {
       }
     } else {
       // 원두 선택
+      List splitValue = value.toString().split(" / ");
+      if (int.parse(splitValue[1].replaceAll(RegExp(r"[,.kg]"), "")) == 0) {
+        CustomDialog().showSnackBar(context, "${splitValue[0]}의 재고가 없습니다.", isError: true);
+        return;
+      }
       _selectedBean(value.toString());
     }
   }

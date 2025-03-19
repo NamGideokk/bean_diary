@@ -76,7 +76,7 @@ class _NewBeanSelectionDropdownState extends State<NewBeanSelectionDropdown> {
               child: Text(e),
             );
           }).toList(),
-          onChanged: (value) => BeanSelectionDropdownController.to.onChanged(value, widget.listType),
+          onChanged: (value) => BeanSelectionDropdownController.to.onChanged(context, value, widget.listType),
         ),
       ),
     );
