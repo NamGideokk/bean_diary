@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -43,15 +42,6 @@ class Utility {
       returnValue = "$left.$right";
     }
     return returnValue;
-  }
-
-  /// 투입량이 총 중량 넘지 않는지 체크하기
-  bool checkOverWeight(String totalWeight, String inputWeight) {
-    // \d+.{1}\dkg$
-    int iTotalWeight = int.parse(totalWeight.replaceAll(".", ""));
-    int iInputWeight = int.parse(inputWeight.replaceAll("", ""));
-
-    return false;
   }
 
   /// 날짜에 년월일 붙이기
@@ -139,7 +129,7 @@ class Utility {
   /// * true = 유효성 통과
   bool validateInputWeight(String inventory, String inputWeight) {
     List extractInventory = inventory.split(" / ");
-    String inventoryWeight = extractInventory[1].replaceAll(RegExp(r'[.kg]'), "");
+    String inventoryWeight = extractInventory[1].replaceAll(RegExp(r'[,.kg]'), "");
 
     return int.parse(inventoryWeight) < int.parse(inputWeight.replaceAll(".", "")) ? false : true;
   }
@@ -164,5 +154,23 @@ class Utility {
 
     double ratio = index / (length - 1);
     return Color.lerp(Colors.brown[900], Colors.brown[50], ratio)!;
+  }
+
+  /// 25-03-18
+  ///
+  /// 중량 단위 변환기
+  convertWeightUnit(String weight) {
+    int intWeight = int.parse(weight.replaceAll(".", ""));
+    if (intWeight == 0) {
+      return "0.0kg";
+    } else if (intWeight > 0 && intWeight < 10) {
+      return "${intWeight * 100}g";
+    } else if (intWeight >= 10 && intWeight <= 9999) {
+      return "${Utility().parseToDoubleWeight(intWeight)}kg";
+    } else if (intWeight >= 10000 && intWeight <= 9999999) {
+      return "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse((intWeight / 10000).toStringAsFixed(1).replaceAll(".", ""))))}t";
+    } else {
+      return "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse((intWeight / 10000000).toStringAsFixed(1).replaceAll(".", ""))))}kt";
+    }
   }
 }

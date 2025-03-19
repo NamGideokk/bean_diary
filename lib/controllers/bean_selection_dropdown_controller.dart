@@ -44,7 +44,7 @@ class BeanSelectionDropdownController extends GetxController {
       List list = [];
       if (result.isNotEmpty) {
         for (final bean in Utility().sortingName(result)) {
-          list.add("${bean["name"]} / ${Utility().parseToDoubleWeight(bean["weight"])}kg");
+          list.add("${bean["name"]} / ${Utility().numberFormat(Utility().parseToDoubleWeight(bean["weight"]))}kg");
         }
       }
       _beans(list);
@@ -54,7 +54,7 @@ class BeanSelectionDropdownController extends GetxController {
       List list = [];
       if (result.isNotEmpty) {
         for (final bean in Utility().sortingName(result)) {
-          list.add("${bean["name"]} / ${Utility().parseToDoubleWeight(bean["roasting_weight"])}kg");
+          list.add("${bean["name"]} / ${Utility().numberFormat(Utility().parseToDoubleWeight(bean["roasting_weight"]))}kg");
         }
       }
       _beans(list);

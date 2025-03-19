@@ -157,8 +157,18 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                         style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
                                       ),
                                       Text(
-                                        "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSales))}kg",
+                                        Utility().convertWeightUnit(_saleHistoryCtrl.totalSales.toString()),
+                                        textAlign: TextAlign.center,
                                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
+                                      ),
+                                      Visibility(
+                                        visible: _saleHistoryCtrl.totalSales >= 10000,
+                                        child: Text(
+                                          "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.totalSales))}kg",
+                                          textAlign: TextAlign.center,
+                                          textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
+                                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54, height: 1),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -186,8 +196,18 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                       style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
                                     ),
                                     Text(
-                                      "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.thisYearSales))}kg",
+                                      Utility().convertWeightUnit(_saleHistoryCtrl.totalSales.toString()),
+                                      textAlign: TextAlign.center,
                                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.brown),
+                                    ),
+                                    Visibility(
+                                      visible: _saleHistoryCtrl.totalSales >= 10000,
+                                      child: Text(
+                                        "${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.thisYearSales))}kg",
+                                        textAlign: TextAlign.center,
+                                        textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
+                                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54, height: 1),
+                                      ),
                                     ),
                                   ],
                                 ),
