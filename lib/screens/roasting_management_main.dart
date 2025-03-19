@@ -284,6 +284,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                             children: [
                                               Text(
                                                 "투입",
+                                                textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
                                                 style: TextStyle(
                                                   fontSize: height / 54,
                                                   color: Colors.brown,
@@ -340,6 +341,7 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                   children: [
                                     Text(
                                       "배출",
+                                      textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
                                       style: TextStyle(
                                         fontSize: height / 54,
                                         color: Colors.brown,

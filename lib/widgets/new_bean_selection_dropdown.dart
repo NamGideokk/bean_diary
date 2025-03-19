@@ -1,5 +1,6 @@
 import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/widgets/enums.dart';
+import 'package:bean_diary/widgets/roasting_type_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -75,6 +76,23 @@ class _NewBeanSelectionDropdownState extends State<NewBeanSelectionDropdown> {
               value: e,
               child: Text(e),
             );
+            // return widget.listType == ListType.roastedBeanInventory
+            //     ? DropdownMenuItem<String>(
+            //         value: e,
+            //         child: Row(
+            //           crossAxisAlignment: CrossAxisAlignment.baseline,
+            //           textBaseline: TextBaseline.ideographic,
+            //           children: [
+            //             RoastingTypeWidget(type: "1"),
+            //             const SizedBox(width: 5),
+            //             Flexible(child: Text(e)),
+            //           ],
+            //         ),
+            //       )
+            //     : DropdownMenuItem<String>(
+            //         value: e,
+            //         child: Text(e),
+            //       );
           }).toList(),
           onChanged: (value) => BeanSelectionDropdownController.to.onChanged(context, value, widget.listType),
         ),

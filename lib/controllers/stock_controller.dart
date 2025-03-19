@@ -6,9 +6,11 @@ import 'package:get/get.dart';
 class StockController extends GetxController {
   final RxList _greenBeanStockList = [].obs;
   final RxList _roastingBeanStockList = [].obs;
+  final RxBool _isConvert = true.obs;
 
   get greenBeanStockList => _greenBeanStockList;
   get roastingBeanStockList => _roastingBeanStockList;
+  get isConvert => _isConvert.value;
 
   @override
   void onInit() {
@@ -36,4 +38,20 @@ class StockController extends GetxController {
       _roastingBeanStockList.addAll(blends);
     }
   }
+
+  /// 25-03-19
+  ///
+  /// 상세 내역의 누적량 구하기
+  String getHistoryTotal(List list) {
+    int sum = 0;
+    for (final item in list) {
+      sum += int.parse(item["weight"] ?? item["roasting_weight"]);
+    }
+    return isConvert ? Utility().convertWeightUnit(Utility().parseToDoubleWeight(sum)) : "${Utility().numberFormat(Utility().parseToDoubleWeight(sum))}kg";
+  }
+
+  /// 25-03-19
+  ///
+  /// 상세 내역 누적량 표현 형식 변환하기
+  void setChangeIsConvert() => _isConvert(!isConvert);
 }
