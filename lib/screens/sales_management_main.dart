@@ -111,6 +111,20 @@ class _SalesManagementMainState extends State<SalesManagementMain> {
                       ),
                     ],
                   ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: TextButton(
+                      onPressed: () {
+                        if (BeanSelectionDropdownController.to.selectedBean == null) return;
+                        String maxWeight = BeanSelectionDropdownController.to.selectedBean.split(" / ")[1].replaceAll(RegExp(r"[,kg]"), "");
+                        _salesManagementCtrl.salesWeightTECtrl.text = maxWeight;
+                      },
+                      child: Text(
+                        "전량 입력",
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.brown),
+                      ),
+                    ),
+                  ),
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 5),

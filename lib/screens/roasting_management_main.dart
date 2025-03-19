@@ -179,13 +179,45 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 5),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                            margin: const EdgeInsets.only(right: 5),
+                                            decoration: BoxDecoration(
+                                              color: Colors.brown,
+                                              borderRadius: BorderRadius.circular(7),
+                                            ),
+                                            child: Text(
+                                              "보유량",
+                                              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),
+                                            ),
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              Utility().splitNameAndWeight(_roastingManagementCtrl.blendInputGreenBeans[index].toString(), 2),
+                                              textAlign: TextAlign.right,
+                                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600, height: 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          Text(
-                                            "${Utility().splitNameAndWeight(_roastingManagementCtrl.blendInputGreenBeans[index].toString(), 2)}  /  ",
-                                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w600),
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 8),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                String maxWeight = _roastingManagementCtrl.blendInputGreenBeans[index].split(" / ")[1].replaceAll(RegExp(r"[,kg]"), "");
+                                                _roastingManagementCtrl.blendInputWeightTECtrlList[index].text = maxWeight;
+                                              },
+                                              child: Text(
+                                                "전량\n입력",
+                                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.brown, height: 1.1),
+                                              ),
+                                            ),
                                           ),
                                           Flexible(
                                             child: IntrinsicWidth(
@@ -240,69 +272,169 @@ class _RoastingManagementMainState extends State<RoastingManagementMain> {
                     // 싱글오리진
                     _roastingManagementCtrl.roastingType == 1
                         ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "투입",
-                                style: TextStyle(
-                                  fontSize: height / 54,
-                                  color: Colors.brown,
-                                ),
-                              ),
                               Flexible(
-                                child: TextField(
-                                  controller: _roastingManagementCtrl.singleInputWeightTECtrl,
-                                  focusNode: _roastingManagementCtrl.singleInputWeightFN,
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    hintText: "투입 중량",
-                                    suffixIconConstraints: const BoxConstraints(minWidth: 25),
-                                    suffixIcon: FocusScope(
-                                      canRequestFocus: false,
-                                      child: Text(
-                                        "kg",
-                                        textAlign: TextAlign.center,
-                                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "투입",
+                                                style: TextStyle(
+                                                  fontSize: height / 54,
+                                                  color: Colors.brown,
+                                                ),
+                                              ),
+                                              Flexible(
+                                                child: TextField(
+                                                  controller: _roastingManagementCtrl.singleInputWeightTECtrl,
+                                                  focusNode: _roastingManagementCtrl.singleInputWeightFN,
+                                                  textAlign: TextAlign.center,
+                                                  keyboardType: TextInputType.number,
+                                                  textInputAction: TextInputAction.next,
+                                                  decoration: InputDecoration(
+                                                    hintText: "투입 중량",
+                                                    suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                                                    suffixIcon: FocusScope(
+                                                      canRequestFocus: false,
+                                                      child: Text(
+                                                        "kg",
+                                                        textAlign: TextAlign.center,
+                                                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  style: Theme.of(context).textTheme.bodyMedium,
+                                                  onTap: () => Utility().moveScrolling(_roastingManagementCtrl.scrollCtrl),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: TextButton(
+                                              onPressed: () {
+                                                if (BeanSelectionDropdownController.to.selectedBean == null) return;
+                                                String maxWeight = BeanSelectionDropdownController.to.selectedBean.split(" / ")[1].replaceAll(RegExp(r"[,kg]"), "");
+                                                _roastingManagementCtrl.singleInputWeightTECtrl.text = maxWeight;
+                                              },
+                                              child: Text(
+                                                "전량 입력",
+                                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.brown),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                  onTap: () => Utility().moveScrolling(_roastingManagementCtrl.scrollCtrl),
+                                  ],
                                 ),
                               ),
                               const SizedBox(width: 15),
-                              Text(
-                                "배출",
-                                style: TextStyle(
-                                  fontSize: height / 54,
-                                  color: Colors.brown,
-                                ),
-                              ),
                               Flexible(
-                                child: TextField(
-                                  controller: _roastingManagementCtrl.singleOutputWeightTECtrl,
-                                  focusNode: _roastingManagementCtrl.singleOutputWeightFN,
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.done,
-                                  decoration: InputDecoration(
-                                    hintText: "로스팅 후 중량",
-                                    suffixIconConstraints: const BoxConstraints(minWidth: 25),
-                                    suffixIcon: Text(
-                                      "kg",
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "배출",
+                                      style: TextStyle(
+                                        fontSize: height / 54,
+                                        color: Colors.brown,
+                                      ),
                                     ),
-                                  ),
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                  onTap: () => Utility().moveScrolling(_roastingManagementCtrl.scrollCtrl),
-                                  onSubmitted: (value) => registerRoasting(),
+                                    Flexible(
+                                      child: TextField(
+                                        controller: _roastingManagementCtrl.singleOutputWeightTECtrl,
+                                        focusNode: _roastingManagementCtrl.singleOutputWeightFN,
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.number,
+                                        textInputAction: TextInputAction.done,
+                                        decoration: InputDecoration(
+                                          hintText: "로스팅 후 중량",
+                                          suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                                          suffixIcon: Text(
+                                            "kg",
+                                            textAlign: TextAlign.center,
+                                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                                          ),
+                                        ),
+                                        style: Theme.of(context).textTheme.bodyMedium,
+                                        onTap: () => Utility().moveScrolling(_roastingManagementCtrl.scrollCtrl),
+                                        onSubmitted: (value) => registerRoasting(),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           )
+                        // ? Row(
+                        //     crossAxisAlignment: CrossAxisAlignment.center,
+                        //     children: [
+                        //       Text(
+                        //         "투입",
+                        //         style: TextStyle(
+                        //           fontSize: height / 54,
+                        //           color: Colors.brown,
+                        //         ),
+                        //       ),
+                        //       Flexible(
+                        //         child: TextField(
+                        //           controller: _roastingManagementCtrl.singleInputWeightTECtrl,
+                        //           focusNode: _roastingManagementCtrl.singleInputWeightFN,
+                        //           textAlign: TextAlign.center,
+                        //           keyboardType: TextInputType.number,
+                        //           textInputAction: TextInputAction.next,
+                        //           decoration: InputDecoration(
+                        //             hintText: "투입 중량",
+                        //             suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                        //             suffixIcon: FocusScope(
+                        //               canRequestFocus: false,
+                        //               child: Text(
+                        //                 "kg",
+                        //                 textAlign: TextAlign.center,
+                        //                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //           style: Theme.of(context).textTheme.bodyMedium,
+                        //           onTap: () => Utility().moveScrolling(_roastingManagementCtrl.scrollCtrl),
+                        //         ),
+                        //       ),
+                        //       const SizedBox(width: 15),
+                        //       Text(
+                        //         "배출",
+                        //         style: TextStyle(
+                        //           fontSize: height / 54,
+                        //           color: Colors.brown,
+                        //         ),
+                        //       ),
+                        //       Flexible(
+                        //         child: TextField(
+                        //           controller: _roastingManagementCtrl.singleOutputWeightTECtrl,
+                        //           focusNode: _roastingManagementCtrl.singleOutputWeightFN,
+                        //           textAlign: TextAlign.center,
+                        //           keyboardType: TextInputType.number,
+                        //           textInputAction: TextInputAction.done,
+                        //           decoration: InputDecoration(
+                        //             hintText: "로스팅 후 중량",
+                        //             suffixIconConstraints: const BoxConstraints(minWidth: 25),
+                        //             suffixIcon: Text(
+                        //               "kg",
+                        //               textAlign: TextAlign.center,
+                        //               style: Theme.of(context).textTheme.bodyMedium!.copyWith(height: 0),
+                        //             ),
+                        //           ),
+                        //           style: Theme.of(context).textTheme.bodyMedium,
+                        //           onTap: () => Utility().moveScrolling(_roastingManagementCtrl.scrollCtrl),
+                        //           onSubmitted: (value) => registerRoasting(),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   )
                         // 블렌드
                         : Row(
                             children: [
