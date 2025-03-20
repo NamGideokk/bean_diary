@@ -38,8 +38,11 @@ class SaleHistoryController extends GetxController {
   final RxList _monthlySales = [].obs; // 월별판매량
   final RxList _productSales = [].obs; // 상품별판매량
   final RxList _chartBySeller = [].obs; // 차트용 판매처별 판매량 리스트
+  final RxList _chartByProduct = [].obs; // 차트용 상품별 판매량 리스트
   final RxInt _showChartInfo = 0.obs; // 0: 표출X, 1 ~: index - 1로 표출
   final RxDouble _showChartInfoOpacity = 0.0.obs;
+  final RxBool _chartSwitch = true.obs;
+  final RxBool _isGettingChart = false.obs;
 
   get isLoading => _isLoading.value;
 
@@ -72,8 +75,11 @@ class SaleHistoryController extends GetxController {
   get monthlySales => _monthlySales;
   get productSales => _productSales;
   get chartBySeller => _chartBySeller;
+  get chartByProduct => _chartByProduct;
   get showChartInfo => _showChartInfo.value;
   get showChartInfoOpacity => _showChartInfoOpacity.value;
+  get chartSwitch => _chartSwitch.value;
+  get isGettingChart => _isGettingChart.value;
 
   @override
   void onInit() {
@@ -386,6 +392,7 @@ class SaleHistoryController extends GetxController {
   ///
   /// 판매 내역 통계 > 판매처별 차트 계산하기
   void calcChartBySeller() {
+    _isGettingChart(true);
     List list = showSellerList
         .map((e) => {
               "seller": e,
@@ -415,6 +422,45 @@ class SaleHistoryController extends GetxController {
       }
     }
     _chartBySeller(list);
+    _isGettingChart(false);
+  }
+
+  /// 25-03-20
+  ///
+  /// 판매 내역 통계 > 상품별 차트 계산하기
+  void calcChartByProduct() {
+    _isGettingChart(true);
+    List list = productList
+        .map((e) => {
+              "product": e,
+              "sales": 0,
+              "ratio": 0.0,
+              "chartValue": 0.0,
+            })
+        .toList();
+
+    for (final e in list) {
+      for (final obj in showList) {
+        if (e["product"] == obj["name"]) {
+          e["sales"] += obj["sales_weight"];
+        }
+      }
+    }
+
+    list.sort((a, b) => b["sales"].compareTo(a["sales"]));
+
+    for (int i = 0; i < list.length; i++) {
+      list[i]["ratio"] = list[i]["sales"] / totalSalesInShowList;
+
+      if (i == 0) {
+        list[i]["chartValue"] = list[i]["ratio"];
+      } else {
+        list[i]["chartValue"] = list[i - 1]["chartValue"] + list[i]["ratio"];
+      }
+    }
+    list.removeWhere((e) => e["sales"] == 0);
+    _chartByProduct(list);
+    _isGettingChart(false);
   }
 
   /// 25-02-27
@@ -442,4 +488,18 @@ class SaleHistoryController extends GetxController {
   ///
   /// 총 판매량 Text 너비 구하기
   void getMarkerWidth(double? value) => _markerWidth(value ?? 0.0);
+
+  /// 25-03-20
+  ///
+  /// 차트 스위치 변경하기
+  Future<void> onChangedChartSwitch(bool value) async {
+    if (isGettingChart) return;
+
+    resetShowChartInfo();
+    _isGettingChart(true);
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      _isGettingChart(false);
+      _chartSwitch(value);
+    });
+  }
 }

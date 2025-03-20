@@ -18,6 +18,7 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _saleHistoryCtrl.calcChartBySeller();
+      _saleHistoryCtrl.calcChartByProduct();
     });
   }
 
@@ -33,14 +34,13 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
     final textScale = MediaQuery.of(context).textScaler.scale(1.0);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 30),
+      padding: const EdgeInsets.only(top: 15, bottom: 30),
       child: Obx(
         () => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 15),
             Text(
-              "판매처별 판매량 비율",
+              _saleHistoryCtrl.chartSwitch ? "판매처별 판매량 비율" : "상품별 판매량 비율",
               textAlign: TextAlign.center,
               textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
               style: Theme.of(context).textTheme.bodyLarge,
@@ -78,7 +78,7 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    for (int i = _saleHistoryCtrl.chartBySeller.length - 1; i >= 0; i--)
+                    for (int i = (_saleHistoryCtrl.chartSwitch ? _saleHistoryCtrl.chartBySeller.length : _saleHistoryCtrl.chartByProduct.length) - 1; i >= 0; i--)
                       SizedBox(
                         height: height / 5,
                         width: height / 5,
@@ -87,16 +87,16 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                           tween: ColorTween(
                             begin: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == i
                                 ? Colors.orange
-                                : Utility().getDynamicBrownColor(i, _saleHistoryCtrl.chartBySeller.length),
+                                : Utility().getDynamicBrownColor(i, _saleHistoryCtrl.chartSwitch ? _saleHistoryCtrl.chartBySeller.length : _saleHistoryCtrl.chartByProduct.length),
                             end: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == i
                                 ? Colors.orange
-                                : Utility().getDynamicBrownColor(i, _saleHistoryCtrl.chartBySeller.length),
+                                : Utility().getDynamicBrownColor(i, _saleHistoryCtrl.chartSwitch ? _saleHistoryCtrl.chartBySeller.length : _saleHistoryCtrl.chartByProduct.length),
                           ),
                           builder: (context, color, child) {
                             return CircularProgressIndicator(
                               strokeWidth: 40,
                               color: color,
-                              value: _saleHistoryCtrl.chartBySeller[i]["chartValue"],
+                              value: _saleHistoryCtrl.chartSwitch ? _saleHistoryCtrl.chartBySeller[i]["chartValue"] : _saleHistoryCtrl.chartByProduct[i]["chartValue"],
                             );
                           },
                         ),
@@ -116,12 +116,16 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                           child: RichText(
                             textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.5),
                             text: TextSpan(
-                              text: _saleHistoryCtrl.showChartInfo != 0 ? _saleHistoryCtrl.chartBySeller[_saleHistoryCtrl.showChartInfo - 1]["seller"] : null,
+                              text: _saleHistoryCtrl.showChartInfo != 0
+                                  ? _saleHistoryCtrl.chartSwitch
+                                      ? _saleHistoryCtrl.chartBySeller[_saleHistoryCtrl.showChartInfo - 1]["seller"]
+                                      : _saleHistoryCtrl.chartByProduct[_saleHistoryCtrl.showChartInfo - 1]["product"]
+                                  : null,
                               style: Theme.of(context).textTheme.bodyMedium,
                               children: [
                                 TextSpan(
                                   text: _saleHistoryCtrl.showChartInfo != 0
-                                      ? "\n${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.chartBySeller[_saleHistoryCtrl.showChartInfo - 1]["sales"]))}kg"
+                                      ? "\n${Utility().numberFormat(Utility().parseToDoubleWeight(_saleHistoryCtrl.chartSwitch ? _saleHistoryCtrl.chartBySeller[_saleHistoryCtrl.showChartInfo - 1]["sales"] : _saleHistoryCtrl.chartByProduct[_saleHistoryCtrl.showChartInfo - 1]["sales"]))}kg"
                                       : null,
                                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                         height: 1,
@@ -139,38 +143,42 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                 ),
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _saleHistoryCtrl.chartBySeller.length,
-              itemBuilder: (context, index) => TextButton.icon(
-                style: TextButton.styleFrom(),
-                onPressed: () => _saleHistoryCtrl.onTapShowChartInfo(index),
-                icon: Container(
-                  margin: EdgeInsets.only(right: 1 * textScale),
-                  width: (height / 50) * textScale,
-                  height: (height / 50) * textScale,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == index
-                        ? Colors.orange
-                        : Utility().getDynamicBrownColor(index, _saleHistoryCtrl.chartBySeller.length),
+            Visibility(
+              visible: !_saleHistoryCtrl.isGettingChart,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _saleHistoryCtrl.chartSwitch ? _saleHistoryCtrl.chartBySeller.length : _saleHistoryCtrl.chartByProduct.length,
+                itemBuilder: (context, index) => TextButton.icon(
+                  style: TextButton.styleFrom(),
+                  onPressed: () => _saleHistoryCtrl.onTapShowChartInfo(index),
+                  icon: Container(
+                    margin: EdgeInsets.only(right: 1 * textScale),
+                    width: (height / 50) * textScale,
+                    height: (height / 50) * textScale,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: _saleHistoryCtrl.showChartInfo != 0 && (_saleHistoryCtrl.showChartInfo - 1) == index
+                          ? Colors.orange
+                          : Utility().getDynamicBrownColor(index, _saleHistoryCtrl.chartSwitch ? _saleHistoryCtrl.chartBySeller.length : _saleHistoryCtrl.chartByProduct.length),
+                    ),
                   ),
-                ),
-                label: RichText(
-                  textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 2.0),
-                  text: TextSpan(
-                    text: _saleHistoryCtrl.chartBySeller[index]["seller"],
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    children: [
-                      TextSpan(
-                        text: "  ${(_saleHistoryCtrl.chartBySeller[index]["ratio"] * 100).toStringAsFixed(2)}%${index == 0 ? " 🥇" : index == 1 ? " 🥈" : index == 2 ? " 🥉" : ""}",
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -0.5,
-                            ),
-                      ),
-                    ],
+                  label: RichText(
+                    textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 2.0),
+                    text: TextSpan(
+                      text: _saleHistoryCtrl.chartSwitch ? _saleHistoryCtrl.chartBySeller[index]["seller"] : _saleHistoryCtrl.chartByProduct[index]["product"],
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      children: [
+                        TextSpan(
+                          text:
+                              "  ${((_saleHistoryCtrl.chartSwitch ? _saleHistoryCtrl.chartBySeller[index]["ratio"] : _saleHistoryCtrl.chartByProduct[index]["ratio"]) * 100).toStringAsFixed(2)}%${index == 0 ? " 🥇" : index == 1 ? " 🥈" : index == 2 ? " 🥉" : ""}",
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: -0.5,
+                              ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

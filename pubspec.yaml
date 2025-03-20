@@ -1,7 +1,7 @@
 name: bean_diary
 description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.5.2+10502
+version: 1.6.3+10603
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
