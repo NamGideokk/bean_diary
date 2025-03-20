@@ -15,12 +15,8 @@ class SalesManagementController extends GetxController {
   final salesWeightTECtrl = TextEditingController();
   final salesWeightFN = FocusNode();
 
-  final RxList _beanMapDataList = [].obs;
-
   final RxList _retailers = [].obs; // 판매처 목록
   final RxList _retailerSuggestions = [].obs; // 판매처 추천 목록
-
-  get beanMapDataList => _beanMapDataList;
 
   get retailers => _retailers;
   get retailerSuggestions => _retailerSuggestions;
@@ -73,13 +69,13 @@ class SalesManagementController extends GetxController {
     final bool? confirm = await CustomDialog().showAlertDialog(
       context,
       "판매 등록",
-      "판매일자 : ${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n판매처 : ${retailerTECtrl.text}\n원두명 : $name\n판매량 : ${Utility().numberFormat(salesWeightTECtrl.text)}kg\n\n입력하신 정보로 판매를 등록합니다.",
+      "판매일자 : ${Utility().pasteTextToDate(CustomDatePickerController.to.date)}\n판매처 : ${retailerTECtrl.text}\n상품명 : $name\n판매량 : ${Utility().numberFormat(salesWeightTECtrl.text)}kg\n\n입력하신 정보로 판매를 등록합니다.",
       acceptTitle: "등록하기",
     );
 
     if (confirm == true) {
-      String type = "1";
-      beanMapDataList.forEach((e) {
+      String type = "";
+      BeanSelectionDropdownController.to.beanDataList.forEach((e) {
         if (name == e["name"]) type = e["type"].toString();
       });
       String salesWeight = salesWeightTECtrl.text.replaceAll(".", "");

@@ -29,6 +29,7 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
     final height = MediaQuery.of(context).size.height;
     String sortYr = _saleHistoryCtrl.sortByYear;
     String sortRt = _saleHistoryCtrl.sortByRoastingType;
+    String sortPrd = _saleHistoryCtrl.sortByProduct;
     String sortSel = _saleHistoryCtrl.sortBySeller;
 
     return Obx(
@@ -68,7 +69,7 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
               ),
             ),
             Visibility(
-              visible: sortYr != "" || sortRt != "" || sortSel != "",
+              visible: sortYr != "" || sortRt != "" || sortPrd != "" || sortSel != "",
               child: Padding(
                 padding: const EdgeInsets.only(top: 15),
                 child: Wrap(
@@ -98,6 +99,19 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
                         shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
                         label: Text(
                           sortRt,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 1),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: sortPrd != "",
+                      child: Chip(
+                        visualDensity: VisualDensity.compact,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        backgroundColor: Colors.brown[50],
+                        shape: StadiumBorder(side: BorderSide(color: Colors.brown[50]!)),
+                        label: Text(
+                          sortPrd,
                           style: Theme.of(context).textTheme.bodySmall!.copyWith(height: 1),
                         ),
                       ),

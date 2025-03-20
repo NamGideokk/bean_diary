@@ -1,6 +1,7 @@
 import 'package:bean_diary/controllers/sale_history_controller.dart';
 import 'package:bean_diary/controllers/year_picker_controller.dart';
 import 'package:bean_diary/screens/sale_history/sale_history_information_main.dart';
+import 'package:bean_diary/utility/colors_list.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
@@ -224,8 +225,9 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                         children: [
                           Expanded(
                             child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
                               padding: EdgeInsets.zero,
+                              scrollDirection: Axis.horizontal,
+                              physics: const BouncingScrollPhysics(),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -234,14 +236,21 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                       decoration: BoxDecoration(
-                                        color: Colors.brown[100],
+                                        // color: Colors.brown[100],
+                                        color: ColorsList().chip5Color,
                                         borderRadius: const BorderRadius.vertical(
                                           top: Radius.circular(10),
+                                        ),
+                                        border: const Border.symmetric(
+                                          vertical: BorderSide(
+                                            color: Colors.white,
+                                            width: 0.5,
+                                          ),
                                         ),
                                       ),
                                       child: Text(
                                         "${_saleHistoryCtrl.sortByYear}년",
-                                        style: Theme.of(context).textTheme.bodySmall,
+                                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),
                                       ),
                                     ),
                                   ),
@@ -249,15 +258,45 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                     visible: _saleHistoryCtrl.sortByRoastingType != "",
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFFc9bfbb),
-                                        borderRadius: BorderRadius.vertical(
+                                      decoration: BoxDecoration(
+                                        // color: Color(0xFFc9bfbb),
+                                        color: ColorsList().chip5Color,
+                                        borderRadius: const BorderRadius.vertical(
                                           top: Radius.circular(10),
+                                        ),
+                                        border: const Border.symmetric(
+                                          vertical: BorderSide(
+                                            color: Colors.white,
+                                            width: 0.5,
+                                          ),
                                         ),
                                       ),
                                       child: Text(
                                         _saleHistoryCtrl.sortByRoastingType,
-                                        style: Theme.of(context).textTheme.bodySmall,
+                                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: _saleHistoryCtrl.sortByProduct != "",
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                      decoration: BoxDecoration(
+                                        // color: Color(0xFFbcb2ae),
+                                        color: ColorsList().chip5Color,
+                                        borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(10),
+                                        ),
+                                        border: const Border.symmetric(
+                                          vertical: BorderSide(
+                                            color: Colors.white,
+                                            width: 0.5,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        _saleHistoryCtrl.sortByProduct,
+                                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),
                                       ),
                                     ),
                                   ),
@@ -265,15 +304,22 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                                     visible: _saleHistoryCtrl.sortBySeller != "",
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFFbcb2ae),
-                                        borderRadius: BorderRadius.vertical(
+                                      decoration: BoxDecoration(
+                                        // color: Color(0xFFaea5a1),
+                                        color: ColorsList().chip5Color,
+                                        borderRadius: const BorderRadius.vertical(
                                           top: Radius.circular(10),
+                                        ),
+                                        border: const Border.symmetric(
+                                          vertical: BorderSide(
+                                            color: Colors.white,
+                                            width: 0.5,
+                                          ),
                                         ),
                                       ),
                                       child: Text(
                                         _saleHistoryCtrl.sortBySeller,
-                                        style: Theme.of(context).textTheme.bodySmall,
+                                        style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.white),
                                       ),
                                     ),
                                   ),
@@ -288,7 +334,7 @@ class _SaleHistoryMainState extends State<SaleHistoryMain> {
                               padding: const EdgeInsets.only(bottom: 3),
                               child: Text(
                                 "총 ${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건",
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.black54),
+                                style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black54),
                               ),
                             ),
                           ),

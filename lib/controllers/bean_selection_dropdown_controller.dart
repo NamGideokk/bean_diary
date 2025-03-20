@@ -13,10 +13,12 @@ class BeanSelectionDropdownController extends GetxController {
 
   final RxBool _isLoading = false.obs;
   final RxList _beans = [].obs;
+  final RxList _beanDataList = [].obs;
   final Rxn<String> _selectedBean = Rxn<String>(null);
 
   get isLoading => _isLoading.value;
   get beans => _beans;
+  get beanDataList => _beanDataList;
   get selectedBean => _selectedBean.value;
 
   /*
@@ -54,12 +56,15 @@ class BeanSelectionDropdownController extends GetxController {
       // 원두 재고
       final result = await RoastingBeanStockSqfLite().getRoastingBeanStock();
       List list = [];
+      List dataList = [];
       if (result.isNotEmpty) {
         for (final bean in Utility().sortingName(result)) {
           list.add("${bean["name"]} / ${Utility().numberFormat(Utility().parseToDoubleWeight(bean["roasting_weight"]))}kg");
+          dataList.add(bean);
         }
       }
       _beans(list);
+      _beanDataList(dataList);
     }
     _isLoading(false);
   }

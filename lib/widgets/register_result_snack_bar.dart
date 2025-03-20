@@ -149,7 +149,7 @@ class RegisterResultSnackBar extends StatelessWidget {
                         children: [
                           _SnackBarRow(title: "판매일자", content: date),
                           _SnackBarRow(title: "판매처", content: retailer),
-                          _SnackBarRow(title: "원두명", content: selectedBean),
+                          _SnackBarRow(title: "상품명", content: selectedBean),
                           _SnackBarRow(title: "판매량", content: saleWeight),
                           const SizedBox(height: 15),
                           Text(
