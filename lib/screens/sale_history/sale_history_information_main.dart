@@ -134,8 +134,14 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
               ),
             ),
             SaleHistoryInformationChart(),
-            LabelContentRow(label: "판매기간", content: _saleHistoryCtrl.salesPeriod),
-            LabelContentRow(label: "판매건수", content: "${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건"),
+            LabelContentRow(
+              label: "판매기간",
+              content: _saleHistoryCtrl.salesPeriod,
+            ),
+            LabelContentRow(
+              label: "판매건수",
+              content: "${Utility().numberFormat(_saleHistoryCtrl.showList.length.toString(), isWeight: false)}건",
+            ),
             LabelContentRow.list(
               label: "판매처수",
               content: _saleHistoryCtrl.showSellerList.join("\n"),
@@ -157,9 +163,15 @@ class _SaleHistoryInformationMainState extends State<SaleHistoryInformationMain>
               label: "평균판매량",
               content: "${Utility().numberFormat(Utility().parseToDoubleWeight((_saleHistoryCtrl.totalSalesInShowList / _saleHistoryCtrl.showList.length).round()))}kg",
             ),
-            LabelContentRow(
+            LabelContentRow.chip(
               label: "월별판매량",
-              content: "${_saleHistoryCtrl.monthlySales.map((d) => "${d["date"]} - ${Utility().numberFormat(Utility().parseToDoubleWeight(d["sales"]))}kg").join('\n')}",
+              chips: _saleHistoryCtrl.monthlySales.map((e) => e["date"]).toList(),
+              contents: _saleHistoryCtrl.monthlySales.map((e) => "${Utility().numberFormat(Utility().parseToDoubleWeight(e["sales"]))}kg").toList(),
+            ),
+            LabelContentRow.chip(
+              label: "상품별판매량",
+              chips: _saleHistoryCtrl.productSales.map((e) => e["product"]).toList(),
+              contents: _saleHistoryCtrl.productSales.map((e) => "${Utility().numberFormat(Utility().parseToDoubleWeight(e["sales"]))}kg").toList(),
             ),
           ],
         ),

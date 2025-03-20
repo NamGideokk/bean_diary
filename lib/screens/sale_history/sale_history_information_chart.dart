@@ -164,7 +164,7 @@ class _SaleHistoryInformationChartState extends State<SaleHistoryInformationChar
                     style: Theme.of(context).textTheme.bodyMedium,
                     children: [
                       TextSpan(
-                        text: "  ${(_saleHistoryCtrl.chartBySeller[index]["ratio"] * 100).toStringAsFixed(2)}%",
+                        text: "  ${(_saleHistoryCtrl.chartBySeller[index]["ratio"] * 100).toStringAsFixed(2)}%${index == 0 ? " 🥇" : index == 1 ? " 🥈" : index == 2 ? " 🥉" : ""}",
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               fontWeight: FontWeight.w600,
                               letterSpacing: -0.5,

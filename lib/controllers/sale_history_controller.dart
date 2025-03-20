@@ -36,6 +36,7 @@ class SaleHistoryController extends GetxController {
   final RxInt _minSales = 0.obs; // 최소판매량
   final RxInt _maxSales = 0.obs; // 최대판매량
   final RxList _monthlySales = [].obs; // 월별판매량
+  final RxList _productSales = [].obs; // 상품별판매량
   final RxList _chartBySeller = [].obs; // 차트용 판매처별 판매량 리스트
   final RxInt _showChartInfo = 0.obs; // 0: 표출X, 1 ~: index - 1로 표출
   final RxDouble _showChartInfoOpacity = 0.0.obs;
@@ -69,6 +70,7 @@ class SaleHistoryController extends GetxController {
   get minSales => _minSales.value;
   get maxSales => _maxSales.value;
   get monthlySales => _monthlySales;
+  get productSales => _productSales;
   get chartBySeller => _chartBySeller;
   get showChartInfo => _showChartInfo.value;
   get showChartInfoOpacity => _showChartInfoOpacity.value;
@@ -282,7 +284,7 @@ class SaleHistoryController extends GetxController {
   /// 25-05-26
   ///
   /// 판매 내역 통계 계산하기
-  void calcSalesStatistics() {
+  Future<void> calcSalesStatistics() async {
     // 판매기간
     if (showList.isEmpty) {
       _salesPeriod("");
@@ -355,6 +357,28 @@ class SaleHistoryController extends GetxController {
           }
         }
       }
+    }
+
+    // 상품별판매량
+    _productSales.clear();
+    if (showList.isNotEmpty) {
+      List tempList = [];
+      await getProductList();
+      for (final e in productList) {
+        tempList.add({
+          "product": e,
+          "sales": 0,
+        });
+      }
+      for (final e in showList) {
+        for (final obj in tempList) {
+          if (e["name"] == obj["product"]) {
+            obj["sales"] += e["sales_weight"] as int;
+          }
+        }
+      }
+      tempList.removeWhere((e) => e["sales"] == 0);
+      _productSales(tempList);
     }
   }
 
