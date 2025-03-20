@@ -250,6 +250,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                   children: [
                     // 날짜순 view
                     SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: ListTileTheme(
                         horizontalTitleGap: 5,
@@ -300,6 +301,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                     // 연도별 view
                     ListView.builder(
                       shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                       itemCount: _saleHistoryCtrl.yearsList.length,
                       itemBuilder: (context, index) => ListTileTheme(
@@ -328,6 +330,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                     // 로스팅타입별 view
                     SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(vertical: 10),
+                      physics: const BouncingScrollPhysics(),
                       child: ListTileTheme(
                         horizontalTitleGap: 5,
                         child: Column(
@@ -377,6 +380,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                     // 연도별 view
                     ListView.builder(
                       shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                       itemCount: _saleHistoryCtrl.productList.length,
                       itemBuilder: (context, index) => ListTileTheme(
@@ -405,6 +409,7 @@ class _SaleHistoryFilterBottomSheetState extends State<SaleHistoryFilterBottomSh
                     // 판매처별 view
                     ListView.builder(
                       shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                       itemCount: _saleHistoryCtrl.sellerList.length,
                       itemBuilder: (context, index) => ListTileTheme(
