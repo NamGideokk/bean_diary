@@ -132,6 +132,35 @@ class GreenBeanInventorySqfLite {
 
   /// 25-03-24
   ///
+  /// 생두 재고 차감 취소하기
+  Future revokeDecreaseInventory(Map<String, int> values) async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        final result = await db.rawQuery("SELECT * FROM $tableName WHERE id = ${values["greenBeanID"]}");
+        if (result.isNotEmpty) {
+          int updateWeight = (result[0]["inventory_weight"]! as int) + (values["input_weight"] as int);
+          final updateResult = await db.update(
+            tableName,
+            {"inventory_weight": updateWeight},
+            where: "id = ?",
+            whereArgs: [values["greenBeanID"]],
+          );
+          return updateResult;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("😑 REVOKE RECENT DECREASE INVENTORY ERROR: $e");
+      return null;
+    }
+  }
+
+  /// 25-03-24
+  ///
   /// 생두 입고 내역 삭제
   Future deleteGreenBeanEntry(int id) async {
     try {

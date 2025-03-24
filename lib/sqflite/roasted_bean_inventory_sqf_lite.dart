@@ -72,4 +72,55 @@ class RoastedBeanInventorySqfLite {
       return null;
     }
   }
+
+  /// 25-03-24
+  ///
+  /// 로스팅 등록 취소하기 (inventory_weight 차감)
+  Future revokeRecentInventoryRoasting(Map<String, int> values) async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        final result = await db.rawQuery("SELECT * FROM $tableName WHERE id = ${values["roastedBeanID"]}");
+        if (result.isNotEmpty) {
+          int updateWeight = (result[0]["inventory_weight"]! as int) - (values["output_weight"] as int);
+          final updateResult = await db.update(
+            tableName,
+            {"inventory_weight": updateWeight},
+            where: "id = ?",
+            whereArgs: [values["roastedBeanID"]],
+          );
+          return updateResult;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("😑 REVOKE RECENT INVENTORY ROASTING ERROR: $e");
+      return null;
+    }
+  }
+
+  /// 25-03-24
+  ///
+  /// 원두 재고 삭제하기
+  Future deleteRoastedBean(int id) async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        final result = await db.delete(
+          tableName,
+          where: "id = ?",
+          whereArgs: [id],
+        );
+        return result > 0 ? result : null;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("😑 DELETE ROASTED BEAN ERROR: $e");
+      return null;
+    }
+  }
 }

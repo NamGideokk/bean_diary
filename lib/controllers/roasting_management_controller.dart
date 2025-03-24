@@ -224,12 +224,14 @@ class RoastingManagementController extends GetxController {
     );
 
     if (finalConfirm == true) {
+      // 생두 재고 차감
       final decreaseInventoryResult = await GreenBeanInventorySqfLite().decreaseInventory({
         "name": beanName,
         "weight": int.parse(inputWeight),
       });
 
       if (decreaseInventoryResult != null) {
+        // 원두 재고 등록
         final insertResult = await RoastedBeanInventorySqfLite().insertRoastedBeanInventory({
           "type": "1",
           "name": beanName,
@@ -247,9 +249,11 @@ class RoastingManagementController extends GetxController {
 
           if (insertHistoryResult != null) {
             _revokeData.addAll({
+              "greenBeanID": decreaseInventoryResult,
               "roastedBeanID": insertResult,
               "historyID": insertHistoryResult,
-              "weight": int.parse(roastingWeight),
+              "input_weight": int.parse(inputWeight),
+              "output_weight": int.parse(roastingWeight),
             });
             if (context.mounted) {
               CustomDialog().showRegisterSingleOriginRoastingResultSnackBar(context, {
@@ -410,9 +414,6 @@ class RoastingManagementController extends GetxController {
 
     if (!context.mounted) return;
 
-    for (final item in blendInputGreenBeans) {
-      print(item.runtimeType);
-    }
     if (insertResult) {
       List inputList = [];
       for (int i = 0; i < blendInputGreenBeans.length; i++) {
@@ -481,5 +482,47 @@ class RoastingManagementController extends GetxController {
   void clearAllFocusingInSingleOrigin() {
     singleInputWeightFN.unfocus();
     singleOutputWeightFN.unfocus();
+  }
+
+  /// 25-03-24
+  ///
+  /// 싱글오리진 - 로스팅 등록 내역 취소하기
+  Future revokeRecentInsert(BuildContext context) async {
+    final deleteHistoryResult = await RoastedBeanInventoryHistorySqfLite().deleteHistory(revokeData["historyID"]);
+
+    if (deleteHistoryResult != null) {
+      final hasHistory = await RoastedBeanInventoryHistorySqfLite().getInventoryHistories(revokeData["roastedBeanID"]);
+      // 히스토리 없으면 아예 삭제, 히스토리 있으면 재고 차감
+      if (hasHistory.isNotEmpty) {
+        final revokeRecent = await RoastedBeanInventorySqfLite().revokeRecentInventoryRoasting(revokeData);
+        if (revokeRecent == null) {
+          if (context.mounted) CustomDialog().showSnackBar(context, "로스팅 내역 등록 취소에 실패했습니다.", isError: true);
+          return;
+        }
+      } else {
+        final deleteRoastedBean = await RoastedBeanInventorySqfLite().deleteRoastedBean(revokeData["roastedBeanID"]);
+        if (deleteRoastedBean == null) {
+          if (context.mounted) CustomDialog().showSnackBar(context, "로스팅 내역 등록 취소에 실패했습니다.", isError: true);
+          return;
+        }
+      }
+      // 생고 재고 롤백
+      final revokeDecrease = await GreenBeanInventorySqfLite().revokeDecreaseInventory(revokeData);
+      if (revokeDecrease != null) {
+        await BeanSelectionDropdownController.to.getBeans(ListType.greenBeanInventory);
+        if (context.mounted) CustomDialog().showSnackBar(context, "싱글오리진 로스팅 등록이 취소되었습니다.");
+        return;
+      } else {
+        if (context.mounted) {
+          CustomDialog().showSnackBar(context, "생두 재고 롤백에 실패했습니다.", isError: true);
+          return;
+        }
+      }
+    } else {
+      if (context.mounted) {
+        CustomDialog().showSnackBar(context, "로스팅 내역 등록 취소에 실패했습니다.", isError: true);
+        return;
+      }
+    }
   }
 }
