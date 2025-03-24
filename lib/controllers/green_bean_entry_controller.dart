@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
-import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqflite/green_bean_inventory_history_sqf_lite.dart';
 import 'package:bean_diary/sqflite/green_bean_inventory_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
@@ -28,6 +25,7 @@ class GreenBeanEntryController extends GetxController {
   final RxList _supplierSuggestions = [].obs; // 공급처 추천 목록
 
   final RxBool _isLoading = true.obs;
+  final RxMap<String, int> _revokeData = <String, int>{}.obs;
 
   get beanList => _beanList;
 
@@ -40,6 +38,7 @@ class GreenBeanEntryController extends GetxController {
   get supplierSuggestions => _supplierSuggestions;
 
   get isLoading => _isLoading.value;
+  get revokeData => _revokeData;
 
   @override
   void onClose() {
@@ -100,7 +99,7 @@ class GreenBeanEntryController extends GetxController {
       return;
     }
 
-    FocusScope.of(context).unfocus();
+    clearAllFocusing();
 
     String date = CustomDatePickerController.to.date;
     String greenBean = BeanSelectionDropdownController.to.selectedBean;
@@ -131,6 +130,11 @@ class GreenBeanEntryController extends GetxController {
         });
 
         if (insertHistoryResult != null) {
+          _revokeData.addAll({
+            "greenBeanID": insertResult,
+            "historyID": insertHistoryResult,
+            "weight": int.parse(weight),
+          });
           if (context.mounted) {
             CustomDialog().showRegisterStockResultSnackBar(context, {
               "date": Utility().pasteTextToDate(date),
@@ -142,14 +146,26 @@ class GreenBeanEntryController extends GetxController {
 
           weightTECtrl.clear();
           await getSuppliers();
+        } else {
+          if (context.mounted) {
+            CustomDialog().showSnackBar(
+              context,
+              "생두 입고 내역 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.",
+              isError: true,
+            );
+          }
+          return;
         }
       } else {
-        if (context.mounted) CustomDialog().showSnackBar(context, "생두 입고 내역 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.");
+        if (context.mounted) {
+          CustomDialog().showSnackBar(
+            context,
+            "생두 입고 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.",
+            isError: true,
+          );
+        }
         return;
       }
-    } else {
-      if (context.mounted) CustomDialog().showSnackBar(context, "생두 입고 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.");
-      return;
     }
   }
 
@@ -196,5 +212,40 @@ class GreenBeanEntryController extends GetxController {
   void clearAllFocusing() {
     supplierFN.unfocus();
     weightFN.unfocus();
+  }
+
+  /// 25-03-24
+  ///
+  /// 최근 생두 입고 등록 내역 취소하기
+  Future revokeRecentInsert(BuildContext context) async {
+    final deleteHistoryResult = await GreenBeanInventoryHistorySqfLite().deleteHistory(revokeData["historyID"]);
+    if (deleteHistoryResult != null) {
+      // 히스토리 없으면 아예 삭제, 히스토리 있으면 재고 차감
+      final hasHistory = await GreenBeanInventoryHistorySqfLite().getInventoryHistories(revokeData["greenBeanID"]);
+      if (hasHistory.isNotEmpty) {
+        final revokeRecent = await GreenBeanInventorySqfLite().revokeRecentInventoryEntry(revokeData);
+        if (context.mounted) {
+          if (revokeRecent != null) {
+            CustomDialog().showSnackBar(context, "생두 입고 등록이 취소되었습니다.");
+          } else {
+            CustomDialog().showSnackBar(context, "생두 입고 등록 취소에 실패했습니다.", isError: true);
+          }
+        }
+      } else {
+        // 삭제
+        final deleteEntry = await GreenBeanInventorySqfLite().deleteGreenBeanEntry(revokeData["greenBeanID"]);
+        if (context.mounted) {
+          if (deleteEntry != null) {
+            CustomDialog().showSnackBar(context, "생두 입고 등록이 취소되었습니다.");
+          } else {
+            CustomDialog().showSnackBar(context, "생두 입고 등록 취소에 실패했습니다.", isError: true);
+          }
+        }
+      }
+    } else {
+      if (context.mounted) {
+        CustomDialog().showSnackBar(context, "입고 내역 등록 취소에 실패했습니다.", isError: true);
+      }
+    }
   }
 }

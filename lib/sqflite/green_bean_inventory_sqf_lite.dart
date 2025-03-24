@@ -72,4 +72,55 @@ class GreenBeanInventorySqfLite {
       return null;
     }
   }
+
+  /// 25-03-24
+  ///
+  /// 생두 입고 등록 취소하기 (inventory_weight 차감)
+  Future revokeRecentInventoryEntry(Map<String, int> values) async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        final result = await db.rawQuery("SELECT * FROM $tableName WHERE id = ${values["greenBeanID"]}");
+        if (result.isNotEmpty) {
+          int updateWeight = (result[0]["inventory_weight"]! as int) - (values["weight"] as int);
+          final updateResult = await db.update(
+            tableName,
+            {"inventory_weight": updateWeight},
+            where: "id = ?",
+            whereArgs: [values["greenBeanID"]],
+          );
+          return updateResult;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("😑 REVOKE RECENT INVENTORY ENTRY ERROR: $e");
+      return null;
+    }
+  }
+
+  /// 25-03-24
+  ///
+  /// 생두 입고 내역 삭제
+  Future deleteGreenBeanEntry(int id) async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        final result = await db.delete(
+          tableName,
+          where: "id = ?",
+          whereArgs: [id],
+        );
+        return result > 0 ? result : null;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("😑 DELETE GREEN BEAN ENRTY ERROR: $e");
+      return null;
+    }
+  }
 }

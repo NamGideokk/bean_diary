@@ -84,4 +84,26 @@ class GreenBeanInventoryHistorySqfLite {
       return null;
     }
   }
+
+  /// 25-03-24
+  ///
+  /// 생두 재고 히스토리 삭제하기
+  Future deleteHistory(int id) async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        final result = await db.delete(
+          tableName,
+          where: "id = ?",
+          whereArgs: [id],
+        );
+        return result > 0 ? result : null;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("😑 DELETE HISTORY ERROR: $e");
+      return null;
+    }
+  }
 }

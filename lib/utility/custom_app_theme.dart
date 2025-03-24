@@ -124,6 +124,9 @@ class CustomAppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           visualDensity: VisualDensity.compact,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          textStyle: TextStyle(
+            fontSize: height / 56,
+          ),
         ),
       ),
       iconButtonTheme: IconButtonThemeData(

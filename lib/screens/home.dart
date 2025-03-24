@@ -172,13 +172,14 @@ class _HomeState extends State<Home> {
                   itemBuilder: (context, index) => HomeMenuButton(
                     menus: _menus,
                     index: index,
-                    onPressed: () {
-                      Navigator.push(
+                    onPressed: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => _menus[index]["screen"],
                         ),
                       );
+                      if (context.mounted) ScaffoldMessenger.of(context).removeCurrentSnackBar();
                     },
                   ),
                 ),

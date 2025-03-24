@@ -53,6 +53,7 @@ class CustomDialog {
     String title,
     String content, {
     String acceptTitle = "확인",
+    String cancelTitle = "취소",
   }) {
     return Platform.isAndroid
         ? showDialog(
@@ -65,7 +66,7 @@ class CustomDialog {
                   onPressed: () {
                     Navigator.pop(context, false);
                   },
-                  child: const Text("취소"),
+                  child: Text(cancelTitle),
                 ),
                 TextButton(
                   onPressed: () {
@@ -128,7 +129,7 @@ class CustomDialog {
     final snackBar = SnackBar(
       padding: const EdgeInsets.all(20),
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 15),
       content: RegisterResultSnackBar.stock(
         snackBarType: SnackBarType.stock,
         date: data["date"],
