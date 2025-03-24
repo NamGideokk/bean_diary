@@ -4,6 +4,9 @@ import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/sqflite/green_bean_inventory_sqf_lite.dart';
+import 'package:bean_diary/sqflite/roasted_bean_inventory_history_sqf_lite.dart';
+import 'package:bean_diary/sqflite/roasted_bean_inventory_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/enums.dart';
@@ -32,6 +35,8 @@ class RoastingManagementController extends GetxController {
   final RxList _blendNameSuggestions = [].obs; // 블렌드명 추천 목록
   final RxList _blendInputGreenBeans = [].obs;
 
+  final RxMap<String, int> _revokeData = <String, int>{}.obs;
+
   final RxList _opacityList = [].obs;
 
   get blendInputWeightTECtrlList => _blendInputWeightTECtrlList;
@@ -45,6 +50,8 @@ class RoastingManagementController extends GetxController {
   get blendNameSuggestions => _blendNameSuggestions;
 
   get blendInputGreenBeans => _blendInputGreenBeans;
+
+  get revokeData => _revokeData;
 
   get opacityList => _opacityList;
 
@@ -202,22 +209,12 @@ class RoastingManagementController extends GetxController {
     }
 
     // 로스팅 등록 유효성 모두 통과
-    FocusScope.of(context).unfocus();
+    clearAllFocusingInSingleOrigin();
 
     String date = CustomDatePickerController.to.date;
     String beanName = BeanSelectionDropdownController.to.selectedBean.split(" / ")[0];
+    String inputWeight = singleInputWeightTECtrl.text.replaceAll(".", "");
     String roastingWeight = singleOutputWeightTECtrl.text.replaceAll(".", "");
-    String history = jsonEncode([
-      {"date": date, "roasting_weight": roastingWeight},
-    ]);
-
-    // type, name, roasting_weight, history
-    Map<String, String> value = {
-      "type": "1",
-      "name": beanName,
-      "roasting_weight": roastingWeight,
-      "history": history,
-    };
 
     bool? finalConfirm = await CustomDialog().showAlertDialog(
       context,
@@ -227,29 +224,74 @@ class RoastingManagementController extends GetxController {
     );
 
     if (finalConfirm == true) {
-      bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
-      if (!context.mounted) return;
+      final decreaseInventoryResult = await GreenBeanInventorySqfLite().decreaseInventory({
+        "name": beanName,
+        "weight": int.parse(inputWeight),
+      });
 
-      if (insertResult) {
-        CustomDialog().showRegisterSingleOriginRoastingResultSnackBar(context, {
-          "date": Utility().pasteTextToDate(date),
-          "selectedBean": BeanSelectionDropdownController.to.selectedBean.split(" / ")[0],
-          "inputWeight": "${Utility().numberFormat(singleInputWeightTECtrl.text)}kg",
-          "outputWeight": "${Utility().numberFormat(singleOutputWeightTECtrl.text)}kg",
-        });
-
-        String useWeight = singleInputWeightTECtrl.text.replaceAll(".", "");
-        Map<String, String> updateValue = {
+      if (decreaseInventoryResult != null) {
+        final insertResult = await RoastedBeanInventorySqfLite().insertRoastedBeanInventory({
           "type": "1",
           "name": beanName,
-          "weight": useWeight,
-          "date": date,
-        };
-        await GreenBeanStockSqfLite().updateWeightGreenBeanStock(updateValue);
-        singleInputWeightTECtrl.clear();
-        singleOutputWeightTECtrl.clear();
-        BeanSelectionDropdownController.to.resetSelectedBean();
-        await BeanSelectionDropdownController.to.getBeans(ListType.greenBeanInventory);
+          "inventory_weight": int.parse(roastingWeight),
+        });
+
+        if (insertResult != null) {
+          // 히스토리 등록
+          final insertHistoryResult = await RoastedBeanInventoryHistorySqfLite().insertRoastedBeanInventoryHistory({
+            "roasted_bean_id": insertResult,
+            "name": beanName,
+            "date": date,
+            "weight": int.parse(roastingWeight),
+          });
+
+          if (insertHistoryResult != null) {
+            _revokeData.addAll({
+              "roastedBeanID": insertResult,
+              "historyID": insertHistoryResult,
+              "weight": int.parse(roastingWeight),
+            });
+            if (context.mounted) {
+              CustomDialog().showRegisterSingleOriginRoastingResultSnackBar(context, {
+                "date": Utility().pasteTextToDate(date),
+                "selectedBean": BeanSelectionDropdownController.to.selectedBean.split(" / ")[0],
+                "inputWeight": "${Utility().numberFormat(singleInputWeightTECtrl.text)}kg",
+                "outputWeight": "${Utility().numberFormat(singleOutputWeightTECtrl.text)}kg",
+              });
+            }
+            singleInputWeightTECtrl.clear();
+            singleOutputWeightTECtrl.clear();
+            BeanSelectionDropdownController.to.resetSelectedBean();
+            await BeanSelectionDropdownController.to.getBeans(ListType.greenBeanInventory);
+          } else {
+            if (context.mounted) {
+              CustomDialog().showSnackBar(
+                context,
+                "로스팅 내역 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.",
+                isError: true,
+              );
+            }
+            return;
+          }
+        } else {
+          if (context.mounted) {
+            CustomDialog().showSnackBar(
+              context,
+              "로스팅 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.",
+              isError: true,
+            );
+          }
+          return;
+        }
+      } else {
+        if (context.mounted) {
+          CustomDialog().showSnackBar(
+            context,
+            "생두 재고 차감에 실패헀습니다.\n잠시 후 다시 시도해 주세요.",
+            isError: true,
+          );
+        }
+        return;
       }
     }
   }
@@ -431,5 +473,13 @@ class RoastingManagementController extends GetxController {
       _opacityList.clear();
       blendOutputWeightTECtrl.clear();
     }
+  }
+
+  /// 25-03-24
+  ///
+  /// 싱글오리진 페이지 모든 포커싱 해제하기
+  void clearAllFocusingInSingleOrigin() {
+    singleInputWeightFN.unfocus();
+    singleOutputWeightFN.unfocus();
   }
 }

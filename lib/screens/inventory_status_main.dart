@@ -66,7 +66,7 @@ class _InventoryStatusMainState extends State<InventoryStatusMain> {
                       ),
                 const UiSpacing(),
                 const HeaderTitle(title: "원두 재고", subTitle: "Roasted coffee beans inventory"),
-                _inventoryCtrl.roastingBeanStockList.isEmpty
+                _inventoryCtrl.roastedBeanInventory.isEmpty
                     ? DecoratedBox(
                         decoration: BoxDecoration(
                           color: Colors.brown[50],
@@ -79,9 +79,9 @@ class _InventoryStatusMainState extends State<InventoryStatusMain> {
                           ListView.separated(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: _inventoryCtrl.roastingBeanStockList.length,
+                            itemCount: _inventoryCtrl.roastedBeanInventory.length,
                             separatorBuilder: (context, index) => const Divider(),
-                            itemBuilder: (context, index) => _RoastingBeanTile(stockList: _inventoryCtrl.roastingBeanStockList, index: index),
+                            itemBuilder: (context, index) => _RoastingBeanTile(inventory: _inventoryCtrl.roastedBeanInventory, index: index),
                           ),
                           const SizedBox(height: 5),
                           Text(
@@ -252,9 +252,9 @@ class _GreenBeanTile extends StatelessWidget {
 }
 
 class _RoastingBeanTile extends StatelessWidget {
-  final List stockList;
+  final List inventory;
   final int index;
-  const _RoastingBeanTile({Key? key, required this.stockList, required this.index}) : super(key: key);
+  const _RoastingBeanTile({Key? key, required this.inventory, required this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -266,24 +266,24 @@ class _RoastingBeanTile extends StatelessWidget {
       collapsedShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(index == 0 ? 8 : 0),
-          bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
+          bottom: Radius.circular(index == inventory.length - 1 ? 8 : 0),
         ),
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(index == 0 ? 8 : 0),
-          bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
+          bottom: Radius.circular(index == inventory.length - 1 ? 8 : 0),
         ),
         side: BorderSide(color: Colors.brown[100]!, width: 2),
       ),
       backgroundColor: Colors.white,
-      title: Wrap(children: [RoastingTypeWidget(type: stockList[index]["type"].toString())]),
+      title: Wrap(children: [RoastingTypeWidget(type: inventory[index]["type"].toString())]),
       subtitle: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: Text(
-              " ${stockList[index]["name"]}",
+              " ${inventory[index]["name"]}",
               style: TextStyle(
                 fontSize: height / 54,
                 height: 1.2,
@@ -293,7 +293,7 @@ class _RoastingBeanTile extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Text(
-            "${Utility().numberFormat(Utility().parseToDoubleWeight(stockList[index]["roasting_weight"]))}kg",
+            "${Utility().numberFormat(Utility().parseToDoubleWeight(inventory[index]["inventory_weight"]))}kg",
             style: TextStyle(
               fontSize: height / 54,
               fontWeight: FontWeight.w600,
@@ -303,17 +303,17 @@ class _RoastingBeanTile extends StatelessWidget {
         ],
       ),
       children: [
-        jsonDecode(stockList[index]["history"]).length > 0
+        inventory[index]["history"].length > 0
             ? Column(
                 children: [
                   ListView.separated(
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
                     shrinkWrap: true,
-                    itemCount: jsonDecode(stockList[index]["history"]).length,
+                    itemCount: inventory[index]["history"].length,
                     separatorBuilder: (context, index) => const Divider(height: 10, thickness: 0.2, color: Colors.black54),
                     itemBuilder: (context, i) {
-                      final history = Utility().sortingDate(jsonDecode(stockList[index]["history"]));
+                      final history = Utility().sortingDate(inventory[index]["history"]);
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,7 +328,7 @@ class _RoastingBeanTile extends StatelessWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["roasting_weight"])))}kg",
+                              "${Utility().numberFormat(Utility().parseToDoubleWeight(history[i]["weight"]))}kg",
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 fontSize: height / 56,
@@ -365,7 +365,7 @@ class _RoastingBeanTile extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    inventoryCtrl.getHistoryTotal(jsonDecode(stockList[index]["history"])),
+                                    inventoryCtrl.getHistoryTotal(inventory[index]["history"]),
                                     textAlign: TextAlign.right,
                                     textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.6),
                                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(

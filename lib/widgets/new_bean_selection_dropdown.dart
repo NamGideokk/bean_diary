@@ -1,6 +1,5 @@
 import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/widgets/enums.dart';
-import 'package:bean_diary/widgets/roasting_type_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
