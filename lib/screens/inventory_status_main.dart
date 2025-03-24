@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:bean_diary/controllers/stock_controller.dart';
-import 'package:bean_diary/utility/colors_list.dart';
+import 'package:bean_diary/controllers/inventory_controller.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/empty_widget.dart';
 import 'package:bean_diary/widgets/header_title.dart';
@@ -18,12 +17,12 @@ class InventoryStatusMain extends StatefulWidget {
 }
 
 class _InventoryStatusMainState extends State<InventoryStatusMain> {
-  final _stockCtrl = Get.put(StockController());
+  final _inventoryCtrl = Get.put(InventoryController());
 
   @override
   void dispose() {
     super.dispose();
-    Get.delete<StockController>();
+    Get.delete<InventoryController>();
   }
 
   @override
@@ -41,7 +40,7 @@ class _InventoryStatusMainState extends State<InventoryStatusMain> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const HeaderTitle(title: "생두 재고", subTitle: "Green coffee beans inventory"),
-                _stockCtrl.greenBeanStockList.isEmpty
+                _inventoryCtrl.greenBeanInventory.isEmpty
                     ? DecoratedBox(
                         decoration: BoxDecoration(
                           color: Colors.brown[50],
@@ -54,9 +53,9 @@ class _InventoryStatusMainState extends State<InventoryStatusMain> {
                           ListView.separated(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: _stockCtrl.greenBeanStockList.length,
+                            itemCount: _inventoryCtrl.greenBeanInventory.length,
                             separatorBuilder: (context, index) => const Divider(),
-                            itemBuilder: (context, index) => _GreenBeanTile(stockList: _stockCtrl.greenBeanStockList, index: index),
+                            itemBuilder: (context, index) => _GreenBeanTile(inventory: _inventoryCtrl.greenBeanInventory, index: index),
                           ),
                           const SizedBox(height: 5),
                           Text(
@@ -67,7 +66,7 @@ class _InventoryStatusMainState extends State<InventoryStatusMain> {
                       ),
                 const UiSpacing(),
                 const HeaderTitle(title: "원두 재고", subTitle: "Roasted coffee beans inventory"),
-                _stockCtrl.roastingBeanStockList.isEmpty
+                _inventoryCtrl.roastingBeanStockList.isEmpty
                     ? DecoratedBox(
                         decoration: BoxDecoration(
                           color: Colors.brown[50],
@@ -80,9 +79,9 @@ class _InventoryStatusMainState extends State<InventoryStatusMain> {
                           ListView.separated(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: _stockCtrl.roastingBeanStockList.length,
+                            itemCount: _inventoryCtrl.roastingBeanStockList.length,
                             separatorBuilder: (context, index) => const Divider(),
-                            itemBuilder: (context, index) => _RoastingBeanTile(stockList: _stockCtrl.roastingBeanStockList, index: index),
+                            itemBuilder: (context, index) => _RoastingBeanTile(stockList: _inventoryCtrl.roastingBeanStockList, index: index),
                           ),
                           const SizedBox(height: 5),
                           Text(
@@ -101,17 +100,17 @@ class _InventoryStatusMainState extends State<InventoryStatusMain> {
 }
 
 class _GreenBeanTile extends StatelessWidget {
-  final List stockList;
+  final List inventory;
   final int index;
   const _GreenBeanTile({
     Key? key,
-    required this.stockList,
+    required this.inventory,
     required this.index,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final stockCtrl = Get.find<StockController>();
+    final inventoryCtrl = Get.find<InventoryController>();
     final height = MediaQuery.of(context).size.height;
 
     return ExpansionTile(
@@ -119,13 +118,13 @@ class _GreenBeanTile extends StatelessWidget {
       collapsedShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(index == 0 ? 8 : 0),
-          bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
+          bottom: Radius.circular(index == inventory.length - 1 ? 8 : 0),
         ),
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(index == 0 ? 8 : 0),
-          bottom: Radius.circular(index == stockList.length - 1 ? 8 : 0),
+          bottom: Radius.circular(index == inventory.length - 1 ? 8 : 0),
         ),
         side: BorderSide(color: Colors.brown[100]!, width: 2),
       ),
@@ -137,7 +136,7 @@ class _GreenBeanTile extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              stockList[index]["name"],
+              inventory[index]["name"],
               style: TextStyle(
                 fontSize: height / 54,
                 fontWeight: FontWeight.w500,
@@ -146,7 +145,7 @@ class _GreenBeanTile extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Text(
-            "${Utility().numberFormat(Utility().parseToDoubleWeight(stockList[index]["weight"]))}kg",
+            "${Utility().numberFormat(Utility().parseToDoubleWeight(inventory[index]["inventory_weight"]))}kg",
             style: TextStyle(
               fontSize: height / 54,
               fontWeight: FontWeight.w600,
@@ -155,17 +154,17 @@ class _GreenBeanTile extends StatelessWidget {
         ],
       ),
       children: [
-        jsonDecode(stockList[index]["history"]).length > 0
+        inventory[index]["history"].length > 0
             ? Column(
                 children: [
                   ListView.separated(
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.fromLTRB(15, 0, 15, 10),
                     shrinkWrap: true,
-                    itemCount: jsonDecode(stockList[index]["history"]).length,
+                    itemCount: inventory[index]["history"].length,
                     separatorBuilder: (context, index) => const Divider(height: 10, thickness: 0.2, color: Colors.black54),
                     itemBuilder: (context, i) {
-                      final history = Utility().sortingDate(jsonDecode(stockList[index]["history"]));
+                      final history = Utility().sortingDate(inventory[index]["history"]);
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -190,7 +189,7 @@ class _GreenBeanTile extends StatelessWidget {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                "${Utility().numberFormat(Utility().parseToDoubleWeight(int.parse(history[i]["weight"])))}kg",
+                                "${Utility().numberFormat(Utility().parseToDoubleWeight(history[i]["weight"]))}kg",
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
                                   fontSize: height / 56,
@@ -206,7 +205,7 @@ class _GreenBeanTile extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(15, 15, 15, 20),
                     child: Obx(
                       () => GestureDetector(
-                        onTap: () => stockCtrl.setChangeIsConvert(),
+                        onTap: () => inventoryCtrl.setChangeIsConvert(),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -228,7 +227,7 @@ class _GreenBeanTile extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    stockCtrl.getHistoryTotal(jsonDecode(stockList[index]["history"])),
+                                    inventoryCtrl.getHistoryTotal(inventory[index]["history"]),
                                     textAlign: TextAlign.right,
                                     textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.6),
                                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -259,7 +258,7 @@ class _RoastingBeanTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stockCtrl = Get.find<StockController>();
+    final inventoryCtrl = Get.find<InventoryController>();
     final height = MediaQuery.of(context).size.height;
 
     return ExpansionTile(
@@ -344,7 +343,7 @@ class _RoastingBeanTile extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(15, 15, 15, 20),
                     child: Obx(
                       () => GestureDetector(
-                        onTap: () => stockCtrl.setChangeIsConvert(),
+                        onTap: () => inventoryCtrl.setChangeIsConvert(),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -366,7 +365,7 @@ class _RoastingBeanTile extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    stockCtrl.getHistoryTotal(jsonDecode(stockList[index]["history"])),
+                                    inventoryCtrl.getHistoryTotal(jsonDecode(stockList[index]["history"])),
                                     textAlign: TextAlign.right,
                                     textScaler: MediaQuery.of(context).textScaler.clamp(minScaleFactor: 1.0, maxScaleFactor: 1.6),
                                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(

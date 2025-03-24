@@ -319,40 +319,30 @@ class _DataManagementMainState extends State<DataManagementMain> {
         padding: const EdgeInsets.all(10),
         child: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const HeaderTitle(title: "데이터 백업", subTitle: "Data backup"),
-              SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Column(
-                    children: [
-                      _BackupButton(
-                        title: "생두 목록 백업",
-                        onPressed: () => getBackupData(0),
-                      ),
-                      const SizedBox(height: 10),
-                      _BackupButton(
-                        title: "생두 재고 백업",
-                        onPressed: () => getBackupData(1),
-                      ),
-                      const SizedBox(height: 10),
-                      _BackupButton(
-                        title: "원두 재고 백업",
-                        onPressed: () => getBackupData(2),
-                      ),
-                      const SizedBox(height: 10),
-                      _BackupButton(
-                        title: "판매 내역 백업",
-                        onPressed: () => getBackupData(3),
-                      ),
-                    ],
-                  ),
-                ),
+              _BackupButton(
+                title: "생두 목록 백업",
+                onPressed: () => getBackupData(0),
+              ),
+              const SizedBox(height: 10),
+              _BackupButton(
+                title: "생두 재고 백업",
+                onPressed: () => getBackupData(1),
+              ),
+              const SizedBox(height: 10),
+              _BackupButton(
+                title: "원두 재고 백업",
+                onPressed: () => getBackupData(2),
+              ),
+              const SizedBox(height: 10),
+              _BackupButton(
+                title: "판매 내역 백업",
+                onPressed: () => getBackupData(3),
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(vertical: 50),
+                padding: EdgeInsets.only(top: 20, bottom: 50),
                 child: UsageAlertWidget(isWeightGuide: false),
               ),
               const HeaderTitle(title: "데이터 복구", subTitle: "Data recovery"),

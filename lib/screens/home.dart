@@ -2,6 +2,7 @@ import 'package:bean_diary/controllers/app_info_controller.dart';
 import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/screens/data_management_main.dart';
+import 'package:bean_diary/screens/frequently_asked_questions/frequently_asked_questions_main.dart';
 import 'package:bean_diary/screens/green_bean_entry_main.dart';
 import 'package:bean_diary/screens/inventory_status_main.dart';
 import 'package:bean_diary/screens/roasting_management_main.dart';
@@ -62,6 +63,12 @@ class _HomeState extends State<Home> {
       "img": "assets/images/backup.png",
       "screen": const DataManagementMain(),
     },
+    // {
+    //   "title": "자주 묻는 질문",
+    //   "subTitle": "앱 사용과 관련된 질문들을 확인하세요",
+    //   "img": "assets/images/faq.png",
+    //   "screen": const FrequentlyAskedQuestionsMain(),
+    // },
   ];
 
   @override

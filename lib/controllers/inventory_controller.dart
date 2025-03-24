@@ -1,29 +1,34 @@
-import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/sqflite/green_bean_inventory_history_sqf_lite.dart';
+import 'package:bean_diary/sqflite/green_bean_inventory_sqf_lite.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:get/get.dart';
 
-class StockController extends GetxController {
-  final RxList _greenBeanStockList = [].obs;
+class InventoryController extends GetxController {
+  final RxList _greenBeanInventory = [].obs;
   final RxList _roastingBeanStockList = [].obs;
   final RxBool _isConvert = true.obs;
 
-  get greenBeanStockList => _greenBeanStockList;
+  get greenBeanInventory => _greenBeanInventory;
   get roastingBeanStockList => _roastingBeanStockList;
   get isConvert => _isConvert.value;
 
   @override
   void onInit() {
     super.onInit();
-    getGreenBeanList();
+    getGreenBeanInventory();
     getRoastingBeanStockList();
   }
 
-  void getGreenBeanList() async {
-    final list = await GreenBeanStockSqfLite().getGreenBeanStock();
+  void getGreenBeanInventory() async {
+    final list = await GreenBeanInventorySqfLite().getGreenBeanInventory();
+    List copyList = list.map((e) => Map.from(e)).toList();
     if (list.isNotEmpty) {
-      _greenBeanStockList(Utility().sortingName(list));
+      for (int i = 0; i < list.length; i++) {
+        copyList[i]["history"] = await GreenBeanInventoryHistorySqfLite().getInventoryHistories(list[i]["id"]);
+      }
     }
+    _greenBeanInventory(copyList);
   }
 
   void getRoastingBeanStockList() async {
@@ -45,7 +50,7 @@ class StockController extends GetxController {
   String getHistoryTotal(List list) {
     int sum = 0;
     for (final item in list) {
-      sum += int.parse(item["weight"] ?? item["roasting_weight"]);
+      sum += item["weight"] as int ?? item["roasting_weight"] as int;
     }
     return isConvert ? Utility().convertWeightUnit(Utility().parseToDoubleWeight(sum)) : "${Utility().numberFormat(Utility().parseToDoubleWeight(sum))}kg";
   }

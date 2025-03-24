@@ -68,7 +68,7 @@ class GreenBeanStockSqfLite {
           );
           return true;
         } else {
-          await db.insert(tableName, value);
+          int id = await db.insert(tableName, value);
           return true;
         }
       } else {

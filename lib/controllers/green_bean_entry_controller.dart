@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:bean_diary/controllers/bean_selection_dropdown_controller.dart';
 import 'package:bean_diary/controllers/custom_date_picker_controller.dart';
 import 'package:bean_diary/sqfLite/green_bean_stock_sqf_lite.dart';
+import 'package:bean_diary/sqflite/green_bean_inventory_history_sqf_lite.dart';
+import 'package:bean_diary/sqflite/green_bean_inventory_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +56,7 @@ class GreenBeanEntryController extends GetxController {
 
   /// 생두 입고 입력 정보 초기화하기
   void clearData(BuildContext context) {
-    FocusScope.of(context).unfocus();
+    clearAllFocusing();
     CustomDatePickerController.to.setDateToToday();
     supplierTECtrl.clear();
     BeanSelectionDropdownController.to.resetSelectedBean();
@@ -63,7 +65,7 @@ class GreenBeanEntryController extends GetxController {
 
   /// 생두 입고 등록하기
   Future registerWarehousingGreenBean(BuildContext context) async {
-    if (supplierTECtrl.text == "") {
+    if (supplierTECtrl.text.trim() == "") {
       CustomDialog().showSnackBar(context, "공급처(업체명)를 입력해 주세요.", isError: true);
       setAllSuppliers();
       supplierFN.requestFocus();
@@ -112,30 +114,42 @@ class GreenBeanEntryController extends GetxController {
     );
 
     if (confirm == true) {
-      final insertResult = await GreenBeanStockSqfLite().insertGreenBeanStock({
-        "name": BeanSelectionDropdownController.to.selectedBean,
-        "weight": weight,
-        "history": jsonEncode([
-          {
-            "date": date,
-            "company": supplierTECtrl.text,
-            "weight": weight,
-          },
-        ]),
+      // green_bean_inventory 등록
+      final insertResult = await GreenBeanInventorySqfLite().insertGreenBeanInventory({
+        "name": greenBean,
+        "inventory_weight": int.parse(weight),
       });
 
-      if (!context.mounted) return;
-      CustomDialog().showRegisterStockResultSnackBar(context, {
-        "date": Utility().pasteTextToDate(date),
-        "supplier": supplierTECtrl.text,
-        "selectedBean": greenBean,
-        "inputWeight": "${Utility().numberFormat(weightTECtrl.text)}kg",
-      });
+      if (insertResult != null) {
+        // green_bean_inventory_history 등록
+        final insertHistoryResult = await GreenBeanInventoryHistorySqfLite().insertGreenBeanInventoryHistory({
+          "green_bean_id": insertResult,
+          "name": greenBean,
+          "date": date,
+          "company": supplierTECtrl.text.trim(),
+          "weight": int.parse(weight),
+        });
 
-      if (insertResult) {
-        weightTECtrl.clear();
-        await getSuppliers();
+        if (insertHistoryResult != null) {
+          if (context.mounted) {
+            CustomDialog().showRegisterStockResultSnackBar(context, {
+              "date": Utility().pasteTextToDate(date),
+              "supplier": supplierTECtrl.text.trim(),
+              "selectedBean": greenBean,
+              "inputWeight": "${Utility().numberFormat(weightTECtrl.text)}kg",
+            });
+          }
+
+          weightTECtrl.clear();
+          await getSuppliers();
+        }
+      } else {
+        if (context.mounted) CustomDialog().showSnackBar(context, "생두 입고 내역 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.");
+        return;
       }
+    } else {
+      if (context.mounted) CustomDialog().showSnackBar(context, "생두 입고 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.");
+      return;
     }
   }
 
@@ -143,15 +157,12 @@ class GreenBeanEntryController extends GetxController {
   ///
   /// 생두 입고 관리 > 공급처(업체명) 전체 가져오기
   Future<void> getSuppliers() async {
-    List greenCoffeeBeansInventory = await GreenBeanStockSqfLite().getGreenBeanStock();
+    List allHistories = await GreenBeanInventoryHistorySqfLite().getAllInventoryHistories();
     _suppliers.clear();
-    if (greenCoffeeBeansInventory.isNotEmpty) {
+    if (allHistories.isNotEmpty) {
       Set duplicateSupplier = {};
-      for (final supplier in greenCoffeeBeansInventory) {
-        final decodingHistory = jsonDecode(supplier["history"]);
-        for (final history in decodingHistory) {
-          duplicateSupplier.add(history["company"]);
-        }
+      for (final e in allHistories) {
+        duplicateSupplier.add(e["company"]);
       }
       _suppliers(Utility().sortHangulAscending(duplicateSupplier.toList()));
     }
@@ -177,5 +188,13 @@ class GreenBeanEntryController extends GetxController {
     } else {
       getSupplierSuggestions();
     }
+  }
+
+  /// 25-03-24
+  ///
+  /// 생두 입고 관리 페이지의 모든 포커싱 해제하기
+  void clearAllFocusing() {
+    supplierFN.unfocus();
+    weightFN.unfocus();
   }
 }
