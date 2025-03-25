@@ -45,21 +45,45 @@ class RoastingBeanSalesSqfLite {
   }
 
   /// 원두 판매 등록
+  /// * type
   /// * name
   /// * sales_weight
+  /// * company
   /// * date
-  Future<bool> insertRoastingBeanSales(Map<String, String> value) async {
+  Future<int?> insertRoastedBeanSales(Map<String, String> values) async {
     try {
       final db = await openDB();
       if (db != null) {
-        await db.insert(tableName, value);
-        return true;
+        final result = await db.insert(tableName, values);
+        return result;
       } else {
-        return false;
+        return null;
       }
     } catch (e) {
       debugPrint("😑 INSERT ROASTING BEAN SALES ERROR: $e");
-      return false;
+      return null;
+    }
+  }
+
+  /// 25-03-25
+  ///
+  /// 판매 내역 삭제하기
+  Future deleteHistory(int id) async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        final result = await db.delete(
+          tableName,
+          where: "id = ?",
+          whereArgs: [id],
+        );
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("😑 DELETE HISTORY ERROR: $e");
+      return null;
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:bean_diary/controllers/roasting_management_controller.dart';
 import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/sqflite/green_bean_inventory_sqf_lite.dart';
+import 'package:bean_diary/sqflite/roasted_bean_inventory_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/utility/utility.dart';
 import 'package:bean_diary/widgets/enums.dart';
@@ -54,12 +55,12 @@ class BeanSelectionDropdownController extends GetxController {
       _beans(list);
     } else {
       // 원두 재고
-      final result = await RoastingBeanStockSqfLite().getRoastingBeanStock();
+      final result = await RoastedBeanInventorySqfLite().getRoastedBeanInventory();
       List list = [];
       List dataList = [];
       if (result.isNotEmpty) {
         for (final bean in Utility().sortingName(result)) {
-          list.add("${bean["name"]} / ${Utility().numberFormat(Utility().parseToDoubleWeight(bean["roasting_weight"]))}kg");
+          list.add("${bean["name"]} / ${Utility().numberFormat(Utility().parseToDoubleWeight(bean["inventory_weight"]))}kg");
           dataList.add(bean);
         }
       }

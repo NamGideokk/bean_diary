@@ -263,9 +263,9 @@ class _DataManagementMainState extends State<DataManagementMain> {
           "company": e["company"],
           "date": e["date"],
         };
-        bool result = await RoastingBeanSalesSqfLite().insertRoastingBeanSales(value);
+        final result = await RoastingBeanSalesSqfLite().insertRoastedBeanSales(value);
 
-        if (!result) {
+        if (result == null) {
           errorData.add("${e["name"] ?? "알수없음"}");
         }
       } catch (err) {

@@ -1,5 +1,6 @@
 import 'package:bean_diary/controllers/green_bean_entry_controller.dart';
 import 'package:bean_diary/controllers/roasting_management_controller.dart';
+import 'package:bean_diary/controllers/sales_management_controller.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
 import 'package:bean_diary/widgets/enums.dart';
 import 'package:flutter/material.dart';
@@ -228,6 +229,29 @@ class RegisterResultSnackBar extends StatelessWidget {
                           Text(
                             message,
                             style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.white70,
+                                textStyle: const TextStyle(fontWeight: FontWeight.w300),
+                              ),
+                              onPressed: () async {
+                                final confirm = await CustomDialog().showAlertDialog(
+                                  context,
+                                  "판매 등록 취소",
+                                  "최근 판매 등록을 취소하시겠습니까?",
+                                  acceptTitle: "취소하기",
+                                  cancelTitle: "닫기",
+                                );
+                                if (confirm == true && context.mounted) {
+                                  final salesManagementCtrl = Get.find<SalesManagementController>();
+                                  salesManagementCtrl.revokeRecentInsert(context);
+                                }
+                              },
+                              child: const Text("등록 취소"),
+                            ),
                           ),
                         ],
                       )
