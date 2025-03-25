@@ -35,7 +35,8 @@ class RoastingManagementController extends GetxController {
   final RxList _blendNameSuggestions = [].obs; // 블렌드명 추천 목록
   final RxList _blendInputGreenBeans = [].obs;
 
-  final RxMap<String, int> _revokeData = <String, int>{}.obs;
+  final RxMap<String, int> _revokeData = <String, int>{}.obs; // 싱글오리진 취소
+  final RxList<Map<String, int>> _revokeGreenBeans = <Map<String, int>>[].obs; // 블렌드 취소
 
   final RxList _opacityList = [].obs;
 
@@ -52,6 +53,7 @@ class RoastingManagementController extends GetxController {
   get blendInputGreenBeans => _blendInputGreenBeans;
 
   get revokeData => _revokeData;
+  get revokeGreenBeans => _revokeGreenBeans;
 
   get opacityList => _opacityList;
 
@@ -59,7 +61,7 @@ class RoastingManagementController extends GetxController {
   ///
   /// 로스팅 관리 > 블렌드명 전체 가져오기
   Future<void> getBlendNames() async {
-    List roastedBeans = await RoastingBeanStockSqfLite().getRoastingBeanStock();
+    List roastedBeans = await RoastedBeanInventorySqfLite().getRoastedBeanInventory();
     _blendNames.clear();
     if (roastedBeans.isNotEmpty) {
       Set duplicateName = {};
@@ -373,24 +375,14 @@ class RoastingManagementController extends GetxController {
     }
 
     // 로스팅 등록 유효성 모두 통과
-    FocusScope.of(context).unfocus();
+    blendNameFN.unfocus();
+    for (final focus in blendInputWeightFNList) {
+      focus.unfocus();
+    }
+    blendOutputWeightFN.unfocus();
 
     String date = CustomDatePickerController.to.date.replaceAll(RegExp("[년 월 일 ]"), "-");
     String roastingWeight = blendOutputWeightTECtrl.text.replaceAll(".", "");
-    String history = jsonEncode([
-      {
-        "date": date,
-        "roasting_weight": roastingWeight,
-      },
-    ]);
-
-    // type, name, roasting_weight, history
-    Map<String, String> value = {
-      "type": "2",
-      "name": blendNameTECtrl.text,
-      "roasting_weight": roastingWeight,
-      "history": history,
-    };
 
     String beans = "";
     for (int i = 0; i < blendInputGreenBeans.length; i++) {
@@ -410,44 +402,82 @@ class RoastingManagementController extends GetxController {
     );
     if (finalConfirm != true) return;
 
-    bool insertResult = await RoastingBeanStockSqfLite().insertRoastingBeanStock(value);
-
-    if (!context.mounted) return;
-
-    if (insertResult) {
-      List inputList = [];
-      for (int i = 0; i < blendInputGreenBeans.length; i++) {
-        inputList.add("${blendInputGreenBeans[i].split(" / ")[0]} / ${Utility().numberFormat(blendInputWeightTECtrlList[i].text)}kg");
-      }
-      CustomDialog().showRegisterBlendRoastingResultSnackBar(context, {
-        "date": Utility().pasteTextToDate(date),
-        "blendName": blendNameTECtrl.text,
-        "inputList": inputList,
-        "outputWeight": "${Utility().numberFormat(blendOutputWeightTECtrl.text)}kg",
+    // 생두 재고 차감
+    List decreaseResults = [];
+    for (int i = 0; i < blendInputGreenBeans.length; i++) {
+      final decreaseResult = await GreenBeanInventorySqfLite().decreaseInventory({
+        "name": Utility().splitNameAndWeight(blendInputGreenBeans[i], 1),
+        "weight": int.parse(blendInputWeightTECtrlList[i].text.replaceAll(".", "")),
+      });
+      decreaseResults.add(decreaseResult);
+    }
+    if (!decreaseResults.any((e) => e == null)) {
+      // 원두 재고 등록
+      final insertResult = await RoastedBeanInventorySqfLite().insertRoastedBeanInventory({
+        "type": "2",
+        "name": blendNameTECtrl.text,
+        "inventory_weight": int.parse(roastingWeight),
       });
 
-      for (int i = 0; i < blendInputGreenBeans.length; i++) {
-        String useWeight = blendInputWeightTECtrlList[i].text.replaceAll(".", "");
-        Map<String, String> updateValue = {
-          "type": "2",
-          "name": blendInputGreenBeans[i].toString().split(" / ")[0],
-          "weight": useWeight,
+      if (insertResult != null) {
+        // 히스토리 등록
+        final insertHistoryResult = await RoastedBeanInventoryHistorySqfLite().insertRoastedBeanInventoryHistory({
+          "roasted_bean_id": insertResult,
+          "name": blendNameTECtrl.text,
           "date": date,
-        };
-        await GreenBeanStockSqfLite().updateWeightGreenBeanStock(updateValue);
+          "weight": int.parse(roastingWeight),
+        });
+
+        if (insertHistoryResult != null) {
+          _revokeData.addAll({
+            "roastedBeanID": insertResult,
+            "historyID": insertHistoryResult,
+            "output_weight": int.parse(roastingWeight),
+          });
+          for (int i = 0; i < blendInputGreenBeans.length; i++) {
+            _revokeGreenBeans.add({
+              "greenBeanID": decreaseResults[i],
+              "input_weight": int.parse(blendInputWeightTECtrlList[i].text.replaceAll(".", "")),
+            });
+          }
+
+          List inputList = [];
+          for (int i = 0; i < blendInputGreenBeans.length; i++) {
+            inputList.add("${blendInputGreenBeans[i].split(" / ")[0]} / ${Utility().numberFormat(blendInputWeightTECtrlList[i].text)}kg");
+          }
+
+          if (context.mounted) {
+            CustomDialog().showRegisterBlendRoastingResultSnackBar(context, {
+              "date": Utility().pasteTextToDate(date),
+              "blendName": blendNameTECtrl.text,
+              "inputList": inputList,
+              "outputWeight": "${Utility().numberFormat(blendOutputWeightTECtrl.text)}kg",
+            });
+          }
+          for (int i = 0; i < _blendInputGreenBeans.length; i++) {
+            blendInputWeightTECtrlList[i].dispose();
+            blendInputWeightFNList[i].dispose();
+          }
+          blendNameTECtrl.clear();
+          _blendInputGreenBeans.clear();
+          _blendInputWeightTECtrlList.clear();
+          _blendInputWeightFNList.clear();
+          _opacityList.clear();
+          blendOutputWeightTECtrl.clear();
+          await getBlendNames();
+          await BeanSelectionDropdownController.to.getBeans(ListType.greenBeanInventory);
+          // 블렌드 로스팅 등록 완료
+        } else {
+          if (context.mounted) CustomDialog().showSnackBar(context, "로스팅 내역 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.", isError: true);
+          return;
+        }
+      } else {
+        if (context.mounted) CustomDialog().showSnackBar(context, "로스팅 등록에 실패헀습니다.\n잠시 후 다시 시도해 주세요.", isError: true);
+        return;
       }
-      for (int i = 0; i < _blendInputGreenBeans.length; i++) {
-        blendInputWeightTECtrlList[i].dispose();
-        blendInputWeightFNList[i].dispose();
-      }
-      blendNameTECtrl.clear();
-      _blendInputGreenBeans.clear();
-      _blendInputWeightTECtrlList.clear();
-      _blendInputWeightFNList.clear();
-      _opacityList.clear();
-      blendOutputWeightTECtrl.clear();
-      await getBlendNames();
-      await BeanSelectionDropdownController.to.getBeans(ListType.greenBeanInventory);
+    } else {
+      if (context.mounted) CustomDialog().showSnackBar(context, "생두 재고 차감에 실패헀습니다.\n잠시 후 다시 시도해 주세요.", isError: true);
+      return;
     }
     return;
   }
@@ -456,10 +486,11 @@ class RoastingManagementController extends GetxController {
   ///
   /// 모든 입력 정보 초기화하기
   void clearData(BuildContext context) {
-    FocusScope.of(context).unfocus();
     CustomDatePickerController.to.setDateToToday();
     if (roastingType == 1) {
       BeanSelectionDropdownController.to.resetSelectedBean();
+      singleInputWeightFN.unfocus();
+      singleOutputWeightFN.unfocus();
       singleInputWeightTECtrl.clear();
       singleOutputWeightTECtrl.clear();
     } else {
@@ -513,16 +544,55 @@ class RoastingManagementController extends GetxController {
         if (context.mounted) CustomDialog().showSnackBar(context, "싱글오리진 로스팅 등록이 취소되었습니다.");
         return;
       } else {
-        if (context.mounted) {
-          CustomDialog().showSnackBar(context, "생두 재고 롤백에 실패했습니다.", isError: true);
+        if (context.mounted) CustomDialog().showSnackBar(context, "생두 재고 롤백에 실패했습니다.", isError: true);
+        return;
+      }
+    } else {
+      if (context.mounted) CustomDialog().showSnackBar(context, "로스팅 내역 등록 취소에 실패했습니다.", isError: true);
+      return;
+    }
+  }
+
+  /// 25-03-25
+  ///
+  /// 블렌드 - 로스팅 등록 내역 취소하기
+  Future revokeRecentBlendInsert(BuildContext context) async {
+    final deleteHistoryResult = await RoastedBeanInventoryHistorySqfLite().deleteHistory(revokeData["historyID"]);
+
+    if (deleteHistoryResult != null) {
+      final hasHistory = await RoastedBeanInventoryHistorySqfLite().getInventoryHistories(revokeData["roastedBeanID"]);
+      // 히스토리 없으면 아예 삭제, 히스토리 있으면 재고 차감
+      if (hasHistory.isNotEmpty) {
+        final revokeRecent = await RoastedBeanInventorySqfLite().revokeRecentInventoryRoasting(revokeData);
+        if (revokeRecent == null) {
+          if (context.mounted) CustomDialog().showSnackBar(context, "로스팅 내역 등록 취소에 실패했습니다.", isError: true);
+          return;
+        }
+      } else {
+        final deleteRoastedBean = await RoastedBeanInventorySqfLite().deleteRoastedBean(revokeData["roastedBeanID"]);
+        if (deleteRoastedBean == null) {
+          if (context.mounted) CustomDialog().showSnackBar(context, "로스팅 내역 등록 취소에 실패했습니다.", isError: true);
           return;
         }
       }
-    } else {
-      if (context.mounted) {
-        CustomDialog().showSnackBar(context, "로스팅 내역 등록 취소에 실패했습니다.", isError: true);
+      // 생고 재고 롤백
+      List revokeResults = [];
+      for (final e in revokeGreenBeans) {
+        final revokeDecrease = await GreenBeanInventorySqfLite().revokeDecreaseInventory(e);
+        revokeResults.add(revokeDecrease);
+      }
+      if (revokeResults.every((e) => e > 0)) {
+        await BeanSelectionDropdownController.to.getBeans(ListType.greenBeanInventory);
+        await getBlendNames();
+        if (context.mounted) CustomDialog().showSnackBar(context, "블렌드 로스팅 등록이 취소되었습니다.");
+        return;
+      } else {
+        if (context.mounted) CustomDialog().showSnackBar(context, "생두 재고 롤백에 실패했습니다.", isError: true);
         return;
       }
+    } else {
+      if (context.mounted) CustomDialog().showSnackBar(context, "로스팅 내역 등록 취소에 실패했습니다.", isError: true);
+      return;
     }
   }
 }

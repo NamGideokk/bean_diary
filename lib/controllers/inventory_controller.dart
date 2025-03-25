@@ -28,7 +28,7 @@ class InventoryController extends GetxController {
       copyList = list.map((e) => Map.from(e)).toList();
       copyList = Utility().sortingName(copyList);
       for (int i = 0; i < list.length; i++) {
-        copyList[i]["history"] = await GreenBeanInventoryHistorySqfLite().getInventoryHistories(list[i]["id"]);
+        copyList[i]["history"] = await GreenBeanInventoryHistorySqfLite().getInventoryHistories(copyList[i]["id"]);
       }
     }
     _greenBeanInventory(copyList);
@@ -43,7 +43,7 @@ class InventoryController extends GetxController {
       copyList = list.map((e) => Map.from(e)).toList();
       copyList = Utility().sortingName(copyList);
       for (int i = 0; i < list.length; i++) {
-        copyList[i]["history"] = await RoastedBeanInventoryHistorySqfLite().getInventoryHistories(list[i]["id"]);
+        copyList[i]["history"] = await RoastedBeanInventoryHistorySqfLite().getInventoryHistories(copyList[i]["id"]);
         copyList[i]["type"] == "1" ? singles.add(copyList[i]) : blends.add(copyList[i]);
       }
       _roastedBeanInventory.insertAll(0, singles);

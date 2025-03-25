@@ -173,7 +173,7 @@ class CustomDialog {
     final snackBar = SnackBar(
       padding: const EdgeInsets.all(20),
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 15),
       content: RegisterResultSnackBar.blendRoasting(
         snackBarType: SnackBarType.blendRoasting,
         date: data["date"],

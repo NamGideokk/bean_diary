@@ -191,6 +191,29 @@ class RegisterResultSnackBar extends StatelessWidget {
                         message,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
                       ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.white70,
+                            textStyle: const TextStyle(fontWeight: FontWeight.w300),
+                          ),
+                          onPressed: () async {
+                            final confirm = await CustomDialog().showAlertDialog(
+                              context,
+                              "로스팅 등록 취소",
+                              "최근 로스팅 등록을 취소하시겠습니까?",
+                              acceptTitle: "취소하기",
+                              cancelTitle: "닫기",
+                            );
+                            if (confirm == true && context.mounted) {
+                              final roastingManagementCtrl = Get.find<RoastingManagementController>();
+                              roastingManagementCtrl.revokeRecentBlendInsert(context);
+                            }
+                          },
+                          child: const Text("등록 취소"),
+                        ),
+                      ),
                     ],
                   )
                 : snackBarType == SnackBarType.sale
