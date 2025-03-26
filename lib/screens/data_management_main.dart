@@ -6,8 +6,8 @@ import 'package:bean_diary/sqfLite/green_beans_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_sales_sqf_lite.dart';
 import 'package:bean_diary/sqfLite/roasting_bean_stock_sqf_lite.dart';
 import 'package:bean_diary/utility/custom_dialog.dart';
+import 'package:bean_diary/widgets/data_backup_guide.dart';
 import 'package:bean_diary/widgets/header_title.dart';
-import 'package:bean_diary/widgets/usage_alert_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,23 +20,6 @@ class DataManagementMain extends StatefulWidget {
 
 class _DataManagementMainState extends State<DataManagementMain> {
   final _dataManagementCtrl = Get.put(DataManagementController());
-
-  void getBackupData(int type) async {
-    final Map<String, dynamic> result = await _dataManagementCtrl.getBackupData(type);
-
-    if (result["bool"]) {
-      if (!mounted) return;
-      CustomDialog().showSnackBar(
-        context,
-        "[${result["title"]}]\n데이터가 복사되었습니다.",
-      );
-      return;
-    } else {
-      if (!mounted) return;
-      CustomDialog().showSnackBar(context, "[${result["title"]}]\n백업할 데이터가 없습니다.");
-      return;
-    }
-  }
 
   void dataRecovery(String? value) async {
     String backupData = _dataManagementCtrl.backupDataTECtrl.text;
@@ -296,11 +279,6 @@ class _DataManagementMainState extends State<DataManagementMain> {
     }
   }
 
-  void clearBackupDataText() {
-    _dataManagementCtrl.backupDataTECtrl.clear();
-    _dataManagementCtrl.backupDataFN.requestFocus();
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -317,34 +295,44 @@ class _DataManagementMainState extends State<DataManagementMain> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
+        physics: const BouncingScrollPhysics(),
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const HeaderTitle(title: "데이터 백업", subTitle: "Data backup"),
-              _BackupButton(
-                title: "생두 목록 백업",
-                onPressed: () => getBackupData(0),
-              ),
+              const _DecoratedButton(title: "생두 목록 백업", type: 0),
               const SizedBox(height: 10),
-              _BackupButton(
-                title: "생두 재고 백업",
-                onPressed: () => getBackupData(1),
-              ),
+              const _DecoratedButton(title: "생두 재고 백업", type: 1),
               const SizedBox(height: 10),
-              _BackupButton(
-                title: "원두 재고 백업",
-                onPressed: () => getBackupData(2),
-              ),
+              const _DecoratedButton(title: "원두 재고 백업", type: 2),
               const SizedBox(height: 10),
-              _BackupButton(
-                title: "판매 내역 백업",
-                onPressed: () => getBackupData(3),
+              const _DecoratedButton(title: "판매 내역 백업", type: 3),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: TextButton.icon(
+                    onPressed: () async => await showModalBottomSheet(
+                      context: context,
+                      showDragHandle: true,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.brown[50],
+                      builder: (ctx) => const DataBackupGuide(),
+                    ),
+                    icon: Icon(
+                      Icons.help_outline_rounded,
+                      size: height / 50,
+                      color: Colors.red,
+                      applyTextScaling: true,
+                    ),
+                    label: Text(
+                      "데이터 백업 안내",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 20, bottom: 50),
-                child: UsageAlertWidget(isWeightGuide: false),
-              ),
+              const SizedBox(height: 50),
               const HeaderTitle(title: "데이터 복구", subTitle: "Data recovery"),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -370,7 +358,10 @@ class _DataManagementMainState extends State<DataManagementMain> {
                             visualDensity: VisualDensity.compact,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
-                          onPressed: clearBackupDataText,
+                          onPressed: () {
+                            _dataManagementCtrl.backupDataTECtrl.clear();
+                            _dataManagementCtrl.backupDataFN.requestFocus();
+                          },
                           icon: Icon(
                             Icons.clear_rounded,
                             size: height / 50,
@@ -395,24 +386,118 @@ class _DataManagementMainState extends State<DataManagementMain> {
   }
 }
 
-class _BackupButton extends StatelessWidget {
+class _DecoratedButton extends StatelessWidget {
   final String title;
-  final Function() onPressed;
-  const _BackupButton({
+  final int type;
+  const _DecoratedButton({
     Key? key,
     required this.title,
-    required this.onPressed,
+    required this.type,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-      ),
-      onPressed: onPressed,
-      child: Text(
-        title,
+    final dataManagementCtrl = Get.find<DataManagementController>();
+    final height = MediaQuery.of(context).size.height;
+    return GestureDetector(
+      onTap: () => dataManagementCtrl.backupData(context, type),
+      child: ClipRRect(
+        clipBehavior: Clip.hardEdge,
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.brown,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.brown[50],
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+              ),
+              child: Obx(
+                () => Stack(
+                  children: [
+                    IconButton(
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.brown[50],
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                      ),
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.file_download_rounded,
+                        color: Colors.brown,
+                        size: height / 30,
+                      ),
+                    ),
+                    AnimatedOpacity(
+                      opacity: dataManagementCtrl.hasDataOpacities[type],
+                      duration: const Duration(milliseconds: 300),
+                      child: IconButton(
+                        style: IconButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                          ),
+                          backgroundColor: Colors.brown[50],
+                          visualDensity: VisualDensity.compact,
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () => dataManagementCtrl.backupData(context, type),
+                        icon: Icon(
+                          Icons.file_download_done_rounded,
+                          color: Colors.green[800],
+                          size: height / 30,
+                        ),
+                      ),
+                    ),
+                    AnimatedOpacity(
+                      opacity: dataManagementCtrl.noDataOpacities[type],
+                      duration: const Duration(milliseconds: 300),
+                      child: IconButton(
+                        style: IconButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                          ),
+                          backgroundColor: Colors.brown[50],
+                          visualDensity: VisualDensity.compact,
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () => dataManagementCtrl.backupData(context, type),
+                        icon: Icon(
+                          Icons.clear_rounded,
+                          color: Colors.red,
+                          size: height / 30,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
