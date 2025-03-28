@@ -1,4 +1,3 @@
-import 'package:bean_diary/utility/colors_list.dart';
 import 'package:flutter/material.dart';
 
 class DataBackupGuide extends StatelessWidget {
@@ -145,6 +144,26 @@ class DataBackupGuide extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: Colors.red,
                         ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.ideographic,
+              children: [
+                Text(
+                  "* ",
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                ),
+                Expanded(
+                  child: Text(
+                    "일부 데이터만 삭제하거나 백업 및 복구할 경우, 전체 데이터의 무결성이 훼손되거나 데이터가 꼬일 위험이 있습니다. 따라서 가급적 전체 데이터를 한 번에 처리하는 것을 권장합니다.",
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.red),
                   ),
                 ),
               ],

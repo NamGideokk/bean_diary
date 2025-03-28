@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -23,7 +24,7 @@ class GreenBeansSqfLite {
       }
       return db;
     } catch (e) {
-      print("😑 OPEN green_beans DB ERROR: $e");
+      debugPrint("😑 OPEN green_beans DB ERROR: $e");
       return null;
     }
   }
@@ -38,7 +39,7 @@ class GreenBeansSqfLite {
         return [];
       }
     } catch (e) {
-      print("😑 GET GREEN BEANS ERROR: $e");
+      debugPrint("😑 GET GREEN BEANS ERROR: $e");
       return [];
     }
   }
@@ -64,7 +65,7 @@ class GreenBeansSqfLite {
         return 0;
       }
     } catch (e) {
-      print("😑 INSERT GREEN BEAN ERROR: $e");
+      debugPrint("😑 INSERT GREEN BEAN ERROR: $e");
       return 0;
     }
   }
@@ -83,8 +84,26 @@ class GreenBeansSqfLite {
         return false;
       }
     } catch (e) {
-      print("😑 DELETE GREEN BEAN ERROR: $e");
+      debugPrint("😑 DELETE GREEN BEAN ERROR: $e");
       return false;
+    }
+  }
+
+  /// 25-03-27
+  ///
+  /// 테이블 삭제하기
+  Future deleteTable() async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        final result = await db.delete(tableName);
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("😑 DELETE TABLE ERROR: $e");
+      return null;
     }
   }
 }

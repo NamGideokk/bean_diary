@@ -180,4 +180,22 @@ class RoastedBeanInventorySqfLite {
       return null;
     }
   }
+
+  /// 25-03-27
+  ///
+  /// 테이블 삭제하기
+  Future deleteTable() async {
+    try {
+      final db = await openDB();
+      if (db != null) {
+        final result = await db.delete(tableName);
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("😑 DELETE TABLE ERROR: $e");
+      return null;
+    }
+  }
 }
